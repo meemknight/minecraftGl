@@ -6,7 +6,7 @@
 #include <glm/glm.hpp>
 #include <Windows.h>
 
-static GLFWwindow* window;
+static GLFWwindow *window;
 
 static int xsize;
 static int ysize;
@@ -21,7 +21,7 @@ int main()
 
 	float width = 640;
 	float heigth = 480;
-	GLFWwindow* window = glfwCreateWindow(width, heigth, "Minicraft", NULL, NULL);
+	window = glfwCreateWindow(width, heigth, "Minicraft", NULL, NULL);
 	
 	if (!window)
 	{
@@ -60,35 +60,22 @@ void errorMessage(const char *c)
 	MessageBoxA(0, c, "error", MB_ICONERROR);
 }
 
+
 //todo properly implement this
 void setRelMousePosition(int x, int y)
 {
-	int winx = 0;
-	int winy = 0;
-
-	glfwGetWindowPos(window, &winx, &winy);
-
-	SetCursorPos(x + winx, y + winy);
+	glfwSetCursorPos(window, x, y);
 }
 
 //todo properly implement this
 glm::ivec2 getRelMousePosition()
 {
-	POINT p;
-	GetCursorPos(&p);
+	double cursorx;
+	double cursory;
 
-	int winx = 0;
-	int winy = 0;
+	glfwGetCursorPos(window, &cursorx, &cursory);
 
-	glfwGetWindowPos(window, &winx, &winy);
-
-	p.x -= winx;
-	p.y -= winy;
-
-	p.x = max(0, p.x);
-	p.y = max(0, p.y);
-
-	return { p.x, p.y };
+	return { (int)cursorx, (int)cursory };
 }
 
 glm::ivec2 getWindowSize()

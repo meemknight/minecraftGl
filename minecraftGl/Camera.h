@@ -16,7 +16,7 @@ public:
 
 	glm::vec3 viewDirection = { 0.f, 0.f, -1.f };
 	glm::vec3 upPositipon = { 0, 1, 0 };
-	glm::vec3 position = { 0,0,0 };
+	glm::vec3 position = { 0,0,1 };
 
 	glm::vec3 playerPosition = { 0,0,0 };
 	///this distance is only on the x and z axes
@@ -43,14 +43,14 @@ public:
 	struct
 	{
 		float angle; ///angle of the view projecton in angles not radians
-		float *width; /// pointer to the idth of the screen
-		float *height; /// pointer to the height of the screen
+		int *width; /// pointer to the idth of the screen
+		int *height; /// pointer to the height of the screen
 		float closePlane;
 		float farPlane;
 	}projectionData;
 
 	Camera();
-	Camera(HWND hand, float angle, float *width, float *height, float closePlane, float farPlane);
+	Camera(HWND hand, float angle, int *width, int *height, float closePlane, float farPlane);
 
 
 	glm::mat4 getObjectToWorld(); ///gets the object to world for the camera

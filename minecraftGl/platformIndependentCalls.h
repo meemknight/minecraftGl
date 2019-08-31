@@ -12,5 +12,5 @@ glm::ivec2 getRelMousePosition();
 //gets the drawing region sizes
 glm::ivec2 getWindowSize();
 
-int getWindowSizeX() { return getWindowSize().x; }
-int getWindowSizeY() { return getWindowSize().y; }
+inline int getWindowSizeX() { return getWindowSize().x; }
+inline int getWindowSizeY() { return getWindowSize().y; }

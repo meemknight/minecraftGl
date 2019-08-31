@@ -5,7 +5,7 @@
 /////////////////////////////////////////////
 
 #include "Camera.h"
-#include <Windows.h>
+//#include <Windows.h>
 
 glm::vec3 Camera::getFirstPersonPosition()
 {
@@ -33,7 +33,7 @@ Camera::Camera()
 {
 }
 
-Camera::Camera(HWND hand, float angle, float * width, float * height, float closePlane, float farPlane)
+Camera::Camera(HWND hand, float angle, int * width, int * height, float closePlane, float farPlane)
 {
 	window = hand;
 	projectionData.angle = angle;
@@ -86,12 +86,12 @@ glm::mat4 Camera::getObjectToWorld()
 
 glm::mat4 Camera::getProjectionViewMatrix()
 {
-	return glm::perspective(glm::radians(projectionData.angle), *projectionData.width / *projectionData.height, projectionData.closePlane, projectionData.farPlane) * getObjectToWorld();
+	return glm::perspective(glm::radians(projectionData.angle), (float)*projectionData.width / (float)*projectionData.height, projectionData.closePlane, projectionData.farPlane) * getObjectToWorld();
 }
 
 glm::mat4 Camera::getProjectionMatrix()
 {
-	return glm::perspective(glm::radians(projectionData.angle), *projectionData.width / *projectionData.height, projectionData.closePlane, projectionData.farPlane);
+	return glm::perspective(glm::radians(projectionData.angle), (float)*projectionData.width / (float)*projectionData.height, projectionData.closePlane, projectionData.farPlane);
 }
 
 void Camera::mouseUpdate(const glm::vec2 & pos)
@@ -125,12 +125,8 @@ noMove:
 
 	oldMousePosition = pos;
 	
-	RECT rect;
-	GetWindowRect(window, &rect);
 
-	//SetCursorPos(rect.left + ((rect.right - rect.left) / 2), rect.top + ((rect.bottom - rect.top) / 2));
 	oldMousePosition = pos;
-	//printf("%+f6 %+f6 %+f6 ", position.x, position.y, position.z);
 }
 
 /*
