@@ -35,11 +35,12 @@ unsigned int indexBufferData[] =
 	2,
 };
 
-Camera camera;
 Texture bloc;
-
 int width;
 int height;
+
+//Camera camera(60.f, &width, &height, 0.1, 200);
+FirstPersonCamera camera(60.f, 0.1, 200, &width, &height);
 
 int initGame()
 {
@@ -55,9 +56,6 @@ int initGame()
 	sp.bind();
 
 	bloc.create("textures/block.png");
-
-	camera.projectionData.width = &width;
-	camera.projectionData.height = &height;
 
 	return 1;
 }
@@ -89,6 +87,7 @@ int gameLogic(float deltaTime)
 
 	GLint mat = sp.getUniformLocation("u_mat");
 	glm::mat4 m = camera.getProjectionViewMatrix();
+
 	glUniformMatrix4fv(mat, 1, GL_FALSE, &m[0][0]);
 
 	return 1;

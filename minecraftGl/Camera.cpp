@@ -33,9 +33,8 @@ Camera::Camera()
 {
 }
 
-Camera::Camera(HWND hand, float angle, int * width, int * height, float closePlane, float farPlane)
+Camera::Camera(float angle, int * width, int * height, float closePlane, float farPlane)
 {
-	window = hand;
 	projectionData.angle = angle;
 	projectionData.width = width;
 	projectionData.height = height;
@@ -97,6 +96,8 @@ glm::mat4 Camera::getProjectionMatrix()
 void Camera::mouseUpdate(const glm::vec2 & pos)
 {
 	glm::vec2 delta = pos - oldMousePosition;
+	delta.x *= -1;
+	//delta.y *= -1;
 
 	//if (glm::length(delta) > 50.f) 
 	//{
@@ -106,7 +107,7 @@ void Camera::mouseUpdate(const glm::vec2 & pos)
 
 	glm::vec3 toRotate = glm::cross(viewDirection, upPositipon);
 
-	viewDirection = glm::mat3(glm::rotate(glm::radians(-delta.x * rSpeed), upPositipon)) * viewDirection;
+	viewDirection = glm::mat3(glm::rotate(glm::radians(delta.x * rSpeed), upPositipon)) * viewDirection;
 
 	if (delta.y > 0)
 	{	//down
@@ -119,12 +120,8 @@ void Camera::mouseUpdate(const glm::vec2 & pos)
 			goto noMove;
 	}
 
-	viewDirection = glm::mat3(glm::rotate(glm::radians(-delta.y * rSpeed), toRotate)) * viewDirection;
+	viewDirection = glm::mat3(glm::rotate(glm::radians(delta.y * rSpeed), toRotate)) * viewDirection;
 noMove:
-
-
-	oldMousePosition = pos;
-	
 
 	oldMousePosition = pos;
 }
@@ -181,3 +178,23 @@ void Camera::moveBack(float speed)
 	}
 }
 
+
+FirstPersonCamera::FirstPersonCamera(float fov, float closePlane, float farPlane, int * width, int * height)
+:fov(fov), closePlane(closePlane), farPlane(farPlane), width(width), height(height)
+{
+}
+
+glm::mat4 FirstPersonCamera::getProjectionViewMatrix()
+{
+	return getProjectionMatrix() * getObjectToWorldMatrix();
+}
+
+glm::mat4 FirstPersonCamera::getProjectionMatrix()
+{
+	return glm::perspective(glm::radians(fov), (float)*width / (float)*height, closePlane, farPlane);
+}
+
+glm::mat4 FirstPersonCamera::getObjectToWorldMatrix()
+{
+	return glm::lookAt(position, position + viewDirection, upPositipon);
+}

@@ -16,7 +16,7 @@ public:
 
 	glm::vec3 viewDirection = { 0.f, 0.f, -1.f };
 	glm::vec3 upPositipon = { 0, 1, 0 };
-	glm::vec3 position = { 0,0,1 };
+	glm::vec3 position = { 0,0,2 };
 
 	glm::vec3 playerPosition = { 0,0,0 };
 	///this distance is only on the x and z axes
@@ -26,13 +26,11 @@ public:
 
 public:
 	glm::vec2 oldMousePosition;
-	float rSpeed = 0.5f;
+	float rSpeed = 0.2f;
 	float mSpeed = 0.05f;
 
 	bool flyCamera = 1;
 	bool firstPersonCamera = 0;
-
-	HWND window;
 
 	glm::vec3 getFirstPersonPosition();
 
@@ -50,7 +48,7 @@ public:
 	}projectionData;
 
 	Camera();
-	Camera(HWND hand, float angle, int *width, int *height, float closePlane, float farPlane);
+	Camera(float angle, int *width, int *height, float closePlane, float farPlane);
 
 
 	glm::mat4 getObjectToWorld(); ///gets the object to world for the camera
@@ -68,5 +66,26 @@ public:
 	void moveFront(float speed);
 	void moveBack(float speed);
 
+};
+
+
+struct FirstPersonCamera
+{
+	FirstPersonCamera() {};
+	FirstPersonCamera(float fov, float closePlane, float farPlane, int *width, int *height);
+
+	glm::vec3 viewDirection = { 0.f, 0.f, -1.f };
+	glm::vec3 upPositipon = { 0, 1, 0 };
+	glm::vec3 position = { 0,0,2 };
+
+	float fov;
+	float closePlane;
+	float farPlane;
+	int *width; /// pointer to the idth of the screen
+	int *height; /// pointer to the height of the screen
+
+	glm::mat4 getProjectionViewMatrix(); /// gets the full view transform
+	glm::mat4 getObjectToWorldMatrix(); ///gets the object to world for the camera
+	glm::mat4 getProjectionMatrix();
 
 };
