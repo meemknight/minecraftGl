@@ -14,3 +14,7 @@ glm::ivec2 getWindowSize();
 
 inline int getWindowSizeX() { return getWindowSize().x; }
 inline int getWindowSizeY() { return getWindowSize().y; }
+
+int isKeyPressed(int key);
+
+void showMouse(bool show);

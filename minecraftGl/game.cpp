@@ -66,6 +66,36 @@ int gameLogic(float deltaTime)
 	height = getWindowSizeY();
 	glClear(GL_COLOR_BUFFER_BIT);
 
+	if(isKeyPressed('W'))
+	{
+		camera.moveFront(deltaTime);
+	}
+
+	if(isKeyPressed('A'))
+	{
+		camera.moveLeft(deltaTime);
+	}
+
+	if (isKeyPressed('S'))
+	{
+		camera.moveBack(deltaTime);
+	}
+
+	if (isKeyPressed('D'))
+	{
+		camera.moveRight(deltaTime);
+	}
+
+	if (isKeyPressed('R'))
+	{
+		camera.moveUp(deltaTime);
+	}
+
+	if (isKeyPressed('F'))
+	{
+		camera.moveDown(deltaTime);
+	}
+
 	glBindBuffer(GL_ARRAY_BUFFER, quadBuff);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer);
 	glVertexAttribPointer(0, 2, GL_FLOAT, 0, sizeof(float) * 4, 0);
@@ -83,11 +113,11 @@ int gameLogic(float deltaTime)
 
 	glViewport(0, 0, getWindowSizeX(), getWindowSizeY());
 
-	//camera.mouseUpdate(getRelMousePosition());
+	camera.mouseUpdate(getRelMousePosition());
 
 	GLint mat = sp.getUniformLocation("u_mat");
 	glm::mat4 m = camera.getProjectionViewMatrix();
-
+	
 	glUniformMatrix4fv(mat, 1, GL_FALSE, &m[0][0]);
 
 	return 1;

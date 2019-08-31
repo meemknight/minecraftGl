@@ -11,6 +11,12 @@ static GLFWwindow *window;
 static int xsize;
 static int ysize;
 
+void windowSizeCallback(GLFWwindow *window, int x, int y)
+{
+	xsize = x;
+	ysize = y;
+}
+
 int main()
 {
 	if (glfwInit() == false)
@@ -22,7 +28,7 @@ int main()
 	float width = 640;
 	float heigth = 480;
 	window = glfwCreateWindow(width, heigth, "Minicraft", NULL, NULL);
-	
+
 	if (!window)
 	{
 		MessageBoxA(0, "glfwCreateWindow", "Error from glfw", MB_ICONERROR);
@@ -39,16 +45,28 @@ int main()
 
 	initGame();
 
+	glfwSetWindowSizeCallback(window, windowSizeCallback);
+	glfwGetWindowSize(window, &xsize, &ysize);
+
+	int time1 = GetTickCount();
+	int time2 = GetTickCount();
+
 	while(!glfwWindowShouldClose(window))
 	{
-		//todo properly implement this
-		glfwGetWindowSize(window, &xsize, &ysize);
+
+		time2 = GetTickCount();
+		int deltaTime = time2 - time1;
+		time1 = GetTickCount();
+
 		glfwPollEvents();
 			
-		gameLogic(0);
+		gameLogic((float)deltaTime/1000.f);
 
 		glfwSwapBuffers(window);
 	}
+
+	glfwDestroyWindow(window);
+	glfwTerminate();
 	
 	return 0;
 }
@@ -61,13 +79,11 @@ void errorMessage(const char *c)
 }
 
 
-//todo properly implement this
 void setRelMousePosition(int x, int y)
 {
 	glfwSetCursorPos(window, x, y);
 }
 
-//todo properly implement this
 glm::ivec2 getRelMousePosition()
 {
 	double cursorx;
@@ -81,4 +97,14 @@ glm::ivec2 getRelMousePosition()
 glm::ivec2 getWindowSize()
 {
 	return { xsize, ysize };
+}
+
+int isKeyPressed(int key)
+{
+	return glfwGetKey(window, key);
+}
+
+void showMouse(bool show)
+{
+
 }

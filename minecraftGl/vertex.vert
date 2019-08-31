@@ -9,5 +9,5 @@ uniform mat4 u_mat;
 void main()
 {
 	v_texCoord = texCoord;
-	gl_Position = positions * u_mat;
+	gl_Position = u_mat * positions;
 }

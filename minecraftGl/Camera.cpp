@@ -5,6 +5,7 @@
 /////////////////////////////////////////////
 
 #include "Camera.h"
+#include "platformIndependentCalls.h"
 //#include <Windows.h>
 
 glm::vec3 Camera::getFirstPersonPosition()
@@ -33,7 +34,7 @@ Camera::Camera()
 {
 }
 
-Camera::Camera(float angle, int * width, int * height, float closePlane, float farPlane)
+Camera::Camera(float angle, float closePlane, float farPlane, int * width, int * height)
 {
 	projectionData.angle = angle;
 	projectionData.width = width;
@@ -78,7 +79,6 @@ glm::mat4 Camera::getObjectToWorld()
 	}
 	else
 	{
-
 		return glm::lookAt(getFirstPersonPosition(), playerPosition, upPositipon);
 	}
 }
@@ -95,6 +95,7 @@ glm::mat4 Camera::getProjectionMatrix()
 
 void Camera::mouseUpdate(const glm::vec2 & pos)
 {
+
 	glm::vec2 delta = pos - oldMousePosition;
 	delta.x *= -1;
 	//delta.y *= -1;
@@ -192,6 +193,70 @@ glm::mat4 FirstPersonCamera::getProjectionViewMatrix()
 glm::mat4 FirstPersonCamera::getProjectionMatrix()
 {
 	return glm::perspective(glm::radians(fov), (float)*width / (float)*height, closePlane, farPlane);
+}
+
+void FirstPersonCamera::moveUp(float speed)
+{
+	position += upPositipon * speed * this->speed;
+}
+
+void FirstPersonCamera::moveDown(float speed)
+{
+	moveUp(-speed);
+}
+
+void FirstPersonCamera::moveLeft(float speed)
+{
+	moveRight(-speed);
+}
+
+void FirstPersonCamera::moveRight(float speed)
+{
+	position += glm::normalize(glm::cross(viewDirection, upPositipon)) * speed * this->speed;
+}
+
+void FirstPersonCamera::moveFront(float speed)
+{
+	position += viewDirection * speed * this->speed;
+}
+
+void FirstPersonCamera::moveBack(float speed)
+{
+	moveFront(-speed);
+}
+
+void FirstPersonCamera::mouseUpdate(const glm::vec2 & pos)
+{
+
+	glm::vec2 delta = pos - oldMousePosition;
+	delta.x *= -1;
+	delta.y *= -1;
+
+	//if (glm::length(delta) > 50.f) 
+	//{
+	//	oldMousePosition = pos;
+	//	return;
+	//}
+
+	glm::vec3 toRotate = glm::cross(viewDirection, upPositipon);
+
+	viewDirection = glm::mat3(glm::rotate(glm::radians(delta.x * rSpeed), upPositipon)) * viewDirection;
+
+	if (delta.y < 0)
+	{	//down
+		if (viewDirection.y < -0.99)
+			goto noMove;
+	}
+	else
+	{	//up
+		if (viewDirection.y > 0.99)
+			goto noMove;
+	}
+
+	viewDirection = glm::mat3(glm::rotate(glm::radians(delta.y * rSpeed), toRotate)) * viewDirection;
+noMove:
+	setRelMousePosition(getWindowSizeX() / 2, getWindowSizeY() / 2);
+	oldMousePosition = getRelMousePosition();
 }
 
 glm::mat4 FirstPersonCamera::getObjectToWorldMatrix()
