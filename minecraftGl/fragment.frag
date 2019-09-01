@@ -8,4 +8,7 @@ in vec2 v_texCoord;
 void main()
 {
 	color = texture(u_texture, v_texCoord);
+
+	if(color.a < 0.9)
+	discard;
 }

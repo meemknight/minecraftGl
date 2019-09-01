@@ -43,28 +43,40 @@ int main()
 		return 1;
 	}
 
-	initGame();
-
-	glfwSetWindowSizeCallback(window, windowSizeCallback);
-	glfwGetWindowSize(window, &xsize, &ysize);
-
-	int time1 = GetTickCount();
-	int time2 = GetTickCount();
-
-	while(!glfwWindowShouldClose(window))
+	if(!initGame())
 	{
-
-		time2 = GetTickCount();
-		int deltaTime = time2 - time1;
-		time1 = GetTickCount();
-
-		glfwPollEvents();
-			
-		gameLogic((float)deltaTime/1000.f);
-
-		glfwSwapBuffers(window);
+		goto end;
 	}
 
+	{
+		glfwSetWindowSizeCallback(window, windowSizeCallback);
+		glfwGetWindowSize(window, &xsize, &ysize);
+
+		int time1 = GetTickCount();
+		int time2 = GetTickCount();
+
+		ShowCursor(0);
+
+		while (!glfwWindowShouldClose(window))
+		{
+
+			time2 = GetTickCount();
+			int deltaTime = time2 - time1;
+			time1 = GetTickCount();
+
+			glfwPollEvents();
+
+			if (!gameLogic((float)deltaTime / 1000.f))
+			{
+				break;
+			}
+
+			glfwSwapBuffers(window);
+		}
+	}
+
+	end:
+	
 	glfwDestroyWindow(window);
 	glfwTerminate();
 	

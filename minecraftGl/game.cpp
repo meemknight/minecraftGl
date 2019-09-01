@@ -4,6 +4,7 @@
 #include "Shader.h"
 #include "Camera.h"
 #include "Texture.h"
+#include "CubeMeshRenderer.h"
 
 static GLuint quadBuff;
 static GLuint indexBuffer;
@@ -42,6 +43,8 @@ int height;
 //Camera camera(60.f, &width, &height, 0.1, 200);
 FirstPersonCamera camera(60.f, 0.1, 200, &width, &height);
 
+CubeMeshRenderer cubeRenderer;
+
 int initGame()
 {
 	glGenBuffers(1, &quadBuff);
@@ -55,23 +58,33 @@ int initGame()
 	sp = ShaderProgram("vertex.vert", "fragment.frag");
 	sp.bind();
 
-	bloc.create("textures/block.png");
+	bloc.create("textures/blocks.png");
+	bloc.subDivisions = 16;
+
+	cubeRenderer.camera = &camera;
+	cubeRenderer.texture = &bloc;
+	cubeRenderer.sp = &sp;
+	cubeRenderer.create();
 
 	return 1;
 }
 
 int gameLogic(float deltaTime)
 {
+#pragma region init
 	width = getWindowSizeX();
 	height = getWindowSizeY();
 	glClear(GL_COLOR_BUFFER_BIT);
+	glViewport(0, 0, getWindowSizeX(), getWindowSizeY());
+#pragma endregion
 
-	if(isKeyPressed('W'))
+#pragma region keys
+	if (isKeyPressed('W'))
 	{
 		camera.moveFront(deltaTime);
 	}
 
-	if(isKeyPressed('A'))
+	if (isKeyPressed('A'))
 	{
 		camera.moveLeft(deltaTime);
 	}
@@ -96,29 +109,11 @@ int gameLogic(float deltaTime)
 		camera.moveDown(deltaTime);
 	}
 
-	glBindBuffer(GL_ARRAY_BUFFER, quadBuff);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer);
-	glVertexAttribPointer(0, 2, GL_FLOAT, 0, sizeof(float) * 4, 0);
-	glEnableVertexAttribArray(0);
-
-	glVertexAttribPointer(1, 2, GL_FLOAT, 0, sizeof(float) * 4, (void*)(sizeof(float) * 2));
-	glEnableVertexAttribArray(1);
-
-	bloc.bind(0);
-	sp.bind();
-	sp.uniformi("u_texture", 0);
-
-	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-	//glDrawArrays(GL_TRIANGLES, 0, 3);
-
-	glViewport(0, 0, getWindowSizeX(), getWindowSizeY());
-
 	camera.mouseUpdate(getRelMousePosition());
 
-	GLint mat = sp.getUniformLocation("u_mat");
-	glm::mat4 m = camera.getProjectionViewMatrix();
-	
-	glUniformMatrix4fv(mat, 1, GL_FALSE, &m[0][0]);
+#pragma endregion
+
+	cubeRenderer.draw();
 
 	return 1;
 }

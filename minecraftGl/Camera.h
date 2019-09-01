@@ -99,7 +99,7 @@ struct FirstPersonCamera
 
 	void mouseUpdate(const glm::vec2 &pos);
 
-	float rSpeed = 0.2f;
+	float rSpeed = 0.3f;
 
 private:
 	glm::vec2 oldMousePosition = {};
