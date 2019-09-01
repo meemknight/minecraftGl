@@ -26,8 +26,9 @@ namespace BLOCK
 
 struct BlockFace
 {
-	int x = 0;
-	int y = 0;
+	float x = 0;
+	float y = 0;
 };
 
 BlockFace getBlockFace(Block b, Face f);
+bool isSolid(Block b);

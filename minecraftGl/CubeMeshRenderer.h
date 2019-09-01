@@ -4,6 +4,8 @@
 #include "Texture.h"
 #include "Camera.h"
 #include "Blocks.h"
+#include "FloatVector.h"
+#include "Chunk.h"
 
 struct CubeMeshRenderer
 {
@@ -15,9 +17,12 @@ struct CubeMeshRenderer
 
 	GLuint facesBuffer[FACE::FACES_SIZE];
 	GLuint facesIndexBuffer[FACE::FACES_SIZE];
+	GLuint positionsBuffer[FACE::FACES_SIZE];
 	GLuint vertexArrays[FACE::FACES_SIZE];
 
-	void draw();
+	FloatVector positionData[FACE::FACES_SIZE];
+
+	void draw(Chunk &c);
 	void cleanup();
 	void create();
 

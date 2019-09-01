@@ -51,3 +51,14 @@ BlockFace getBlockFace(Block b, Face f)
 {
 	return faces[f][b];
 }
+
+bool isSolid(Block b)
+{
+	if(b==BLOCK::dirt || b==BLOCK::grass)
+	{
+		return 1;
+	}else
+	{
+		return 0;
+	}
+}

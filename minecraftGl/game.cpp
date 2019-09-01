@@ -45,6 +45,8 @@ FirstPersonCamera camera(60.f, 0.1, 200, &width, &height);
 
 CubeMeshRenderer cubeRenderer;
 
+Chunk chunk;
+
 int initGame()
 {
 	glEnable(GL_DEPTH_TEST);
@@ -68,6 +70,28 @@ int initGame()
 	cubeRenderer.texture = &bloc;
 	cubeRenderer.sp = &sp;
 	cubeRenderer.create();
+
+	chunk.clear();
+
+	chunk.getBlock(0, 1, 0) = BLOCK::dirt;
+	chunk.getBlock(0, 2, 0) = BLOCK::dirt;
+	chunk.getBlock(1, 0, 1) = BLOCK::dirt;
+
+	for(int x=2; x<10; x++)
+	{
+		for (int z = 2; z < 10; z++)
+		{
+			for (int y = 2; y < 20; y++)
+			{
+				chunk.getBlock(x, y, z) = (x + z) / 2 < y ?BLOCK::grass:BLOCK::dirt;
+				if((x+z)/2<y)
+				{
+					break;
+				}
+			}
+		}
+	}
+
 
 	return 1;
 }
@@ -116,7 +140,7 @@ int gameLogic(float deltaTime)
 
 #pragma endregion
 
-	cubeRenderer.draw();
+	cubeRenderer.draw(chunk);
 
 	return 1;
 }

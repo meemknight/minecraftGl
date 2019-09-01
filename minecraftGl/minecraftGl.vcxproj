@@ -21,7 +21,9 @@
   <ItemGroup>
     <ClCompile Include="Blocks.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="Chunk.cpp" />
     <ClCompile Include="CubeMeshRenderer.cpp" />
+    <ClCompile Include="FloatVector.cpp" />
     <ClCompile Include="game.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Shader.cpp" />
@@ -31,7 +33,9 @@
   <ItemGroup>
     <ClInclude Include="Blocks.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="Chunk.h" />
     <ClInclude Include="CubeMeshRenderer.h" />
+    <ClInclude Include="FloatVector.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="platformIndependentCalls.h" />
     <ClInclude Include="Shader.h" />
