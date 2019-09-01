@@ -36,7 +36,7 @@ void CubeMeshRenderer::draw()
 	glm::mat4 m = camera->getProjectionViewMatrix();
 	glUniformMatrix4fv(matUniformLocation, 1, GL_FALSE, &m[0][0]);
 	glUniform1i(textureUniformLocation, 0);
-	glUniform2f(indexUniformLocation, 3.f, 13.f);
+	glUniform2f(indexUniformLocation, 3.f, 15.f);
 	glUniform1f(magnifierUniformLocation, 1.f / (float)texture->subDivisions);
 
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
