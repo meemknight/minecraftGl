@@ -3,30 +3,19 @@
 #include "Shader.h"
 #include "Texture.h"
 #include "Camera.h"
-
-enum FACES
-{
-	front = 0,
-	back,
-	top,
-	bottom,
-	left,
-	right,
-	FACES_SIZE,
-};
-
+#include "Blocks.h"
 
 struct CubeMeshRenderer
 {
-	CubeMeshRenderer();
+	CubeMeshRenderer() {};
 	
 	ShaderProgram *sp;
 	FirstPersonCamera *camera;
 	Texture *texture;
 
-	GLuint facesBuffer[FACES::FACES_SIZE];
-	GLuint facesIndexBuffer[FACES::FACES_SIZE];
-	GLuint vertexArrays[FACES::FACES_SIZE];
+	GLuint facesBuffer[FACE::FACES_SIZE];
+	GLuint facesIndexBuffer[FACE::FACES_SIZE];
+	GLuint vertexArrays[FACE::FACES_SIZE];
 
 	void draw();
 	void cleanup();

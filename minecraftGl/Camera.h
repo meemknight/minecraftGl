@@ -76,7 +76,7 @@ struct FirstPersonCamera
 
 	glm::vec3 viewDirection = { 0.f, 0.f, -1.f };
 	glm::vec3 upPositipon = { 0, 1, 0 };
-	glm::vec3 position = { 0,0,2 };
+	glm::vec3 position = { 0,0,4 };
 
 	float fov;
 	float closePlane;

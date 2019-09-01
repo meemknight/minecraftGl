@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Blocks.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CubeMeshRenderer.cpp" />
     <ClCompile Include="game.cpp" />
@@ -28,6 +29,7 @@
     <ClCompile Include="Texture.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Blocks.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="CubeMeshRenderer.h" />
     <ClInclude Include="game.h" />

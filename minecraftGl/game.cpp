@@ -47,6 +47,9 @@ CubeMeshRenderer cubeRenderer;
 
 int initGame()
 {
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_CULL_FACE);
+
 	glGenBuffers(1, &quadBuff);
 	glBindBuffer(GL_ARRAY_BUFFER, quadBuff);
 	glNamedBufferData(quadBuff, sizeof(quadData), quadData, GL_STATIC_DRAW);
@@ -74,7 +77,7 @@ int gameLogic(float deltaTime)
 #pragma region init
 	width = getWindowSizeX();
 	height = getWindowSizeY();
-	glClear(GL_COLOR_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glViewport(0, 0, getWindowSizeX(), getWindowSizeY());
 #pragma endregion
 
