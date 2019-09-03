@@ -1,6 +1,8 @@
 #include "CubeMeshRenderer.h"
 constexpr float r = 0.5f;
 
+constexpr int DRAW_EDGE_CHUNKS = 1;
+
 #pragma region cubeData
 
 float frontCubeData[] =
@@ -117,125 +119,163 @@ unsigned int backIndexBufferData[] =
 float *cubeData[FACE::FACES_SIZE]{ frontCubeData, backCubeData, topCubeData, bottomCubeData, leftCubeData, rightCubeData };
 unsigned int *cubeIndexData[FACE::FACES_SIZE]{ frontIndexBufferData, backIndexBufferData, frontIndexBufferData, backIndexBufferData, frontIndexBufferData, backIndexBufferData };
 
-void CubeMeshRenderer::draw(Chunk &c)
+inline void setFace(int x, int y, int z, FloatVector fv[], Chunk &c, Face f, glm::vec3 chunkPosition)
+{
+	auto face = getBlockFace((c.blockData[x][y][z]), f);
+	fv[f].push(glm::vec3(x, y, z) + chunkPosition);
+	fv[f].push(face.x, face.y);
+}
+
+void CubeMeshRenderer::draw(Chunk **chunk, int size)
 {
 	for(int i=0; i<FACE::FACES_SIZE; i++)
 	{
 		positionData[i].size = 0;
 	}
 
-	for(int x=0;x<16;x++)
+	for(int index =0; index < size; index ++)
 	{
-		for(int y=0;y<BUILD_LIMIT;y++)
+		Chunk &c = *chunk[index];
+		glm::vec3 chunkPosition = c.getPositionInUnits();
+
+		for (int x = 0; x < 16; x++)
 		{
-			for(int z=0;z<16;z++)
+			for (int y = 0; y < BUILD_LIMIT; y++)
 			{
-				if(c.blockData[x][y][z] != BLOCK::air)
+				for (int z = 0; z < 16; z++)
 				{
-					//top
-					if (y < BUILD_LIMIT - 1)
+					if (c.blockData[x][y][z] != BLOCK::air)
 					{
-						if (!isSolid(c.blockData[x][y + 1][z]))
+						//top
+						if (y < BUILD_LIMIT - 1)
 						{
-							auto f = getBlockFace((c.blockData[x][y][z]), FACE::top);
-							positionData[FACE::top].push(x,y,z);
-							positionData[FACE::top].push(f.x, f.y);
+							if (!isSolid(c.blockData[x][y + 1][z]))
+							{
+								setFace(x, y, z, positionData, c, FACE::top, chunkPosition);
+							}
 						}
-					}else
-					{
-						auto f = getBlockFace((c.blockData[x][y][z]), FACE::top);
-						positionData[FACE::top].push(x, y, z);
-						positionData[FACE::top].push(f.x, f.y);
-					}
+						else
+						{
+							setFace(x, y, z, positionData, c, FACE::top, chunkPosition);
+						}
 
-					//bottom
-					if(y>0)
-					{
-						if (!isSolid(c.blockData[x][y - 1][z]))
+						//bottom
+						if (y > 0)
 						{
-							auto f = getBlockFace((c.blockData[x][y][z]), FACE::bottom);
-							positionData[FACE::bottom].push(x, y, z);
-							positionData[FACE::bottom].push(f.x, f.y);
-						}
-					}else
-					{
-						auto f = getBlockFace((c.blockData[x][y][z]), FACE::bottom);
-						positionData[FACE::bottom].push(x, y, z);
-						positionData[FACE::bottom].push(f.x, f.y);
-					}
+							if (!isSolid(c.blockData[x][y - 1][z]))
+							{
+								setFace(x, y, z, positionData, c, FACE::bottom, chunkPosition);
 
-					//front
-					if(z < 15)
-					{
-						if (!isSolid(c.blockData[x][y][z+1]))
-						{
-							auto f = getBlockFace((c.blockData[x][y][z]), FACE::front);
-							positionData[FACE::front].push(x, y, z);
-							positionData[FACE::front].push(f.x, f.y);
+							}
 						}
-					}else
-					{
-						auto f = getBlockFace((c.blockData[x][y][z]), FACE::front);
-						positionData[FACE::front].push(x, y, z);
-						positionData[FACE::front].push(f.x, f.y);
-					}
+						else
+						{
+							setFace(x, y, z, positionData, c, FACE::bottom, chunkPosition);
 
-					//back
-					if (z > 0)
-					{
-						if (!isSolid(c.blockData[x][y][z - 1]))
-						{
-							auto f = getBlockFace((c.blockData[x][y][z]), FACE::back);
-							positionData[FACE::back].push(x, y, z);
-							positionData[FACE::back].push(f.x, f.y);
 						}
-					}else
-					{
-						auto f = getBlockFace((c.blockData[x][y][z]), FACE::back);
-						positionData[FACE::back].push(x, y, z);
-						positionData[FACE::back].push(f.x, f.y);
-					}
 
-					//left
-					if(x > 0)
-					{
-						if (!isSolid(c.blockData[x - 1][y][z]))
+						//front
+						if (z < 15)
 						{
-							auto f = getBlockFace((c.blockData[x][y][z]), FACE::left);
-							positionData[FACE::left].push(x, y, z);
-							positionData[FACE::left].push(f.x, f.y);
+							if (!isSolid(c.blockData[x][y][z + 1]))
+							{
+								setFace(x, y, z, positionData, c, FACE::front, chunkPosition);
+							}
 						}
-					}else
-					{
-						auto f = getBlockFace((c.blockData[x][y][z]), FACE::left);
-						positionData[FACE::left].push(x, y, z);
-						positionData[FACE::left].push(f.x, f.y);
-					}
+						else
+						{
+							if(c.neighbours[CN::front])
+							{
+								if (!isSolid(c.neighbours[CN::front]->blockData[x][y][0]))
+								{
+									setFace(x, y, z, positionData, c, FACE::front, chunkPosition);
+								}
+							}
+							else if (DRAW_EDGE_CHUNKS)
+							{
+								
+									setFace(x, y, z, positionData, c, FACE::front, chunkPosition);
+							}
+						}
 
-					//right
-					if(x < 15)
-					{
-						if (!isSolid(c.blockData[x + 1][y][z]))
+						//back
+						if (z > 0)
 						{
-							auto f = getBlockFace((c.blockData[x][y][z]), FACE::right);
-							positionData[FACE::right].push(x, y, z);
-							positionData[FACE::right].push(f.x, f.y);
+							if (!isSolid(c.blockData[x][y][z - 1]))
+							{
+								setFace(x, y, z, positionData, c, FACE::back, chunkPosition);
+							}
 						}
-					}else
-					{
-						auto f = getBlockFace((c.blockData[x][y][z]), FACE::right);
-						positionData[FACE::right].push(x, y, z);
-						positionData[FACE::right].push(f.x, f.y);
+						else
+						{
+							if (c.neighbours[CN::back])
+							{
+								if (!isSolid(c.neighbours[CN::back]->blockData[x][y][15]))
+								{
+									setFace(x, y, z, positionData, c, FACE::back, chunkPosition);
+								}
+							}else if(DRAW_EDGE_CHUNKS)
+							{
+								setFace(x, y, z, positionData, c, FACE::back, chunkPosition);
+							}
+
+						}
+
+						//left
+						if (x > 0)
+						{
+							if (!isSolid(c.blockData[x - 1][y][z]))
+							{
+								setFace(x, y, z, positionData, c, FACE::left, chunkPosition);
+							}
+						}
+						else
+						{
+							if (c.neighbours[CN::left])
+							{
+								if (!isSolid(c.neighbours[CN::left]->blockData[15][y][z]))
+								{
+									setFace(x, y, z, positionData, c, FACE::left, chunkPosition);
+								}
+							}else if(DRAW_EDGE_CHUNKS)
+							{
+								setFace(x, y, z, positionData, c, FACE::left, chunkPosition);
+							}
+
+						}
+
+						//right
+						if (x < 15)
+						{
+							if (!isSolid(c.blockData[x + 1][y][z]))
+							{
+								setFace(x, y, z, positionData, c, FACE::right, chunkPosition);
+							}
+						}
+						else
+						{
+							if (c.neighbours[CN::right])
+							{
+								if (!isSolid(c.neighbours[CN::right]->blockData[0][y][z]))
+								{
+									setFace(x, y, z, positionData, c, FACE::right, chunkPosition);
+								}
+							}else if(DRAW_EDGE_CHUNKS)
+							{
+								setFace(x, y, z, positionData, c, FACE::right, chunkPosition);
+							}
+						}
 					}
 				}
 			}
 		}
 	}
 
+	
+
 	glm::mat4 m = camera->getProjectionViewMatrix();
 	float mag = 1.f / (float)texture->subDivisions;
 
-	auto a = getBlockFace(BLOCK::grass, FACE::top);
 
 	for(int i=0; i<FACE::FACES_SIZE; i++)
 	{

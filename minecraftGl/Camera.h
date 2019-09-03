@@ -88,7 +88,7 @@ struct FirstPersonCamera
 	glm::mat4 getObjectToWorldMatrix(); ///gets the object to world for the camera
 	glm::mat4 getProjectionMatrix();
 
-	float speed = 5;
+	float speed = 10;
 
 	void moveUp(float speed);
 	void moveDown(float speed);

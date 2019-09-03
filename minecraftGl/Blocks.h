@@ -20,6 +20,7 @@ namespace BLOCK
 		air = 0,
 		dirt,
 		grass,
+		stone,
 		BLOCKS_SIZE,
 	};
 }

@@ -22,7 +22,7 @@ struct CubeMeshRenderer
 
 	FloatVector positionData[FACE::FACES_SIZE];
 
-	void draw(Chunk &c);
+	void draw(Chunk **c, int size);
 	void cleanup();
 	void create();
 
@@ -31,4 +31,3 @@ struct CubeMeshRenderer
 	GLint indexUniformLocation = -1;
 	GLint magnifierUniformLocation = -1;
 };
-

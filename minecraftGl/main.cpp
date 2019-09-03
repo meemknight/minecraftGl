@@ -4,7 +4,16 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
-#include <Windows.h>
+
+#include <ctime>
+
+#include "tools.h"
+
+extern "C"
+{
+//	__declspec(dllexport) unsigned long NvOptimusEnablement = 1;
+//	__declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
+}
 
 static GLFWwindow *window;
 
@@ -52,27 +61,31 @@ int main()
 		glfwSetWindowSizeCallback(window, windowSizeCallback);
 		glfwGetWindowSize(window, &xsize, &ysize);
 
-		int time1 = GetTickCount();
-		int time2 = GetTickCount();
+		int time1 = clock();
+		int time2 = clock();
 
 		ShowCursor(0);
 
 		while (!glfwWindowShouldClose(window))
 		{
 
-			time2 = GetTickCount();
+			time2 = clock();
 			int deltaTime = time2 - time1;
-			time1 = GetTickCount();
+			time1 = clock();
+		
 
 			glfwPollEvents();
-
-			if (!gameLogic((float)deltaTime / 1000.f))
+			
+			if (!gameLogic((float)deltaTime / CLOCKS_PER_SEC))
 			{
 				break;
 			}
 
+			llog(1.f/(deltaTime / 1000.f));
+
 			glfwSwapBuffers(window);
 		}
+
 	}
 
 	end:

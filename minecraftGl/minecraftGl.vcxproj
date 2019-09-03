@@ -22,6 +22,7 @@
     <ClCompile Include="Blocks.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Chunk.cpp" />
+    <ClCompile Include="ChunkManager.cpp" />
     <ClCompile Include="CubeMeshRenderer.cpp" />
     <ClCompile Include="FloatVector.cpp" />
     <ClCompile Include="game.cpp" />
@@ -34,6 +35,7 @@
     <ClInclude Include="Blocks.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Chunk.h" />
+    <ClInclude Include="ChunkManager.h" />
     <ClInclude Include="CubeMeshRenderer.h" />
     <ClInclude Include="FloatVector.h" />
     <ClInclude Include="game.h" />
@@ -107,6 +109,7 @@
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(solutiondir)dependences\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>GLEW_STATIC;%(PreprocessorDefinitions);GLM_ENABLE_EXPERIMENTAL; _CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>$(solutiondir)dependences\lib-vc2015</AdditionalLibraryDirectories>
@@ -120,6 +123,7 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <PreprocessorDefinitions>_MBCS;%(PreprocessorDefinitions);GLM_ENABLE_EXPERIMENTAL; _CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -132,6 +136,7 @@
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(solutiondir)dependences\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>GLEW_STATIC;%(PreprocessorDefinitions);GLM_ENABLE_EXPERIMENTAL; _CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -149,6 +154,7 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <PreprocessorDefinitions>_MBCS;%(PreprocessorDefinitions);GLM_ENABLE_EXPERIMENTAL; _CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>

@@ -5,6 +5,7 @@
 #include "Camera.h"
 #include "Texture.h"
 #include "CubeMeshRenderer.h"
+#include "ChunkManager.h"
 
 static GLuint quadBuff;
 static GLuint indexBuffer;
@@ -45,7 +46,9 @@ FirstPersonCamera camera(60.f, 0.1, 200, &width, &height);
 
 CubeMeshRenderer cubeRenderer;
 
-Chunk chunk;
+ChunkManager chunkManager;
+
+std::vector<glm::vec3> chunksToLoad;
 
 int initGame()
 {
@@ -70,28 +73,11 @@ int initGame()
 	cubeRenderer.texture = &bloc;
 	cubeRenderer.sp = &sp;
 	cubeRenderer.create();
-
-	chunk.clear();
-
-	chunk.getBlock(0, 1, 0) = BLOCK::dirt;
-	chunk.getBlock(0, 2, 0) = BLOCK::dirt;
-	chunk.getBlock(1, 0, 1) = BLOCK::dirt;
-
-	for(int x=2; x<10; x++)
+	
+	for(int i=0; i<100;i++)
 	{
-		for (int z = 2; z < 10; z++)
-		{
-			for (int y = 2; y < 20; y++)
-			{
-				chunk.getBlock(x, y, z) = (x + z) / 2 < y ?BLOCK::grass:BLOCK::dirt;
-				if((x+z)/2<y)
-				{
-					break;
-				}
-			}
-		}
+		chunksToLoad.push_back({ (i % 10)-5, 0, (i / 10)-5 });
 	}
-
 
 	return 1;
 }
@@ -140,7 +126,9 @@ int gameLogic(float deltaTime)
 
 #pragma endregion
 
-	cubeRenderer.draw(chunk);
+	Chunk **c = chunkManager.requestChunks(chunksToLoad.data(), chunksToLoad.size());
+
+	cubeRenderer.draw(c, chunksToLoad.size());
 
 	return 1;
 }
