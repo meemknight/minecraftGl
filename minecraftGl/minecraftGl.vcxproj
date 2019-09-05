@@ -39,6 +39,7 @@
     <ClInclude Include="CubeMeshRenderer.h" />
     <ClInclude Include="FloatVector.h" />
     <ClInclude Include="game.h" />
+    <ClInclude Include="PerlinNoise.hpp" />
     <ClInclude Include="platformIndependentCalls.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="stb_image.h" />

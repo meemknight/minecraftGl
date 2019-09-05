@@ -34,8 +34,8 @@ int main()
 		return 1;
 	}
 
-	float width = 640;
-	float heigth = 480;
+	float width = 960;
+	float heigth = 680;
 	window = glfwCreateWindow(width, heigth, "Minicraft", NULL, NULL);
 
 	if (!window)
@@ -81,7 +81,7 @@ int main()
 				break;
 			}
 
-			llog(1.f/(deltaTime / 1000.f));
+			//llog(1.f/(deltaTime / 1000.f));
 
 			glfwSwapBuffers(window);
 		}

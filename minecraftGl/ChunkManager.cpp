@@ -1,4 +1,42 @@
 #include "ChunkManager.h"
+#include <cmath>
+#include "PerlinNoise.hpp"
+
+static siv::PerlinNoise noise;
+
+float constexpr E = 2.71828182846;
+
+float sigmoid(float x)
+{
+	return 1.f / (1.f + pow(E, -x));
+}
+
+float xEcuation(int pos)
+{
+	float x = pos / 100.f;
+	//x *= (pos / 8) % 2 == 0 ? 1 : -1;
+	float rez = sin(x);
+	rez = (rez + 1.f) / 2.f;
+	//rez = sigmoid(rez);
+	rez *= 25;
+	return rez;
+}
+
+float zEcuation(int pos)
+{
+	float x = pos / 100.f;
+	//x *= (pos / 8) % 2 == 0 ? 1 : -1;
+	float rez = cos(x);
+	rez = (rez + 1.f) / 2.f;
+	//rez = sigmoid(rez);
+	rez *= 25;
+	return rez;
+}
+
+int xzEcuatiom(int x, int z)
+{
+	return (int)((xEcuation(x) + zEcuation(z)) / 2.f);
+}
 
 Chunk **ChunkManager::requestChunks(glm::vec3 *requestedC, int size)
 {
@@ -18,7 +56,7 @@ Chunk **ChunkManager::requestChunks(glm::vec3 *requestedC, int size)
 			if (chunkData[i].position.x == requestedC[j].x && chunkData[i].position.y == requestedC[j].z)
 			{
 				chunkData[i].used = 1;
-				requestedC[j].y = 1;
+				requestedC[j].y = 1.f;
 				returnVector.push_back(chunkData[i].chunk);
 			}
 		}
@@ -31,7 +69,7 @@ Chunk **ChunkManager::requestChunks(glm::vec3 *requestedC, int size)
 
 	for(pos=0; pos<size;pos++)
 	{
-		if(requestedC[pos].y == 0)
+		if(requestedC[pos].y == 0.f)
 		{
 			unallocatedData = 1;
 			break;
@@ -48,19 +86,19 @@ Chunk **ChunkManager::requestChunks(glm::vec3 *requestedC, int size)
 				chunkData[i].position.x = requestedC[pos].x;
 				chunkData[i].position.y = requestedC[pos].z;
 
+				setupChunk(chunkData[i].chunk, chunkData[i].position);
+				
 				returnVector.push_back(chunkData[i].chunk);
 
 				unallocatedData = 0;
-				for (; pos < size; pos++)
+				for (pos++; pos < size; pos++)
 				{
-					if (requestedC[pos].y == 0)
+					if (requestedC[pos].y == 0.f)
 					{
 						unallocatedData = 1;
 						break;
 					}
 				}
-
-				setupChunk(chunkData[i].chunk, chunkData[i].position);
 
 				if(unallocatedData == 0)
 				{
@@ -74,7 +112,7 @@ Chunk **ChunkManager::requestChunks(glm::vec3 *requestedC, int size)
 	//alocate new data
 	for (; pos < size; pos++)
 	{
-		if (requestedC[pos].y == 0)
+		if (requestedC[pos].y == 0.f)
 		{
 			loadedChunks.push_back(Chunk());
 			ChunkData cd;
@@ -94,12 +132,18 @@ Chunk **ChunkManager::requestChunks(glm::vec3 *requestedC, int size)
 	return returnVector.data();
 }
 
+extern int tx;
+extern int ty;
+extern uint8_t *mountains;
 
 void ChunkManager::setupChunk(Chunk *chunk, glm::vec2 p)
 {
 	chunk->removeNeighboursLinkage();
 	chunk->clear();
 	chunk->position = { p.x, 0 ,p.y };
+	int posX = p.x;
+	int posZ = p.y;
+#pragma region neighbours
 
 	Chunk *neighbours[4] = {};
 
@@ -111,15 +155,15 @@ void ChunkManager::setupChunk(Chunk *chunk, glm::vec2 p)
 
 	int count = 0;
 
-	for(int i=0; i<chunkData.size(); i++)
+	for (int i = 0; i < chunkData.size(); i++)
 	{
-		for(int dir = 0; dir<4; dir++)
+		for (int dir = 0; dir < 4; dir++)
 		{
-			if (positions[dir]==chunkData[i].position)
+			if (positions[dir] == chunkData[i].position)
 			{
 				neighbours[dir] = chunkData[i].chunk;
 				count++;
-				if(count == 4)
+				if (count == 4)
 				{
 					goto foundAll;
 				}
@@ -127,9 +171,9 @@ void ChunkManager::setupChunk(Chunk *chunk, glm::vec2 p)
 		}
 	}
 
-	foundAll:
+foundAll:
 
-	if(neighbours[CN::front])
+	if (neighbours[CN::front])
 	{
 		neighbours[CN::front]->neighbours[CN::back] = chunk;
 	}
@@ -149,11 +193,42 @@ void ChunkManager::setupChunk(Chunk *chunk, glm::vec2 p)
 		neighbours[CN::right]->neighbours[CN::left] = chunk;
 	}
 
-	for(int i=0;i<4;i++)
+	for (int i = 0; i < 4; i++)
 	{
 		chunk->neighbours[i] = neighbours[i];
 	}
 
+#pragma endregion
+
+	int stonePos;
+	int grassPos;
+
+		/*
+		for(int x=0; x<16; x++)
+		{
+			for(int z=0; z<16; z++)
+			{
+				stonePos = mountains[(x + (posX * 16) + (tx * (z + (posZ * 16))))];
+				stonePos = min(stonePos, 250);
+				grassPos = stonePos + 5;
+	
+				for(int y=0; y<stonePos; y++)
+				{
+					chunk->getBlock(x, y, z) = BLOCK::stone;
+				}
+
+				for (int y = stonePos; y < grassPos-1; y++)
+				{
+					chunk->getBlock(x, y, z) = BLOCK::dirt;
+				}
+
+				chunk->getBlock(x, grassPos-1, z) = BLOCK::grass;
+
+			}
+			
+		}
+		*/
+	/*
 	for (int x = 0; x < 16; x++)
 	{
 		for (int z = 0; z < 16; z++)
@@ -176,5 +251,30 @@ void ChunkManager::setupChunk(Chunk *chunk, glm::vec2 p)
 			}
 		}
 	}
+	*/
+	
+	for (int x = 0; x < 16; x++)
+	{
+		for (int z = 0; z < 16; z++)
+		{
+			double rx = (x + p.x * 16) / 160.0;
+			double rz = (z + p.y * 16) / 160.0;
 
+			stonePos = 150 * noise.octaveNoise0_1(rx, rz, 8);
+			grassPos = stonePos + 2;
+		
+			for (int y = 0; y < stonePos; y++)
+			{
+				chunk->getBlock(x, y, z) = BLOCK::stone;
+			}
+
+			for (int y = stonePos; y < grassPos - 1; y++)
+			{
+				chunk->getBlock(x, y, z) = BLOCK::dirt;
+			}
+
+			chunk->getBlock(x, grassPos - 1, z) = BLOCK::grass;
+		}
+	}
+	
 }

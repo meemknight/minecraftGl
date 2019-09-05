@@ -6,10 +6,14 @@
 #include "Texture.h"
 #include "CubeMeshRenderer.h"
 #include "ChunkManager.h"
+#include "stb_image.h"
 
 static GLuint quadBuff;
 static GLuint indexBuffer;
 ShaderProgram sp;
+
+int tx = 0, ty = 0;
+uint8_t *mountains = 0;
 
 float quadData[] =
 {
@@ -74,13 +78,22 @@ int initGame()
 	cubeRenderer.sp = &sp;
 	cubeRenderer.create();
 	
+	chunksToLoad.reserve(100);
+
 	for(int i=0; i<100;i++)
 	{
-		chunksToLoad.push_back({ (i % 10)-5, 0, (i / 10)-5 });
+		chunksToLoad.push_back({ (i % 10), 0, (i / 10) });
 	}
+
+
+	stbi_set_flip_vertically_on_load(false);
+	int chanels = 1;
+	mountains = stbi_load("textures/mountains.png", &tx, &ty, &chanels, 1);
 
 	return 1;
 }
+
+int distance = 3;
 
 int gameLogic(float deltaTime)
 {
@@ -126,9 +139,25 @@ int gameLogic(float deltaTime)
 
 #pragma endregion
 
+	chunksToLoad.clear();
+	int posx = floor(camera.position.x / 16);
+	int posz = floor(camera.position.z / 16);
+	
+	for(int x=-distance; x<distance; x++)
+	{
+		for(int z=-distance;z<distance;z++)
+		{
+			chunksToLoad.push_back({ (int)(posx + x), 0, (int)(posz + z)});
+		}
+	}
+
+	//chunksToLoad.push_back({ posx, 0, posz});
+
 	Chunk **c = chunkManager.requestChunks(chunksToLoad.data(), chunksToLoad.size());
 
 	cubeRenderer.draw(c, chunksToLoad.size());
+
+	llog(floor(camera.position.x/16), floor(camera.position.z/16));
 
 	return 1;
 }

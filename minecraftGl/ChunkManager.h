@@ -12,7 +12,7 @@ struct ChunkData
 
 struct ChunkManager
 {
-	ChunkManager() { loadedChunks.reserve(110); };
+	ChunkManager() { loadedChunks.reserve(110); chunkData.reserve(110); returnVector.reserve(110); };
 
 	//todo remove the usage of std::vector
 	std::vector<Chunk*> returnVector;
