@@ -10,9 +10,11 @@ struct ChunkData
 	glm::vec2 position = {};
 };
 
+static constexpr int chunksSize = 400;
+
 struct ChunkManager
 {
-	ChunkManager() { loadedChunks.reserve(110); chunkData.reserve(110); returnVector.reserve(110); };
+	ChunkManager() { loadedChunks.reserve(chunksSize); chunkData.reserve(chunksSize); returnVector.reserve(chunksSize); };
 
 	//todo remove the usage of std::vector
 	std::vector<Chunk*> returnVector;
@@ -24,4 +26,3 @@ struct ChunkManager
 
 	void setupChunk(Chunk *chunk, glm::vec2 p);
 };
-

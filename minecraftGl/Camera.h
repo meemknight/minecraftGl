@@ -9,6 +9,9 @@
 #include <glm/gtx/transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <Windows.h>
+#include <vector>
+
+#include "Chunk.h"
 
 class Camera
 {
@@ -24,7 +27,6 @@ public:
 	float cameraAngle = 0;
 	float topDownAngle = 0;
 
-public:
 	glm::vec2 oldMousePosition;
 	float rSpeed = 0.2f;
 	float mSpeed = 0.05f;
@@ -99,7 +101,11 @@ struct FirstPersonCamera
 
 	void mouseUpdate(const glm::vec2 &pos);
 
+	float getTopDownAngle();
+
 	float rSpeed = 0.3f;
+
+	void getChunksInFrustrum(std::vector<glm::vec3> &chunksToLoad);
 
 private:
 	glm::vec2 oldMousePosition = {};

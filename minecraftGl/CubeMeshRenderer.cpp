@@ -1,7 +1,7 @@
 #include "CubeMeshRenderer.h"
 constexpr float r = 0.5f;
 
-constexpr int DRAW_EDGE_CHUNKS = 1;
+constexpr int DRAW_EDGE_CHUNKS = 0;
 
 #pragma region cubeData
 

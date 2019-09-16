@@ -132,10 +132,6 @@ Chunk **ChunkManager::requestChunks(glm::vec3 *requestedC, int size)
 	return returnVector.data();
 }
 
-extern int tx;
-extern int ty;
-extern uint8_t *mountains;
-
 void ChunkManager::setupChunk(Chunk *chunk, glm::vec2 p)
 {
 	chunk->removeNeighboursLinkage();

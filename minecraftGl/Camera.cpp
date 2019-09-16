@@ -6,6 +6,7 @@
 
 #include "Camera.h"
 #include "platformIndependentCalls.h"
+#include <math.h>
 //#include <Windows.h>
 
 glm::vec3 Camera::getFirstPersonPosition()
@@ -179,6 +180,53 @@ void Camera::moveBack(float speed)
 	}
 }
 
+void FirstPersonCamera::getChunksInFrustrum(std::vector<glm::vec3>& chunksToLoad)
+{
+	float halfA = glm::radians(fov) / 2.f;
+	float angle = getTopDownAngle();
+	glm::vec2 pos[4] = { glm::vec2(position.x, position.z) };
+	pos[1] = pos[0] + (glm::vec2(cos(angle), sin(angle)) * farPlane);
+	pos[2] = pos[0] + (glm::vec2(cos(angle + halfA), sin(angle + halfA)) * farPlane);
+	pos[3] = pos[0] + (glm::vec2(cos(angle - halfA), sin(angle - halfA)) * farPlane);
+
+	float minX = pos[0].x;
+	float minY = pos[0].y;
+	float maxX = pos[0].x;
+	float maxY = pos[0].y;
+
+	for(int i = 1; i<4;i++)
+	{
+		if(pos[i].x > maxX)
+		{
+			maxX = pos[i].x;
+		}
+
+		if (pos[i].y > maxY)
+		{
+			maxY = pos[i].y;
+		}
+
+		if (pos[i].x < minX)
+		{
+			minX = pos[i].x;
+		}
+
+		if (pos[i].y < minY)
+		{
+			minY = pos[i].y;
+		}
+	}
+
+	for(int y=minY/16 - 1; y<=maxY/16;y++)
+	{
+		for(int x = minX/16 - 1; x<=maxX/16; x++)
+		{
+			chunksToLoad.emplace_back(x, 0, y);
+		}
+	}
+
+}
+
 
 FirstPersonCamera::FirstPersonCamera(float fov, float closePlane, float farPlane, int * width, int * height)
 :fov(fov), closePlane(closePlane), farPlane(farPlane), width(width), height(height)
@@ -257,6 +305,19 @@ void FirstPersonCamera::mouseUpdate(const glm::vec2 & pos)
 noMove:
 	setRelMousePosition(getWindowSizeX() / 2, getWindowSizeY() / 2);
 	oldMousePosition = getRelMousePosition();
+}
+
+float FirstPersonCamera::getTopDownAngle()
+{
+	glm::vec2 dir = {viewDirection.x, viewDirection.z};
+	dir = glm::normalize(dir);
+	float angle = std::acosf(dir.x);
+	if(dir.y <0)
+	{
+		angle = (3.14159 * 2) - angle;
+	}
+
+	return angle;
 }
 
 glm::mat4 FirstPersonCamera::getObjectToWorldMatrix()
