@@ -60,7 +60,6 @@ Chunk **ChunkManager::requestChunks(glm::vec3 *requestedC, int size)
 				returnVector.push_back(chunkData[i].chunk);
 			}
 		}
-
 	}
 
 	//load the other data in unused spaces
@@ -128,7 +127,7 @@ Chunk **ChunkManager::requestChunks(glm::vec3 *requestedC, int size)
 			returnVector.push_back(chunkData[chunkData.size()-1].chunk);
 		}
 	}
-
+	
 	return returnVector.data();
 }
 
@@ -136,6 +135,7 @@ void ChunkManager::setupChunk(Chunk *chunk, glm::vec2 p)
 {
 	chunk->removeNeighboursLinkage();
 	chunk->clear();
+	chunk->resetMeshes();
 	chunk->position = { p.x, 0 ,p.y };
 	int posX = p.x;
 	int posZ = p.y;
@@ -172,21 +172,25 @@ foundAll:
 	if (neighbours[CN::front])
 	{
 		neighbours[CN::front]->neighbours[CN::back] = chunk;
+		neighbours[CN::front]->shouldRecreate = true;	
 	}
 
 	if (neighbours[CN::back])
 	{
 		neighbours[CN::back]->neighbours[CN::front] = chunk;
+		neighbours[CN::back]->shouldRecreate = true;
 	}
 
 	if (neighbours[CN::left])
 	{
 		neighbours[CN::left]->neighbours[CN::right] = chunk;
+		neighbours[CN::left]->shouldRecreate = true;
 	}
 
 	if (neighbours[CN::right])
 	{
 		neighbours[CN::right]->neighbours[CN::left] = chunk;
+		neighbours[CN::right]->shouldRecreate = true;
 	}
 
 	for (int i = 0; i < 4; i++)
@@ -249,12 +253,12 @@ foundAll:
 	}
 	*/
 	
-	for (int x = 0; x < 16; x++)
+	for (int x = 0; x < CHUNK_SIZE; x++)
 	{
-		for (int z = 0; z < 16; z++)
+		for (int z = 0; z < CHUNK_SIZE; z++)
 		{
-			double rx = (x + p.x * 16) / 160.0;
-			double rz = (z + p.y * 16) / 160.0;
+			double rx = (x + p.x * CHUNK_SIZE) / 160.0;
+			double rz = (z + p.y * CHUNK_SIZE) / 160.0;
 
 			stonePos = 150 * noise.octaveNoise0_1(rx, rz, 8);
 			grassPos = stonePos + 2;
@@ -273,4 +277,28 @@ foundAll:
 		}
 	}
 	
+	//chunk->bakeMeshes();
+	chunk->shouldRecreate = true;
+}
+
+void ChunkManager::bakeUnbakedChunks()
+{
+	for (auto &i : loadedChunks)
+	{
+		if (i.shouldRecreate)
+		{
+			i.bakeMeshes();
+			i.bakeMeshes();
+		}
+		i.shouldRecreate = false;
+	}
+}
+
+void ChunkManager::bakeAllChunks()
+{
+	for (auto &i : loadedChunks)
+	{
+		i.bakeMeshes();
+		i.shouldRecreate = false;
+	}
 }

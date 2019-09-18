@@ -145,9 +145,9 @@ int gameLogic(float deltaTime)
 	//llog(chunksToLoad.size());
 
 	Chunk **c = chunkManager.requestChunks(chunksToLoad.data(), chunksToLoad.size());
+	chunkManager.bakeUnbakedChunks();
 
 	cubeRenderer.draw(c, chunksToLoad.size());
-
 
 	//llog(floor(camera.position.x/16), floor(camera.position.z/16));
 

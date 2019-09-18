@@ -1,7 +1,7 @@
 #include "CubeMeshRenderer.h"
 constexpr float r = 0.5f;
 
-constexpr int DRAW_EDGE_CHUNKS = 0;
+constexpr static int DRAW_EDGE_CHUNKS = 0;
 
 #pragma region cubeData
 
@@ -119,7 +119,7 @@ unsigned int backIndexBufferData[] =
 float *cubeData[FACE::FACES_SIZE]{ frontCubeData, backCubeData, topCubeData, bottomCubeData, leftCubeData, rightCubeData };
 unsigned int *cubeIndexData[FACE::FACES_SIZE]{ frontIndexBufferData, backIndexBufferData, frontIndexBufferData, backIndexBufferData, frontIndexBufferData, backIndexBufferData };
 
-inline void setFace(int x, int y, int z, FloatVector fv[], Chunk &c, Face f, glm::vec3 chunkPosition)
+inline static void setFace(int x, int y, int z, FloatVector fv[], Chunk &c, Face f, glm::vec3 chunkPosition)
 {
 	auto face = getBlockFace((c.blockData[x][y][z]), f);
 	fv[f].push(glm::vec3(x, y, z) + chunkPosition);
@@ -128,6 +128,7 @@ inline void setFace(int x, int y, int z, FloatVector fv[], Chunk &c, Face f, glm
 
 void CubeMeshRenderer::draw(Chunk **chunk, int size)
 {
+	/*
 	for(int i=0; i<FACE::FACES_SIZE; i++)
 	{
 		positionData[i].size = 0;
@@ -138,11 +139,11 @@ void CubeMeshRenderer::draw(Chunk **chunk, int size)
 		Chunk &c = *chunk[index];
 		glm::vec3 chunkPosition = c.getPositionInUnits();
 
-		for (int x = 0; x < 16; x++)
+		for (int x = 0; x < CHUNK_SIZE; x++)
 		{
 			for (int y = 0; y < BUILD_LIMIT; y++)
 			{
-				for (int z = 0; z < 16; z++)
+				for (int z = 0; z < CHUNK_SIZE; z++)
 				{
 					if (c.blockData[x][y][z] != BLOCK::air)
 					{
@@ -193,7 +194,6 @@ void CubeMeshRenderer::draw(Chunk **chunk, int size)
 							}
 							else if (DRAW_EDGE_CHUNKS)
 							{
-								
 									setFace(x, y, z, positionData, c, FACE::front, chunkPosition);
 							}
 						}
@@ -270,12 +270,9 @@ void CubeMeshRenderer::draw(Chunk **chunk, int size)
 			}
 		}
 	}
-
 	
-
 	glm::mat4 m = camera->getProjectionViewMatrix();
 	float mag = 1.f / (float)texture->subDivisions;
-
 
 	for(int i=0; i<FACE::FACES_SIZE; i++)
 	{
@@ -289,7 +286,29 @@ void CubeMeshRenderer::draw(Chunk **chunk, int size)
 
 		glDrawElementsInstanced(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0, positionData[i].size/5);
 	}
+	*/
 	
+	glm::mat4 m = camera->getProjectionViewMatrix();
+	float mag = 1.f / (float)texture->subDivisions;
+
+	for(int index=0; index<size;index++)
+	{
+		Chunk &c = *chunk[index];
+
+		for (int i = 0; i < FACE::FACES_SIZE; i++)
+		{
+			glBindVertexArray(vertexArrays[i]);
+
+			glNamedBufferData(positionsBuffer[i], c.positionData[i].size * sizeof(float), c.positionData[i].data, GL_STREAM_DRAW);
+
+			glUniformMatrix4fv(matUniformLocation, 1, GL_FALSE, &m[0][0]);
+			glUniform1i(textureUniformLocation, 0);
+			glUniform1f(magnifierUniformLocation, mag);
+
+			glDrawElementsInstanced(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0, c.positionData[i].size / 5);
+		}
+	}
+
 	glBindVertexArray(0);
 }
 

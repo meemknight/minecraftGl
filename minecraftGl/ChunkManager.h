@@ -10,7 +10,7 @@ struct ChunkData
 	glm::vec2 position = {};
 };
 
-static constexpr int chunksSize = 400;
+static constexpr int chunksSize = 600;
 
 struct ChunkManager
 {
@@ -25,4 +25,6 @@ struct ChunkManager
 	Chunk **requestChunks(glm::vec3 *chunks, int size);
 
 	void setupChunk(Chunk *chunk, glm::vec2 p);
+	void bakeUnbakedChunks();
+	void bakeAllChunks();
 };
