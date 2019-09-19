@@ -34,9 +34,10 @@ void Chunk::removeNeighboursLinkage()
 
 void Chunk::bakeMeshes()
 {
-	resetMeshes();
 
 	glm::vec3 chunkPosition = getPositionInUnits();
+
+	resetMeshes();
 
 	for (int x = 0; x < CHUNK_SIZE; x++)
 	{

@@ -65,7 +65,7 @@ int main()
 		int time2 = clock();
 
 		ShowCursor(0);
-
+		Sleep(1000);
 		while (!glfwWindowShouldClose(window))
 		{
 

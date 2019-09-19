@@ -14,3 +14,9 @@
 
 ![](https://github.com/meemknight/photos/blob/master/mc3.png)
 ---
+
+-Then it was time to optimize the game so that chunks would only process their mesh once.
+Also i had to make shure that i only draw chunks that are visible to the payer
+
+![](https://github.com/meemknight/photos/blob/master/mc4.png)
+---

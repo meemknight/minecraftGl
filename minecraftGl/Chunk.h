@@ -37,7 +37,7 @@ struct Chunk
 
 	Chunk *neighbours[4] = { 0 };
 
-	FloatVector positionData[FACE::FACES_SIZE];
+	FloatVector positionData[FACE::FACES_SIZE] = {};
 
 	//sets the positionData to 0
 	void resetMeshes()

@@ -44,7 +44,7 @@ int width;
 int height;
 
 //Camera camera(60.f, &width, &height, 0.1, 200);
-FirstPersonCamera camera(60.f, 0.1, 200, &width, &height);
+FirstPersonCamera camera(60.f, 0.1, 250, &width, &height);
 
 CubeMeshRenderer cubeRenderer;
 

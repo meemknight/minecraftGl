@@ -288,7 +288,6 @@ void ChunkManager::bakeUnbakedChunks()
 		if (i.shouldRecreate)
 		{
 			i.bakeMeshes();
-			i.bakeMeshes();
 		}
 		i.shouldRecreate = false;
 	}

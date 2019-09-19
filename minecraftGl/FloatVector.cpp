@@ -6,7 +6,8 @@ void FloatVector::reserve(int size)
 	if(capacity < size)
 	{
 		float *tempData = new float[size];
-		memcpy(tempData, data, this->size);
+		memcpy(tempData, data, this->size * sizeof(float));
+
 		delete[] data;
 		data = tempData;
 		capacity = size;
