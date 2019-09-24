@@ -11,7 +11,7 @@
 
 extern "C"
 {
-	//__declspec(dllexport) unsigned long NvOptimusEnablement = 1;
+	__declspec(dllexport) unsigned long NvOptimusEnablement = 1;
 	//__declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
 }
 
@@ -34,8 +34,13 @@ int main()
 		return 1;
 	}
 
+	//glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+	//glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+	//glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
 	float width = 960;
 	float heigth = 680;
+
 	window = glfwCreateWindow(width, heigth, "Minicraft", NULL, NULL);
 
 	if (!window)

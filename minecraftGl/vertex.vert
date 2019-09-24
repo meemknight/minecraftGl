@@ -1,4 +1,4 @@
-#version 330
+#version 330 core
 
 in layout (location = 0) vec4 model;
 in layout (location = 1) vec2 texCoord;

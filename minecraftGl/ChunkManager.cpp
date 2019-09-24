@@ -38,10 +38,52 @@ int xzEcuatiom(int x, int z)
 	return (int)((xEcuation(x) + zEcuation(z)) / 2.f);
 }
 
+void ChunkManager::reserveData(int size)
+{
+	chunksCount = size;
+	loadedChunks.clear();
+	chunkData.clear();
+	returnVector.clear();
+	
+	loadedChunks.reserve(chunksCount); chunkData.reserve(chunksCount); returnVector.reserve(chunksCount);
+	while(loadedChunks.size() < chunksCount)
+	{
+		loadedChunks.push_back(Chunk());
+		chunkData.push_back(ChunkData());
+	}
+}
+
 Chunk **ChunkManager::requestChunks(glm::vec3 *requestedC, int size)
 {
-	//reset data
+	//reset data return data
 	returnVector.clear();
+
+	if(size > chunksCount)
+	{
+		reserveData(size);
+
+		//alocate new data
+		for (int pos=0; pos < size; pos++)
+		{
+			if (requestedC[pos].y == 0.f)
+			{
+				//loadedChunks.push_back(Chunk());
+				ChunkData cd;
+				cd.used = 1;
+				cd.position.x = requestedC[pos].x;
+				cd.position.y = requestedC[pos].z;
+				cd.chunk = &loadedChunks[pos];
+
+				setupChunk(&loadedChunks[pos], cd.position);
+
+				chunkData[pos] = cd;
+
+				returnVector.push_back(chunkData[pos].chunk);
+			}
+		}
+
+		return returnVector.data();
+	}
 
 	for (int i = 0; i < chunkData.size(); i++)
 	{
@@ -53,7 +95,7 @@ Chunk **ChunkManager::requestChunks(glm::vec3 *requestedC, int size)
 	{
 		for(int j=0; j<size; j++)
 		{
-			if (chunkData[i].position.x == requestedC[j].x && chunkData[i].position.y == requestedC[j].z)
+			if (chunkData[i].chunk && chunkData[i].position.x == requestedC[j].x && chunkData[i].position.y == requestedC[j].z)
 			{
 				chunkData[i].used = 1;
 				requestedC[j].y = 1.f;
@@ -79,7 +121,7 @@ Chunk **ChunkManager::requestChunks(glm::vec3 *requestedC, int size)
 	{
 		for (int i = 0; i < chunkData.size(); i++)
 		{
-			if (chunkData[i].used == 0)
+			if (chunkData[i].chunk && chunkData[i].used == 0)
 			{
 				chunkData[i].used = 1;
 				chunkData[i].position.x = requestedC[pos].x;
@@ -108,25 +150,6 @@ Chunk **ChunkManager::requestChunks(glm::vec3 *requestedC, int size)
 
 	}
 	
-	//alocate new data
-	for (; pos < size; pos++)
-	{
-		if (requestedC[pos].y == 0.f)
-		{
-			loadedChunks.push_back(Chunk());
-			ChunkData cd;
-			cd.used = 1;
-			cd.position.x = requestedC[pos].x;
-			cd.position.y = requestedC[pos].z;
-			cd.chunk = &loadedChunks[loadedChunks.size() - 1];
-
-			setupChunk(&loadedChunks[loadedChunks.size()-1], cd.position);
-
-			chunkData.emplace_back(cd);
-
-			returnVector.push_back(chunkData[chunkData.size()-1].chunk);
-		}
-	}
 	
 	return returnVector.data();
 }
@@ -155,7 +178,7 @@ void ChunkManager::setupChunk(Chunk *chunk, glm::vec2 p)
 	{
 		for (int dir = 0; dir < 4; dir++)
 		{
-			if (positions[dir] == chunkData[i].position)
+			if (chunkData[i].chunk && positions[dir] == chunkData[i].position)
 			{
 				neighbours[dir] = chunkData[i].chunk;
 				count++;
@@ -281,15 +304,21 @@ foundAll:
 	chunk->shouldRecreate = true;
 }
 
-void ChunkManager::bakeUnbakedChunks()
+void ChunkManager::bakeUnbakedChunks(int number)
 {
+	int soFar = 0;
 	for (auto &i : loadedChunks)
 	{
 		if (i.shouldRecreate)
 		{
+			i.shouldRecreate = false;
 			i.bakeMeshes();
+			soFar++;
+			if(soFar >= number)
+			{
+				break;
+			}
 		}
-		i.shouldRecreate = false;
 	}
 }
 

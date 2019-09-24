@@ -44,7 +44,7 @@ int width;
 int height;
 
 //Camera camera(60.f, &width, &height, 0.1, 200);
-FirstPersonCamera camera(60.f, 0.1, 250, &width, &height);
+FirstPersonCamera camera(60.f, 0.1, 300, &width, &height);
 
 CubeMeshRenderer cubeRenderer;
 
@@ -76,7 +76,7 @@ int initGame()
 	cubeRenderer.sp = &sp;
 	cubeRenderer.create();
 	
-	chunksToLoad.reserve(100);
+	//chunkManager.reserveData(800);
 
 	return 1;
 }
@@ -140,12 +140,12 @@ int gameLogic(float deltaTime)
 	//}
 
 	//llog(glm::degrees(camera.getTopDownAngle()));
-
+	
 	camera.getChunksInFrustrum(chunksToLoad);
-	//llog(chunksToLoad.size());
+	//llog(chunksToLoad.size(), chunkManager.chunkData.size());
 
 	Chunk **c = chunkManager.requestChunks(chunksToLoad.data(), chunksToLoad.size());
-	chunkManager.bakeUnbakedChunks();
+	chunkManager.bakeUnbakedChunks(20);
 
 	cubeRenderer.draw(c, chunksToLoad.size());
 
