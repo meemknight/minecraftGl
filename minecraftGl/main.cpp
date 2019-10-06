@@ -11,7 +11,7 @@
 
 extern "C"
 {
-	__declspec(dllexport) unsigned long NvOptimusEnablement = 1;
+	//__declspec(dllexport) unsigned long NvOptimusEnablement = 1;
 	//__declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
 }
 
@@ -40,6 +40,8 @@ int main()
 
 	float width = 960;
 	float heigth = 680;
+	
+	//glfwWindowHint(GLFW_SAMPLES, 4);
 
 	window = glfwCreateWindow(width, heigth, "Minicraft", NULL, NULL);
 
@@ -78,7 +80,6 @@ int main()
 			int deltaTime = time2 - time1;
 			time1 = clock();
 		
-
 			glfwPollEvents();
 			
 			if (!gameLogic((float)deltaTime / CLOCKS_PER_SEC))

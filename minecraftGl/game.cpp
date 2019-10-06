@@ -54,8 +54,12 @@ std::vector<glm::vec3> chunksToLoad;
 
 int initGame()
 {
+	camera.position.y = 100;
+
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
+	//glEnable(GL_MULTISAMPLE);
+	//glEnable(GL_SAMPLE_SHADING);
 
 	glGenBuffers(1, &quadBuff);
 	glBindBuffer(GL_ARRAY_BUFFER, quadBuff);
@@ -77,6 +81,16 @@ int initGame()
 	cubeRenderer.create();
 	
 	//chunkManager.reserveData(800);
+
+	for(int i=0; i<40; i++)
+	{
+		for(int j=0;j<40; j++)
+		{
+			chunksToLoad.emplace_back(i-20,0,j-20);
+		}
+	}
+
+	chunkManager.requestChunks(chunksToLoad.data(), chunksToLoad.size());
 
 	return 1;
 }
@@ -142,10 +156,9 @@ int gameLogic(float deltaTime)
 	//llog(glm::degrees(camera.getTopDownAngle()));
 	
 	camera.getChunksInFrustrum(chunksToLoad);
-	//llog(chunksToLoad.size(), chunkManager.chunkData.size());
 
 	Chunk **c = chunkManager.requestChunks(chunksToLoad.data(), chunksToLoad.size());
-	chunkManager.bakeUnbakedChunks(20);
+	chunkManager.bakeUnbakedChunks(30);
 
 	cubeRenderer.draw(c, chunksToLoad.size());
 

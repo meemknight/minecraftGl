@@ -45,12 +45,13 @@ void ChunkManager::reserveData(int size)
 	chunkData.clear();
 	returnVector.clear();
 	
-	loadedChunks.reserve(chunksCount); chunkData.reserve(chunksCount); returnVector.reserve(chunksCount);
-	while(loadedChunks.size() < chunksCount)
-	{
-		loadedChunks.push_back(Chunk());
-		chunkData.push_back(ChunkData());
-	}
+	loadedChunks.reserve(chunksCount); 
+	chunkData.reserve(chunksCount); 
+	returnVector.reserve(chunksCount);
+
+	loadedChunks.resize(chunksCount);
+	chunkData.resize(chunksCount);
+
 }
 
 Chunk **ChunkManager::requestChunks(glm::vec3 *requestedC, int size)

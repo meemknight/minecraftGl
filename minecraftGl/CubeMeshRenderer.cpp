@@ -125,22 +125,31 @@ void CubeMeshRenderer::draw(Chunk **chunk, int size)
 	glm::mat4 m = camera->getProjectionViewMatrix();
 	float mag = 1.f / (float)texture->subDivisions;
 
+	glUniformMatrix4fv(matUniformLocation, 1, GL_FALSE, &m[0][0]);
+	glUniform1i(textureUniformLocation, 0);
+	glUniform1f(magnifierUniformLocation, mag);
+
 	for(int index=0; index<size;index++)
 	{
 		Chunk &c = *chunk[index];
 
 		for (int i = 0; i < FACE::FACES_SIZE; i++)
 		{
-			glBindVertexArray(vertexArrays[i]);
-
-			glNamedBufferData(positionsBuffer[i], c.positionData[i].size * sizeof(float), c.positionData[i].data, GL_STREAM_DRAW);
-
-			glUniformMatrix4fv(matUniformLocation, 1, GL_FALSE, &m[0][0]);
-			glUniform1i(textureUniformLocation, 0);
-			glUniform1f(magnifierUniformLocation, mag);
-
-			glDrawElementsInstanced(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0, c.positionData[i].size / 5);
+			if (c.positionData[i].size)
+			{
+				glNamedBufferData(positionsBuffer[i], c.positionData[i].size * sizeof(float), c.positionData[i].data, GL_STREAM_DRAW);
+			}
 		}
+
+		for (int i = 0; i < FACE::FACES_SIZE; i++)
+		{
+			if (c.positionData[i].size)
+			{
+				glBindVertexArray(vertexArrays[i]);
+				glDrawElementsInstanced(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0, c.positionData[i].size / 5);
+			}
+		}
+
 	}
 
 	glBindVertexArray(0);

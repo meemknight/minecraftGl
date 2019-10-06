@@ -59,8 +59,8 @@ void Texture::create(const char * name)
 
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, x, y, 0, GL_RGBA, GL_UNSIGNED_BYTE, buff);
 		//glHint(GL_GENERATE_MIPMAP_HINT, GL_NICEST);
-
 		glGenerateMipmap(GL_TEXTURE_2D);
+
 
 
 		//int NumberOfExtensions;

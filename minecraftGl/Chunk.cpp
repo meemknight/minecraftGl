@@ -1,6 +1,7 @@
 #include "Chunk.h"
 
 constexpr static int DRAW_EDGE_CHUNKS = 0;
+constexpr static int DRAW_BOTTOM_CHUNKS = 0;
 
 inline static void setFace(int x, int y, int z, FloatVector fv[], Chunk &c, Face f, glm::vec3 chunkPosition)
 {
@@ -71,8 +72,10 @@ void Chunk::bakeMeshes()
 					}
 					else
 					{
-						setFace(x, y, z, positionData, *this, FACE::bottom, chunkPosition);
-
+						if (DRAW_BOTTOM_CHUNKS)
+						{
+							setFace(x, y, z, positionData, *this, FACE::bottom, chunkPosition);
+						}
 					}
 
 					//front
