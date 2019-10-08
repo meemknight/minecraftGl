@@ -180,7 +180,7 @@ void Camera::moveBack(float speed)
 	}
 }
 
-void FirstPersonCamera::getChunksInFrustrum(std::vector<glm::vec3>& chunksToLoad)
+void FirstPersonCamera::getChunksInFrustrum(std::vector<glm::ivec3>& chunksToLoad)
 {
 	float halfA = glm::radians(fov) / 1.5f;
 	float angle = getTopDownAngle();
@@ -292,12 +292,12 @@ void FirstPersonCamera::mouseUpdate(const glm::vec2 & pos)
 
 	if (delta.y < 0)
 	{	//down
-		if (viewDirection.y < -0.90)
+		if (viewDirection.y < -0.95)
 			goto noMove;
 	}
 	else
 	{	//up
-		if (viewDirection.y > 0.90)
+		if (viewDirection.y > 0.95)
 			goto noMove;
 	}
 

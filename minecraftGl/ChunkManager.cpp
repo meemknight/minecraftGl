@@ -54,7 +54,7 @@ void ChunkManager::reserveData(int size)
 
 }
 
-Chunk **ChunkManager::requestChunks(glm::vec3 *requestedC, int size)
+Chunk **ChunkManager::requestChunks(glm::ivec3 *requestedC, int size)
 {
 	//reset data return data
 	returnVector.clear();
@@ -66,7 +66,7 @@ Chunk **ChunkManager::requestChunks(glm::vec3 *requestedC, int size)
 		//alocate new data
 		for (int pos=0; pos < size; pos++)
 		{
-			if (requestedC[pos].y == 0.f)
+			if (requestedC[pos].y == 0)
 			{
 				//loadedChunks.push_back(Chunk());
 				ChunkData cd;
@@ -99,7 +99,7 @@ Chunk **ChunkManager::requestChunks(glm::vec3 *requestedC, int size)
 			if (chunkData[i].chunk && chunkData[i].position.x == requestedC[j].x && chunkData[i].position.y == requestedC[j].z)
 			{
 				chunkData[i].used = 1;
-				requestedC[j].y = 1.f;
+				requestedC[j].y = 1;
 				returnVector.push_back(chunkData[i].chunk);
 			}
 		}
@@ -111,7 +111,7 @@ Chunk **ChunkManager::requestChunks(glm::vec3 *requestedC, int size)
 
 	for(pos=0; pos<size;pos++)
 	{
-		if(requestedC[pos].y == 0.f)
+		if(requestedC[pos].y == 0)
 		{
 			unallocatedData = 1;
 			break;
@@ -135,7 +135,7 @@ Chunk **ChunkManager::requestChunks(glm::vec3 *requestedC, int size)
 				unallocatedData = 0;
 				for (pos++; pos < size; pos++)
 				{
-					if (requestedC[pos].y == 0.f)
+					if (requestedC[pos].y == 0)
 					{
 						unallocatedData = 1;
 						break;
@@ -155,6 +155,12 @@ Chunk **ChunkManager::requestChunks(glm::vec3 *requestedC, int size)
 	return returnVector.data();
 }
 
+Chunk *ChunkManager::requestChunk(glm::ivec3 chunk)
+{
+	//todo implement a better version of this
+	return (Chunk*)requestChunks(&chunk, 1);
+}
+
 void ChunkManager::setupChunk(Chunk *chunk, glm::vec2 p)
 {
 	chunk->removeNeighboursLinkage();
@@ -167,7 +173,7 @@ void ChunkManager::setupChunk(Chunk *chunk, glm::vec2 p)
 
 	Chunk *neighbours[4] = {};
 
-	glm::vec2 positions[4];
+	glm::ivec2 positions[4];
 	positions[CN::front] = { p.x, p.y + 1 };
 	positions[CN::back] = { p.x, p.y - 1 };
 	positions[CN::left] = { p.x - 1, p.y };

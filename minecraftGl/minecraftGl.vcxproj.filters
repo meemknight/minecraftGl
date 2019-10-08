@@ -48,6 +48,12 @@
     <ClCompile Include="ChunkManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="phisics.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="debugTools.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h">
@@ -89,9 +95,17 @@
     <ClInclude Include="PerlinNoise.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="phisics.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="debugTools.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="vertex.vert" />
     <None Include="fragment.frag" />
+    <None Include="noTexture.vert" />
+    <None Include="noTexture.frag" />
   </ItemGroup>
 </Project>

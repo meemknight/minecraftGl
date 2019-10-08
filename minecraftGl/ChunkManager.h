@@ -7,7 +7,7 @@ struct ChunkData
 {
 	Chunk *chunk = nullptr;
 	int used = 0;
-	glm::vec2 position = {};
+	glm::ivec2 position = {};
 };
 
 struct ChunkManager
@@ -24,7 +24,9 @@ struct ChunkManager
 	void reserveData(int size);
 
 	//y reserved, should be 0
-	Chunk **requestChunks(glm::vec3 *chunks, int size);
+	Chunk **requestChunks(glm::ivec3 *chunks, int size);
+
+	Chunk *requestChunk(glm::ivec3 chunk);
 
 	void setupChunk(Chunk *chunk, glm::vec2 p);
 	void bakeUnbakedChunks(int number);

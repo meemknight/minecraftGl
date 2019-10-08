@@ -24,9 +24,11 @@
     <ClCompile Include="Chunk.cpp" />
     <ClCompile Include="ChunkManager.cpp" />
     <ClCompile Include="CubeMeshRenderer.cpp" />
+    <ClCompile Include="debugTools.cpp" />
     <ClCompile Include="FloatVector.cpp" />
     <ClCompile Include="game.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="phisics.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="stb_image.cpp" />
     <ClCompile Include="Texture.cpp" />
@@ -37,9 +39,11 @@
     <ClInclude Include="Chunk.h" />
     <ClInclude Include="ChunkManager.h" />
     <ClInclude Include="CubeMeshRenderer.h" />
+    <ClInclude Include="debugTools.h" />
     <ClInclude Include="FloatVector.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="PerlinNoise.hpp" />
+    <ClInclude Include="phisics.h" />
     <ClInclude Include="platformIndependentCalls.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="stb_image.h" />
@@ -48,6 +52,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="fragment.frag" />
+    <None Include="noTexture.frag" />
+    <None Include="noTexture.vert" />
     <None Include="vertex.vert" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

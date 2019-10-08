@@ -70,3 +70,15 @@ bool isSolid(Block b)
 		return 0;
 	}
 }
+
+bool isCollideble(Block b)
+{
+	if (b != BLOCK::air)
+	{
+		return 1;
+	}
+	else
+	{
+		return 0;
+	}
+}

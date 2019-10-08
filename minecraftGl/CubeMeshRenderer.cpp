@@ -121,7 +121,8 @@ unsigned int *cubeIndexData[FACE::FACES_SIZE]{ frontIndexBufferData, backIndexBu
 
 void CubeMeshRenderer::draw(Chunk **chunk, int size)
 {
-	
+	sp->bind();
+
 	glm::mat4 m = camera->getProjectionViewMatrix();
 	float mag = 1.f / (float)texture->subDivisions;
 
@@ -149,9 +150,31 @@ void CubeMeshRenderer::draw(Chunk **chunk, int size)
 				glDrawElementsInstanced(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0, c.positionData[i].size / 5);
 			}
 		}
-
 	}
 
+	/*
+	int sizes[FACE::FACES_SIZE] = {};
+
+	for (int index = 0; index < size; index++)
+	{
+		for (int i = 0; i < FACE::FACES_SIZE; i++)
+		{
+			Chunk &c = *chunk[index];
+			sizes[i] += c.positionData[i].size;
+		}
+	}
+
+	for (int index = 0; index < size; index++)
+	{
+		for (int i = 0; i < FACE::FACES_SIZE; i++)
+		{
+			if (sizes[i])
+			{
+				glNamedBufferData(positionsBuffer[i], c.positionData[i].size * sizeof(float), c.positionData[i].data, GL_STREAM_DRAW);
+			}
+		}
+	}
+	*/
 	glBindVertexArray(0);
 }
 

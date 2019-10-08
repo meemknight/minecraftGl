@@ -78,7 +78,7 @@ struct FirstPersonCamera
 
 	glm::vec3 viewDirection = { 0.f, 0.f, -1.f };
 	const glm::vec3 upPositipon = { 0, 1, 0 };
-	glm::vec3 position = { 0,0,4 };
+	glm::vec3 position = { 0,0,0 };
 
 	float fov;
 	float closePlane;
@@ -105,7 +105,7 @@ struct FirstPersonCamera
 
 	float rSpeed = 0.3f;
 
-	void getChunksInFrustrum(std::vector<glm::vec3> &chunksToLoad);
+	void getChunksInFrustrum(std::vector<glm::ivec3> &chunksToLoad);
 
 private:
 	glm::vec2 oldMousePosition = {};

@@ -33,3 +33,4 @@ struct BlockFace
 
 BlockFace getBlockFace(Block b, Face f);
 bool isSolid(Block b);
+bool isCollideble(Block b);
