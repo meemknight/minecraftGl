@@ -22,7 +22,6 @@ void resolveConstrains(glm::vec3 &pos, glm::vec3 lastPos, ChunkManager &cm, glm:
 				blocksToCheck.emplace_back(x, yDown, z, 0);
 				//cw->addCube({ x, yDown, z }, { 1,0,0,1 });
 				z++;
-				ilog(x, yDown, z);
 			}
 			x++;
 		}
@@ -31,4 +30,32 @@ void resolveConstrains(glm::vec3 &pos, glm::vec3 lastPos, ChunkManager &cm, glm:
 	}
 
 
+}
+
+constexpr float rayMarch = 0.1;
+glm::vec3 returnedVector;
+
+std::optional<glm::vec3> rayCast(ChunkManager &cm, glm::vec3 position, glm::vec3 direction, float maxLength)
+{
+	float distanceTraveled = 0;
+
+	direction = glm::normalize(direction);
+	direction *= rayMarch;
+
+	glm::vec3 rayPos = position;
+
+	while(distanceTraveled < maxLength)
+	{
+		Block &b = cm.getBlock(glm::floor(rayPos));
+			if (b!=BLOCK::air)
+			{
+				return glm::floor(rayPos);
+			}
+			rayPos += direction;
+			distanceTraveled += rayMarch;
+	}
+
+	//wlog("no");
+
+	return {};
 }

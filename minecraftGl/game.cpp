@@ -10,8 +10,6 @@
 #include "phisics.h"
 #include "debugTools.h"
 
-static GLuint quadBuff;
-static GLuint indexBuffer;
 ShaderProgram sp;
 ShaderProgram spNoTexture;
 
@@ -72,14 +70,6 @@ int initGame()
 	//glEnable(GL_SAMPLE_SHADING);
 
 	glLineWidth(4);
-
-	glGenBuffers(1, &quadBuff);
-	glBindBuffer(GL_ARRAY_BUFFER, quadBuff);
-	glNamedBufferData(quadBuff, sizeof(quadData), quadData, GL_STATIC_DRAW);
-
-	glCreateBuffers(1, &indexBuffer);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer);
-	glNamedBufferData(indexBuffer, sizeof(indexBufferData), indexBufferData, GL_STATIC_DRAW);
 
 	sp = ShaderProgram("vertex.vert", "fragment.frag");
 	spNoTexture = ShaderProgram("noTexture.vert", "noTexture.frag");
@@ -172,14 +162,20 @@ int gameLogic(float deltaTime)
 
 	cubeRenderer.draw(c, chunksToLoad.size());
 
-	cubeWireRenderer.addCube({ 0, 99, 0 }, { 0,0,1,1 });
+	auto block = rayCast(chunkManager, camera.position, camera.viewDirection, 5);
+	if (block.has_value())
+	{
+		cubeWireRenderer.addCube({ block.value() }, { 0,0,1,1 });
+	}
+
+
 
 	cubeWireRenderer.draw();
 #pragma endregion
 
 
-	//llog(floor(camera.position.x/16), floor(camera.position.z/16));
-	llog(camera.position.x, camera.position.y, camera.position.z);
+	llog(floor(camera.position.x/16), floor(camera.position.z/16));
+	//llog(camera.viewDirection.x, camera.viewDirection.y, camera.viewDirection.z);
 
 
 	return 1;

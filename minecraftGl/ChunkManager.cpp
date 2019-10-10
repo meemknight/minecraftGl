@@ -1,6 +1,7 @@
 #include "ChunkManager.h"
 #include <cmath>
 #include "PerlinNoise.hpp"
+#include "tools.h"
 
 static siv::PerlinNoise noise;
 
@@ -155,10 +156,46 @@ Chunk **ChunkManager::requestChunks(glm::ivec3 *requestedC, int size)
 	return returnVector.data();
 }
 
-Chunk *ChunkManager::requestChunk(glm::ivec3 chunk)
+Chunk **ChunkManager::requestChunk(glm::ivec3 chunk)
 {
 	//todo implement a better version of this
-	return (Chunk*)requestChunks(&chunk, 1);
+	return (Chunk**)requestChunks(&chunk, 1);
+}
+
+Block &ChunkManager::getBlock(glm::ivec3 pos)
+{
+	glm::ivec3 chunkPos = pos / CHUNK_SIZE; 
+	chunkPos.y = 0;
+	Chunk **c = requestChunk(chunkPos);
+
+	//ilog(c[0]->position.x, c[0]->position.z);
+
+	if (pos.x < 0) { pos.x--; }
+	if (pos.z < 0) { pos.z--; }
+
+	pos -= chunkPos;
+
+	if (pos.y < 0)
+		std::terminate();
+
+	if (pos.y > BUILD_LIMIT)
+		std::terminate();
+
+	//ilog(pos.y);
+	if(pos.x <0)
+	{
+		pos.x = 15 + pos.x;
+	}
+
+	if (pos.z < 0)
+	{
+		pos.z = 15 + pos.z;
+	}
+
+
+	Block &b =c[0]->getBlock(pos);
+
+	return b;
 }
 
 void ChunkManager::setupChunk(Chunk *chunk, glm::vec2 p)

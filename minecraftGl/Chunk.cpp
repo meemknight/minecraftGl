@@ -35,6 +35,7 @@ void Chunk::removeNeighboursLinkage()
 
 void Chunk::bakeMeshes()
 {
+	shouldRecreate = false;
 
 	glm::vec3 chunkPosition = getPositionInUnits();
 

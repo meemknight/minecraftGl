@@ -26,7 +26,9 @@ struct ChunkManager
 	//y reserved, should be 0
 	Chunk **requestChunks(glm::ivec3 *chunks, int size);
 
-	Chunk *requestChunk(glm::ivec3 chunk);
+	Chunk **requestChunk(glm::ivec3 chunk);
+
+	Block &getBlock(glm::ivec3 pos);
 
 	void setupChunk(Chunk *chunk, glm::vec2 p);
 	void bakeUnbakedChunks(int number);

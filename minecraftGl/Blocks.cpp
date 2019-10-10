@@ -60,6 +60,7 @@ BlockFace getBlockFace(Block b, Face f)
 	return faces[f][b];
 }
 
+//todo is opaque
 bool isSolid(Block b)
 {
 	if(b!=BLOCK::air)

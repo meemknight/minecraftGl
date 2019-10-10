@@ -36,6 +36,10 @@ void CubeWireRenderer::setShader(ShaderProgram * sp)
 
 void CubeWireRenderer::draw()
 {
+	if (dataToDraw.size == 0)
+	{
+		return;
+	}
 
 	glBindVertexArray(vertexArray);
 	sp->bind();
