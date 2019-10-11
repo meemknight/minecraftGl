@@ -162,18 +162,24 @@ Chunk **ChunkManager::requestChunk(glm::ivec3 chunk)
 	return (Chunk**)requestChunks(&chunk, 1);
 }
 
+//todo split into multiple functions for get and set
 Block &ChunkManager::getBlock(glm::ivec3 pos)
 {
 	glm::ivec3 chunkPos = pos / CHUNK_SIZE; 
 	chunkPos.y = 0;
+	if (pos.x < 0) { chunkPos.x--;}
+	if (pos.z < 0) { chunkPos.z--;}
+	
+	pos -= chunkPos * CHUNK_SIZE;
+
+	if (pos.x >= 16) { pos.x = 0; chunkPos.x++; }
+	if (pos.z >= 16) { pos.z = 0; chunkPos.z++;}
+
+
 	Chunk **c = requestChunk(chunkPos);
 
 	//ilog(c[0]->position.x, c[0]->position.z);
 
-	if (pos.x < 0) { pos.x--; }
-	if (pos.z < 0) { pos.z--; }
-
-	pos -= chunkPos;
 
 	if (pos.y < 0)
 		std::terminate();
@@ -181,19 +187,8 @@ Block &ChunkManager::getBlock(glm::ivec3 pos)
 	if (pos.y > BUILD_LIMIT)
 		std::terminate();
 
-	//ilog(pos.y);
-	if(pos.x <0)
-	{
-		pos.x = 15 + pos.x;
-	}
-
-	if (pos.z < 0)
-	{
-		pos.z = 15 + pos.z;
-	}
-
-
 	Block &b =c[0]->getBlock(pos);
+	c[0]->shouldRecreate = 1;
 
 	return b;
 }

@@ -1,6 +1,6 @@
 #include "debugTools.h"
 
-static constexpr float r = 0.501;
+static constexpr float r = 0.5001;
 
 float cubePositions[] =
 {

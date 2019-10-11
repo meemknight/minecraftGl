@@ -13,33 +13,6 @@
 ShaderProgram sp;
 ShaderProgram spNoTexture;
 
-
-float quadData[] =
-{
-	-0.8f, 0.8f,//pos
-	 0.0f, 1.0f,//texcoord
-	
-	-0.8f, -0.8f,
-	 0.0f,  0.0f,
-
-	 0.8f, -0.8f,
-	 1.0f,  0.0f,
-
-	 0.8f, 0.8f,
-	 1.0f, 1.0f,
-};
-
-
-unsigned int indexBufferData[] =
-{
-	0,
-	1,
-	3,
-	3,
-	1,
-	2,
-};
-
 Texture bloc;
 int width;
 int height;
@@ -162,19 +135,18 @@ int gameLogic(float deltaTime)
 
 	cubeRenderer.draw(c, chunksToLoad.size());
 
-	auto block = rayCast(chunkManager, camera.position, camera.viewDirection, 5);
+	auto block = rayCast(chunkManager, camera.position, camera.viewDirection, 15);
 	if (block.has_value())
 	{
-		cubeWireRenderer.addCube({ block.value() }, { 0,0,1,1 });
+		cubeWireRenderer.addCube({ block.value() }, { 0.61,0.6,0.65,1 });
 	}
-
 
 
 	cubeWireRenderer.draw();
 #pragma endregion
 
 
-	llog(floor(camera.position.x/16), floor(camera.position.z/16));
+	//llog(floor(camera.position.x/16), floor(camera.position.z/16));
 	//llog(camera.viewDirection.x, camera.viewDirection.y, camera.viewDirection.z);
 
 

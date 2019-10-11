@@ -21,6 +21,7 @@ namespace BLOCK
 		dirt,
 		grass,
 		stone,
+		log,
 		BLOCKS_SIZE,
 	};
 }
