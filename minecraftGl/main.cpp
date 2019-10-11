@@ -20,11 +20,38 @@ static GLFWwindow *window;
 static int xsize;
 static int ysize;
 
+static int lbutton = 0;
+static int rbutton = 0;
+
 void windowSizeCallback(GLFWwindow *window, int x, int y)
 {
 	xsize = x;
 	ysize = y;
 }
+
+void windowMouseCallback(GLFWwindow*, int button, int action, int mods)
+{
+	if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS)
+	{
+		lbutton = 1;
+	}
+
+	if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS)
+	{
+		rbutton = 1;
+	}
+
+	if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_RELEASE)
+	{
+		lbutton = 0;
+	}
+
+	if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_RELEASE)
+	{
+		rbutton = 0;
+	}
+}
+
 
 int main()
 {
@@ -67,6 +94,8 @@ int main()
 	{
 		glfwSetWindowSizeCallback(window, windowSizeCallback);
 		glfwGetWindowSize(window, &xsize, &ysize);
+
+		glfwSetMouseButtonCallback(window, windowMouseCallback);
 
 		int time1 = clock();
 		int time2 = clock();
@@ -133,6 +162,16 @@ glm::ivec2 getWindowSize()
 int isKeyPressed(int key)
 {
 	return glfwGetKey(window, key);
+}
+
+int isLMouseButtonPressed()
+{
+	return lbutton;
+}
+
+int isRMouseButtonPressed()
+{
+	return rbutton;
 }
 
 void showMouse(bool show)

@@ -141,6 +141,15 @@ int gameLogic(float deltaTime)
 		cubeWireRenderer.addCube({ block.value() }, { 0.61,0.6,0.65,1 });
 	}
 
+	if(block && isRMouseButtonPressed())
+	{
+		chunkManager.getBlock(block.value()) = BLOCK::gold_block;
+	}
+
+	if (block && isLMouseButtonPressed())
+	{
+		chunkManager.getBlock(block.value()) = BLOCK::air;
+	}
 
 	cubeWireRenderer.draw();
 #pragma endregion

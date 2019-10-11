@@ -20,3 +20,8 @@ Also i had to make shure that i only draw chunks that are visible to the payer
 
 ![](https://github.com/meemknight/photos/blob/master/mc4.png)
 ---
+
+-Before I could start implementing the phisics I had to first make some simple things like being able to draw a border
+around blocks or place and remove blocks. For that i made a very gross implementation of a ray cast.
+![](https://github.com/meemknight/photos/blob/master/mc5.png)
+---
