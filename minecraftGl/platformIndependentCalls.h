@@ -20,4 +20,7 @@ int isKeyPressed(int key);
 int isLMouseButtonPressed();
 int isRMouseButtonPressed();
 
+int isLMouseHeld();
+int isRMouseHeld();
+
 void showMouse(bool show);

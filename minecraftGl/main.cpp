@@ -23,6 +23,9 @@ static int ysize;
 static int lbutton = 0;
 static int rbutton = 0;
 
+static int lbuttonPressed = 0;
+static int rbuttonPressed = 0;
+
 void windowSizeCallback(GLFWwindow *window, int x, int y)
 {
 	xsize = x;
@@ -34,11 +37,13 @@ void windowMouseCallback(GLFWwindow*, int button, int action, int mods)
 	if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS)
 	{
 		lbutton = 1;
+		lbuttonPressed = 1;
 	}
 
 	if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS)
 	{
 		rbutton = 1;
+		rbuttonPressed = 1;
 	}
 
 	if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_RELEASE)
@@ -88,7 +93,7 @@ int main()
 
 	if(!initGame())
 	{
-		goto end;
+		return 0;
 	}
 
 	{
@@ -104,6 +109,8 @@ int main()
 		Sleep(1000);
 		while (!glfwWindowShouldClose(window))
 		{
+			lbuttonPressed = 0;
+			rbuttonPressed = 0;
 
 			time2 = clock();
 			int deltaTime = time2 - time1;
@@ -122,8 +129,6 @@ int main()
 		}
 
 	}
-
-	end:
 	
 	glfwDestroyWindow(window);
 	glfwTerminate();
@@ -166,10 +171,20 @@ int isKeyPressed(int key)
 
 int isLMouseButtonPressed()
 {
-	return lbutton;
+	return lbuttonPressed;
 }
 
 int isRMouseButtonPressed()
+{
+	return rbuttonPressed;
+}
+
+int isLMouseHeld()
+{
+	return lbutton;
+}
+
+int isRMouseHeld()
 {
 	return rbutton;
 }

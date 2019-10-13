@@ -134,28 +134,40 @@ int gameLogic(float deltaTime)
 	chunkManager.bakeUnbakedChunks(30);
 
 	cubeRenderer.draw(c, chunksToLoad.size());
+#pragma endregion
 
-	auto block = rayCast(chunkManager, camera.position, camera.viewDirection, 15);
-	if (block.has_value())
+#pragma region block placement
+
+	std::optional<glm::ivec3> coll, edge;
+
+	rayCastAdvanced(chunkManager, camera.position, camera.viewDirection, 15,
+		coll, edge);
+
+	if (coll.has_value())
 	{
-		cubeWireRenderer.addCube({ block.value() }, { 0.61,0.6,0.65,1 });
+		cubeWireRenderer.addCube({ coll.value() }, { 0.61,0.6,0.65,1 });
+
+		if (coll && isRMouseButtonPressed())
+		{
+			if (edge.has_value())
+			{
+				chunkManager.setBlock(edge.value(), BLOCK::woodden_plank);
+			}
+		}
+
+		if (coll && isLMouseButtonPressed())
+		{
+			chunkManager.setBlock(coll.value(), BLOCK::air);
+		}
+
+		cubeWireRenderer.draw();
+
 	}
 
-	if(block && isRMouseButtonPressed())
-	{
-		chunkManager.getBlock(block.value()) = BLOCK::gold_block;
-	}
-
-	if (block && isLMouseButtonPressed())
-	{
-		chunkManager.getBlock(block.value()) = BLOCK::air;
-	}
-
-	cubeWireRenderer.draw();
 #pragma endregion
 
 
-	//llog(floor(camera.position.x/16), floor(camera.position.z/16));
+	//llog(floor(camera.position.x), floor(camera.position.z));
 	//llog(camera.viewDirection.x, camera.viewDirection.y, camera.viewDirection.z);
 
 

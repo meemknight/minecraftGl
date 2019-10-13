@@ -1,5 +1,8 @@
-#include "ChunkManager.h"
 #include <cmath>
+#include <vector>
+#include <algorithm>
+
+#include "ChunkManager.h"
 #include "PerlinNoise.hpp"
 #include "tools.h"
 
@@ -163,7 +166,9 @@ Chunk **ChunkManager::requestChunk(glm::ivec3 chunk)
 }
 
 //todo split into multiple functions for get and set
-Block &ChunkManager::getBlock(glm::ivec3 pos)
+//todo also consider updating near chunks
+//todo also optimize this
+Block &ChunkManager::getBlockRefUnsafe(glm::ivec3 pos, Chunk **outC)
 {
 	glm::ivec3 chunkPos = pos / CHUNK_SIZE; 
 	chunkPos.y = 0;
@@ -190,7 +195,57 @@ Block &ChunkManager::getBlock(glm::ivec3 pos)
 	Block &b =c[0]->getBlock(pos);
 	c[0]->shouldRecreate = 1;
 
+	if (outC)
+	{
+		*outC = c[0];
+	}
+
 	return b;
+}
+
+Block ChunkManager::getBlock(glm::ivec3 pos)
+{
+	return getBlockRefUnsafe(pos);
+}
+
+void ChunkManager::setBlock(glm::ivec3 pos, Block b)
+{
+	Chunk *c;
+	getBlockRefUnsafe(pos, &c) = b;
+
+	if(pos.x >= 0 && pos.x % 16 == 15)
+	{
+		if (c->neighbours[CN::right])
+			c->neighbours[CN::right]->shouldRecreate = 1;
+	}else if(-pos.x % 16 == 1)
+	{
+		if (c->neighbours[CN::right])
+			c->neighbours[CN::right]->shouldRecreate = 1;
+	}
+
+	if(pos.x % 16 == 0)
+	{
+		if (c->neighbours[CN::left])
+			c->neighbours[CN::left]->shouldRecreate = 1;
+	}
+
+	if (pos.z >= 0 && pos.z % 16 == 15)
+	{
+		if (c->neighbours[CN::front])
+			c->neighbours[CN::front]->shouldRecreate = 1;
+	}
+	else if (-pos.z % 16 == 1)
+	{
+		if (c->neighbours[CN::front])
+			c->neighbours[CN::front]->shouldRecreate = 1;
+	}
+
+	if (pos.z % 16 == 0)
+	{
+		if (c->neighbours[CN::back])
+			c->neighbours[CN::back]->shouldRecreate = 1;
+	}
+
 }
 
 void ChunkManager::setupChunk(Chunk *chunk, glm::vec2 p)
@@ -343,22 +398,41 @@ foundAll:
 	chunk->shouldRecreate = true;
 }
 
+//todo basic optimise
+//todo algoritmically optimise
+//todo fix it (request small numbers)
 void ChunkManager::bakeUnbakedChunks(int number)
 {
-	int soFar = 0;
-	for (auto &i : loadedChunks)
+	chunksForSort.clear();
+	int sofar = 0;
+	for(int i=0; i< loadedChunks.size(); i++)
 	{
-		if (i.shouldRecreate)
+		
+		if(loadedChunks[i].shouldRecreate)
 		{
-			i.shouldRecreate = false;
-			i.bakeMeshes();
+			sofar++;
+			chunksForSort.push_back({ &loadedChunks[i], 0, {loadedChunks[i].position.x, loadedChunks[i].position.z} });
+		}	
+	}
+
+	std::sort(chunksForSort.begin(), chunksForSort.end(), [](const ChunkData &first, const ChunkData &second) 
+	{
+		return first.position.x * first.position.x + first.position.y * first.position.y <
+			second.position.x * second.position.x + second.position.y * second.position.y;
+	});
+
+	int soFar = 0;
+	for (auto &i : chunksForSort)
+	{
+			i.chunk->shouldRecreate = false;
+			i.chunk->bakeMeshes();
 			soFar++;
 			if(soFar >= number)
 			{
 				break;
-			}
-		}
+			}	
 	}
+
 }
 
 void ChunkManager::bakeAllChunks()
