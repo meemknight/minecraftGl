@@ -33,7 +33,9 @@ glm::vec3 playerLastPos;
 int initGame()
 {
 	camera.position.y = 100;
-	camera.speed *= 0.4;
+	camera.speed *= 4;
+	camera.position.x = 0;
+	camera.position.z = 0;
 
 	playerLastPos = camera.position;
 
@@ -113,6 +115,18 @@ int gameLogic(float deltaTime)
 		camera.moveDown(deltaTime);
 	}
 
+	if (isKeyPressed('P'))
+	{
+		for(auto &i :chunkManager.loadedChunks)
+		{
+			i.shouldRecreate = true;
+			for(int j=0;j<6;j++)
+			{
+				i.positionData[j].size = 0;
+			}
+		}
+	}
+
 	camera.mouseUpdate(getRelMousePosition());
 
 #pragma endregion
@@ -131,7 +145,7 @@ int gameLogic(float deltaTime)
 
 	camera.getChunksInFrustrum(chunksToLoad);
 	Chunk **c = chunkManager.requestChunks(chunksToLoad.data(), chunksToLoad.size());
-	chunkManager.bakeUnbakedChunks(30);
+	chunkManager.bakeUnbakedChunks(30, { camera.position.x, camera.position.z });
 
 	cubeRenderer.draw(c, chunksToLoad.size());
 #pragma endregion

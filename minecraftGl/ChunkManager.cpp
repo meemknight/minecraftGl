@@ -60,6 +60,7 @@ void ChunkManager::reserveData(int size)
 
 Chunk **ChunkManager::requestChunks(glm::ivec3 *requestedC, int size)
 {
+	cachedChunk = {};
 	//reset data return data
 	returnVector.clear();
 
@@ -161,13 +162,20 @@ Chunk **ChunkManager::requestChunks(glm::ivec3 *requestedC, int size)
 
 Chunk **ChunkManager::requestChunk(glm::ivec3 chunk)
 {
-	//todo implement a better version of this
-	return (Chunk**)requestChunks(&chunk, 1);
+	if(cachedChunk.chunk&&chunk.x==cachedChunk.position.x && chunk.z == cachedChunk.position.y)
+	{
+		return &cachedChunk.chunk;
+	}
+
+	auto c = (Chunk**)requestChunks(&chunk, 1);
+
+	cachedChunk.chunk = *c;
+	cachedChunk.position.x = chunk.x;
+	cachedChunk.position.y = chunk.z;
+
+	return c;
 }
 
-//todo split into multiple functions for get and set
-//todo also consider updating near chunks
-//todo also optimize this
 Block &ChunkManager::getBlockRefUnsafe(glm::ivec3 pos, Chunk **outC)
 {
 	glm::ivec3 chunkPos = pos / CHUNK_SIZE; 
@@ -289,7 +297,7 @@ foundAll:
 	if (neighbours[CN::front])
 	{
 		neighbours[CN::front]->neighbours[CN::back] = chunk;
-		neighbours[CN::front]->shouldRecreate = true;	
+		neighbours[CN::front]->shouldRecreate = true;
 	}
 
 	if (neighbours[CN::back])
@@ -396,29 +404,34 @@ foundAll:
 	
 	//chunk->bakeMeshes();
 	chunk->shouldRecreate = true;
+	for (int i = 0; i < FACE::FACES_SIZE; i++)
+	{
+		chunk->positionData[i].size = 0;
+	}
+
 }
 
 //todo basic optimise
 //todo algoritmically optimise
 //todo fix it (request small numbers)
-void ChunkManager::bakeUnbakedChunks(int number)
+void ChunkManager::bakeUnbakedChunks(int number, glm::vec2 pos)
 {
+	pos /= 16;
 	chunksForSort.clear();
-	int sofar = 0;
 	for(int i=0; i< loadedChunks.size(); i++)
 	{
-		
 		if(loadedChunks[i].shouldRecreate)
 		{
-			sofar++;
-			chunksForSort.push_back({ &loadedChunks[i], 0, {loadedChunks[i].position.x, loadedChunks[i].position.z} });
+			chunksForSort.push_back({ &loadedChunks[i], {loadedChunks[i].position.x, loadedChunks[i].position.z} });
 		}	
 	}
 
-	std::sort(chunksForSort.begin(), chunksForSort.end(), [](const ChunkData &first, const ChunkData &second) 
+	std::sort(chunksForSort.begin(), chunksForSort.end(), [pos](const ChunkDataSimple &first, const ChunkDataSimple &second)
 	{
-		return first.position.x * first.position.x + first.position.y * first.position.y <
-			second.position.x * second.position.x + second.position.y * second.position.y;
+		auto a = first.position - glm::ivec2(pos.x, pos.y);
+		auto b = second.position - glm::ivec2(pos.x, pos.y);
+		return a.x * a.x + a.y * a.y <
+			b.x * b.x + b.y * b.y;
 	});
 
 	int soFar = 0;

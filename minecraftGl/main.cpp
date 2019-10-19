@@ -123,7 +123,7 @@ int main()
 				break;
 			}
 
-			llog(1.f/(deltaTime / 1000.f));
+			//llog(1.f/(deltaTime / 1000.f));
 
 			glfwSwapBuffers(window);
 		}

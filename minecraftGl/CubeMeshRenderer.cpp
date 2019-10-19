@@ -133,7 +133,7 @@ void CubeMeshRenderer::draw(Chunk **chunk, int size)
 	for(int index=0; index<size;index++)
 	{
 		Chunk &c = *chunk[index];
-
+		
 		for (int i = 0; i < FACE::FACES_SIZE; i++)
 		{
 			if (c.positionData[i].size)
@@ -150,6 +150,7 @@ void CubeMeshRenderer::draw(Chunk **chunk, int size)
 				glDrawElementsInstanced(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0, c.positionData[i].size / 5);
 			}
 		}
+
 	}
 
 	/*

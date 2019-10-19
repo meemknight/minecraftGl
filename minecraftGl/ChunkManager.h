@@ -10,12 +10,20 @@ struct ChunkData
 	glm::ivec2 position = {};
 };
 
+struct ChunkDataSimple
+{
+	Chunk *chunk = nullptr;
+	glm::ivec2 position = {};
+};
+
 struct ChunkManager
 {
 private:
 	//todo make another struct here
-	std::vector<ChunkData> chunksForSort;
+	std::vector<ChunkDataSimple> chunksForSort;
+	ChunkDataSimple cachedChunk;
 public:
+	//todo remove this
 	int chunksCount = 0;
 
 	ChunkManager() {};
@@ -39,6 +47,6 @@ public:
 	Block &getBlockRefUnsafe(glm::ivec3 pos, Chunk **outC = nullptr);
 
 	void setupChunk(Chunk *chunk, glm::vec2 p);
-	void bakeUnbakedChunks(int number);
+	void bakeUnbakedChunks(int number, glm::vec2 pos= {});
 	void bakeAllChunks();
 };
