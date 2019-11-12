@@ -33,8 +33,8 @@ glm::vec3 playerLastPos;
 int initGame()
 {
 	camera.position.y = 100;
-	camera.speed *= 4;
-	camera.position.x = 0;
+	camera.speed *= 0.81;
+	camera.position.x = 0.70;
 	camera.position.z = 0;
 
 	playerLastPos = camera.position;
@@ -140,21 +140,11 @@ int gameLogic(float deltaTime)
 #pragma endregion
 
 
-#pragma region drawing
-	chunksToLoad.clear();
-
-	camera.getChunksInFrustrum(chunksToLoad);
-	Chunk **c = chunkManager.requestChunks(chunksToLoad.data(), chunksToLoad.size());
-	chunkManager.bakeUnbakedChunks(30, { camera.position.x, camera.position.z });
-
-	cubeRenderer.draw(c, chunksToLoad.size());
-#pragma endregion
-
 #pragma region block placement
 
 	std::optional<glm::ivec3> coll, edge;
 
-	rayCastAdvanced(chunkManager, camera.position, camera.viewDirection, 15,
+	rayCastAdvanced(chunkManager, { camera.position.x + 0.5, camera.position.y + 0.5, camera.position.z + 0.5 }, camera.viewDirection, 25,
 		coll, edge);
 
 	if (coll.has_value())
@@ -181,7 +171,27 @@ int gameLogic(float deltaTime)
 #pragma endregion
 
 
-	//llog(floor(camera.position.x), floor(camera.position.z));
+#pragma region drawing
+	chunksToLoad.clear();
+
+	camera.getChunksInFrustrum(chunksToLoad);
+	Chunk **c = chunkManager.requestChunks(chunksToLoad.data(), chunksToLoad.size());
+	chunkManager.bakeUnbakedChunks(15, { camera.position.x, camera.position.z });
+
+	cubeRenderer.draw(c, chunksToLoad.size());
+
+	glUseProgram(0);
+	glDisable(GL_DEPTH_TEST);
+	glBegin(GL_TRIANGLES);
+	glVertex3f(0.f, 0.005f, 0);
+	glVertex3f(-0.005f, -0.005f,0);
+	glVertex3f(0.005f, -0.005f,0);
+	glEnd();
+	glEnable(GL_DEPTH_TEST);
+
+#pragma endregion
+
+	llog((camera.position.x), (camera.position.y), (camera.position.z));
 	//llog(camera.viewDirection.x, camera.viewDirection.y, camera.viewDirection.z);
 
 

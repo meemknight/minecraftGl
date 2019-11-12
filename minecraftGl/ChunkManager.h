@@ -19,7 +19,6 @@ struct ChunkDataSimple
 struct ChunkManager
 {
 private:
-	//todo make another struct here
 	std::vector<ChunkDataSimple> chunksForSort;
 	ChunkDataSimple cachedChunk;
 public:

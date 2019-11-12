@@ -32,9 +32,10 @@ void resolveConstrains(glm::vec3 &pos, glm::vec3 lastPos, ChunkManager &cm, glm:
 
 }
 
-constexpr float rayMarch = 0.1;
+constexpr float rayMarch = 0.01;
 glm::vec3 returnedVector;
 
+///probably deprecated
 std::optional<glm::vec3> rayCast(ChunkManager &cm, glm::vec3 position, glm::vec3 direction, float maxLength)
 {
 	float distanceTraveled = 0;
@@ -58,6 +59,7 @@ std::optional<glm::vec3> rayCast(ChunkManager &cm, glm::vec3 position, glm::vec3
 	return {};
 }
 
+///probably deprecated
 std::optional<glm::vec3> rayCastEdge(ChunkManager & cm, glm::vec3 position, glm::vec3 direction, float maxLength)
 {
 	float distanceTraveled = 0;
@@ -90,11 +92,11 @@ std::optional<glm::vec3> rayCastEdge(ChunkManager & cm, glm::vec3 position, glm:
 	return {};
 }
 
-
 void rayCastAdvanced(ChunkManager & cm, glm::vec3 position, glm::vec3 direction, float maxLength,
 	std::optional<glm::ivec3> &collide, std::optional<glm::ivec3> &edge)
 {
 	float distanceTraveled = 0;
+	int repetitions = 1;
 
 	direction = glm::normalize(direction);
 	direction *= rayMarch;
@@ -104,15 +106,16 @@ void rayCastAdvanced(ChunkManager & cm, glm::vec3 position, glm::vec3 direction,
 	glm::ivec3 curentPos = glm::floor(rayPos);
 	std::optional<glm::ivec3> lastPos = {};
 
+	Block b = cm.getBlock(curentPos);
 	while (distanceTraveled < maxLength)
 	{
-		Block b = cm.getBlock(curentPos);
 		if (b != BLOCK::air)
 		{
 			edge = lastPos;
 			collide = curentPos;
 			return;
 		}
+
 		rayPos += direction;
 		distanceTraveled += rayMarch;
 
@@ -120,6 +123,7 @@ void rayCastAdvanced(ChunkManager & cm, glm::vec3 position, glm::vec3 direction,
 		{
 			lastPos = curentPos;
 			curentPos = glm::floor(rayPos);
+			b = cm.getBlock(curentPos);
 		}
 	}
 

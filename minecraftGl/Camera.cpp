@@ -275,7 +275,6 @@ void FirstPersonCamera::moveBack(float speed)
 
 void FirstPersonCamera::mouseUpdate(const glm::vec2 & pos)
 {
-
 	glm::vec2 delta = pos - oldMousePosition;
 	delta.x *= -1;
 	delta.y *= -1;
@@ -302,7 +301,10 @@ void FirstPersonCamera::mouseUpdate(const glm::vec2 & pos)
 	}
 
 	viewDirection = glm::mat3(glm::rotate(glm::radians(delta.y * rSpeed), toRotate)) * viewDirection;
+	viewDirection = glm::normalize(viewDirection);
+
 noMove:
+
 	setRelMousePosition(getWindowSizeX() / 2, getWindowSizeY() / 2);
 	oldMousePosition = getRelMousePosition();
 }
