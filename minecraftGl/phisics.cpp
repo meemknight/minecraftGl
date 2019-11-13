@@ -1,32 +1,50 @@
 #include "phisics.h"
 #include "tools.h"
 
-std::vector<glm::ivec4> blocksToCheck;
+static std::vector<glm::ivec4> blocksToCheck;
 
 void resolveConstrains(glm::vec3 &pos, glm::vec3 lastPos, ChunkManager &cm, glm::vec3 dimensions, CubeWireRenderer *cw)
 {
+	dimensions.x /= 2;
+	//dimensions.y /= 2;
+	dimensions.z /= 2;
+
 	blocksToCheck.clear();
 	glm::vec3 delta = pos - lastPos;
 
 	//colliding downwards
-	float yDown = ceil(pos.y - dimensions.y - 1);
-	//if(delta.y < 0)
+	glm::vec3 posCopy = pos;
+	posCopy.x += 0.5f;
+	posCopy.z += 0.5f;
+
+	float yDown = ceil(posCopy.y - dimensions.y);
+	if(delta.y < 0)
 	{
-		int x = floorf(pos.x - dimensions.x);
-		int z = floorf(pos.z - dimensions.z);
+		int x = floorf(posCopy.x - dimensions.x);
+		int z;
 		
-		while(x < ceilf(pos.x + dimensions.x))
+		while(x < ceilf(posCopy.x + dimensions.x))
 		{
-			while (z < ceilf(pos.z + dimensions.z))
+			z = floorf(posCopy.z - dimensions.z);
+			while (z < ceilf(posCopy.z + dimensions.z))
 			{
 				blocksToCheck.emplace_back(x, yDown, z, 0);
-				//cw->addCube({ x, yDown, z }, { 1,0,0,1 });
+				cw->addCube({ x, yDown, z }, { 1,0,0,1 });
 				z++;
 			}
 			x++;
 		}
 
-		
+	
+		for(auto &i : blocksToCheck)
+		{
+			if (isSolid(cm.getBlock(i)))
+			{
+				pos.y = floorf(i.y + dimensions.y + 1);
+				break;
+			}
+		}
+
 	}
 
 
@@ -106,7 +124,16 @@ void rayCastAdvanced(ChunkManager & cm, glm::vec3 position, glm::vec3 direction,
 	glm::ivec3 curentPos = glm::floor(rayPos);
 	std::optional<glm::ivec3> lastPos = {};
 
-	Block b = cm.getBlock(curentPos);
+	Block b;
+	if(curentPos.y >= 0 && curentPos.y < BUILD_LIMIT)
+	{
+		b = cm.getBlock(curentPos);
+	}else
+	{
+		collide = {};
+		edge = {};
+	}
+
 	while (distanceTraveled < maxLength)
 	{
 		if (b != BLOCK::air)
@@ -123,7 +150,15 @@ void rayCastAdvanced(ChunkManager & cm, glm::vec3 position, glm::vec3 direction,
 		{
 			lastPos = curentPos;
 			curentPos = glm::floor(rayPos);
-			b = cm.getBlock(curentPos);
+			if (curentPos.y >= 0 && curentPos.y < BUILD_LIMIT)
+			{
+				b = cm.getBlock(curentPos);
+			}
+			else
+			{
+				collide = {};
+				edge = {};
+			}
 		}
 	}
 

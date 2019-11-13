@@ -34,7 +34,7 @@ int initGame()
 {
 	camera.position.y = 100;
 	camera.speed *= 0.81;
-	camera.position.x = 0.70;
+	camera.position.x = 0;
 	camera.position.z = 0;
 
 	playerLastPos = camera.position;
@@ -134,7 +134,7 @@ int gameLogic(float deltaTime)
 
 #pragma region player phisics
 	
-	resolveConstrains(camera.position, playerLastPos, chunkManager, { 0.5,2,0.5 }, &cubeWireRenderer);
+	resolveConstrains(camera.position, playerLastPos, chunkManager, { 1, 1.9, 1 }, &cubeWireRenderer);
 	playerLastPos = camera.position;
 
 #pragma endregion
@@ -150,6 +150,7 @@ int gameLogic(float deltaTime)
 	if (coll.has_value())
 	{
 		cubeWireRenderer.addCube({ coll.value() }, { 0.61,0.6,0.65,1 });
+		ilog(coll.value().x, coll.value().y, coll.value().z);
 
 		if (coll && isRMouseButtonPressed())
 		{
@@ -164,14 +165,15 @@ int gameLogic(float deltaTime)
 			chunkManager.setBlock(coll.value(), BLOCK::air);
 		}
 
-		cubeWireRenderer.draw();
-
 	}
 
 #pragma endregion
 
 
 #pragma region drawing
+
+	cubeWireRenderer.draw();
+
 	chunksToLoad.clear();
 
 	camera.getChunksInFrustrum(chunksToLoad);
@@ -179,6 +181,7 @@ int gameLogic(float deltaTime)
 	chunkManager.bakeUnbakedChunks(15, { camera.position.x, camera.position.z });
 
 	cubeRenderer.draw(c, chunksToLoad.size());
+
 
 	glUseProgram(0);
 	glDisable(GL_DEPTH_TEST);
@@ -191,7 +194,7 @@ int gameLogic(float deltaTime)
 
 #pragma endregion
 
-	llog((camera.position.x), (camera.position.y), (camera.position.z));
+	//llog((camera.position.x), (camera.position.y), (camera.position.z));
 	//llog(camera.viewDirection.x, camera.viewDirection.y, camera.viewDirection.z);
 
 

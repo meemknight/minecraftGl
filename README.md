@@ -25,3 +25,7 @@ Also i had to make shure that i only draw chunks that are visible to the payer
 around blocks or place and remove blocks. For that i made a very gross implementation of a ray cast.
 ![](https://github.com/meemknight/photos/blob/master/mc5.png)
 ---
+
+-I started to add some simple AABB type collision detection. It is now working just in one direction and one axe.
+![](https://github.com/meemknight/photos/blob/master/mc6.png)
+---
