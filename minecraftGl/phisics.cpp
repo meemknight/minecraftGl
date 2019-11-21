@@ -1,30 +1,25 @@
 #include "phisics.h"
 #include "tools.h"
 
+#define withDir( component, begin, end, direction) (int component = (direction) ? (begin) : (end); (direction) ? (component) <= (end) : (component) >= (begin); (direction) ? (component)++ : (component)--)
+
 static std::vector<glm::ivec4> blocksToCheck;
 
-void resolveConstrains(glm::vec3 &pos, glm::vec3 lastPos, ChunkManager &cm, glm::vec3 dimensions, CubeWireRenderer *cw)
+static void resolveConstrainsOnX(glm::vec3 &pos, glm::vec3 lastPos, ChunkManager &cm, glm::vec3 dimensions, CubeWireRenderer *cw, glm::vec3 delta)
 {
-	dimensions.x /= 2;
-	//dimensions.y /= 2;
-	dimensions.z /= 2;
-
-	glm::vec3 delta = pos - lastPos;
-
-	//colliding downwards
 	glm::vec3 posCopy = pos;
 	posCopy.x += 0.5f;
 	posCopy.z += 0.5f;
 
 	blocksToCheck.clear();
-	if(delta.x < 0)
+	if (delta.x < 0)
 	{
-		float xFront = ceil(posCopy.x - dimensions.x)-1;
-		
-		int y = posCopy.y - dimensions.y/2;
+		float xFront = ceil(posCopy.x - dimensions.x) - 1;
+
+		int y = posCopy.y - dimensions.y / 2;
 		int z;
 
-		while (y < ceilf(posCopy.y + dimensions.y/2))
+		while (y < ceilf(posCopy.y + dimensions.y / 2))
 		{
 			z = floorf(posCopy.z - dimensions.z);
 			while (z < ceilf(posCopy.z + dimensions.z))
@@ -45,10 +40,10 @@ void resolveConstrains(glm::vec3 &pos, glm::vec3 lastPos, ChunkManager &cm, glm:
 			}
 		}
 
-	}else
-	if(delta.x > 0)
+	}
+	else
+	if (delta.x > 0)
 	{
-
 		float xBack = ceil(posCopy.x - dimensions.x);
 
 		int y = posCopy.y - dimensions.y / 2;
@@ -76,78 +71,23 @@ void resolveConstrains(glm::vec3 &pos, glm::vec3 lastPos, ChunkManager &cm, glm:
 		}
 
 	}
+}
+
+static void resolveConstrainsOnY(glm::vec3 &pos, glm::vec3 lastPos, ChunkManager &cm, glm::vec3 dimensions, CubeWireRenderer *cw, glm::vec3 delta)
+{
+	glm::vec3 posCopy = pos;
+	posCopy.x += 0.5f;
+	posCopy.z += 0.5f;
 
 	blocksToCheck.clear();
-	if (delta.z < 0)
-	{
-		float zFront = ceil(posCopy.z - dimensions.z) - 1;
-
-		int y = posCopy.y - dimensions.y / 2;
-		int x;
-
-		while (y < ceilf(posCopy.y + dimensions.y / 2))
-		{
-			x = floorf(posCopy.x - dimensions.x);
-			while (x < ceilf(posCopy.x + dimensions.x))
-			{
-				blocksToCheck.emplace_back(x, y, zFront, 0);
-				cw->addCube({ x, y, zFront}, { 1,0,0,1 });
-				x++;
-			}
-			y++;
-		}
-
-		for (auto &i : blocksToCheck)
-		{
-			if (isSolid(cm.getBlock(i)))
-			{
-				pos.z = floorf(i.z + dimensions.z) + 1;
-				break;
-			}
-		}
-
-	}
-	else
-	if (delta.z > 0)
-	{
-
-		float zBack = ceil(posCopy.z - dimensions.z);
-
-		int y = posCopy.y - dimensions.y / 2;
-		int x;
-
-		while (y < ceilf(posCopy.y + dimensions.y / 2))
-		{
-			x = floorf(posCopy.x - dimensions.x);
-			while (x < ceilf(posCopy.x + dimensions.x))
-			{
-				blocksToCheck.emplace_back(x, y, zBack, 0);
-				cw->addCube({ x, y, zBack}, { 1,0,0,1 });
-				x++;
-			}
-			y++;
-		}
-
-		for (auto &i : blocksToCheck)
-		{
-			if (isSolid(cm.getBlock(i)))
-			{
-				pos.z = floorf(i.z + dimensions.z) - 1;
-				break;
-			}
-		}
-
-	}
-
-	blocksToCheck.clear();
-	if(delta.y < 0)//down
+	if (delta.y < 0)//down
 	{
 		float yDown = ceil(posCopy.y - dimensions.y);
 
 		int x = floorf(posCopy.x - dimensions.x);
 		int z;
-		
-		while(x < ceilf(posCopy.x + dimensions.x))
+
+		while (x < ceilf(posCopy.x + dimensions.x))
 		{
 			z = floorf(posCopy.z - dimensions.z);
 			while (z < ceilf(posCopy.z + dimensions.z))
@@ -159,8 +99,8 @@ void resolveConstrains(glm::vec3 &pos, glm::vec3 lastPos, ChunkManager &cm, glm:
 			x++;
 		}
 
-	
-		for(auto &i : blocksToCheck)
+
+		for (auto &i : blocksToCheck)
 		{
 			if (isSolid(cm.getBlock(i)))
 			{
@@ -169,8 +109,9 @@ void resolveConstrains(glm::vec3 &pos, glm::vec3 lastPos, ChunkManager &cm, glm:
 			}
 		}
 
-	}else
-	if(delta.y > 0)//up
+	}
+	else
+	if (delta.y > 0)//up
 	{
 		float yUp = ceil(posCopy.y - dimensions.y) + dimensions.y + 1;
 
@@ -195,7 +136,149 @@ void resolveConstrains(glm::vec3 &pos, glm::vec3 lastPos, ChunkManager &cm, glm:
 			if (isSolid(cm.getBlock(i)))
 			{
 				pos.y = floor(i.y) - 1;
-				break; 
+				break;
+			}
+		}
+	}
+
+}
+
+static void resolveConstrainsOnZ(glm::vec3 &pos, glm::vec3 lastPos, ChunkManager &cm, glm::vec3 dimensions, CubeWireRenderer *cw, glm::vec3 delta)
+{
+	glm::vec3 posCopy = pos;
+	posCopy.x += 0.5f;
+	posCopy.z += 0.5f;
+
+	blocksToCheck.clear();
+	if (delta.z < 0)
+	{
+		float zFront = ceil(posCopy.z - dimensions.z) - 1;
+
+		int y = posCopy.y - dimensions.y / 2;
+		int x;
+
+		while (y < ceilf(posCopy.y + dimensions.y / 2))
+		{
+			x = floorf(posCopy.x - dimensions.x);
+			while (x < ceilf(posCopy.x + dimensions.x))
+			{
+				blocksToCheck.emplace_back(x, y, zFront, 0);
+				cw->addCube({ x, y, zFront }, { 1,0,0,1 });
+				x++;
+			}
+			y++;
+		}
+
+		for (auto &i : blocksToCheck)
+		{
+			if (isSolid(cm.getBlock(i)))
+			{
+				pos.z = floorf(i.z + dimensions.z) + 1;
+				break;
+			}
+		}
+
+	}
+	else
+		if (delta.z > 0)
+		{
+
+			float zBack = ceil(posCopy.z - dimensions.z);
+
+			int y = posCopy.y - dimensions.y / 2;
+			int x;
+
+			while (y < ceilf(posCopy.y + dimensions.y / 2))
+			{
+				x = floorf(posCopy.x - dimensions.x);
+				while (x < ceilf(posCopy.x + dimensions.x))
+				{
+					blocksToCheck.emplace_back(x, y, zBack, 0);
+					cw->addCube({ x, y, zBack }, { 1,0,0,1 });
+					x++;
+				}
+				y++;
+			}
+
+			for (auto &i : blocksToCheck)
+			{
+				if (isSolid(cm.getBlock(i)))
+				{
+					pos.z = floorf(i.z + dimensions.z) - 1;
+					break;
+				}
+			}
+
+		}
+}
+
+static void resolveConstrainsOnBlock(
+	glm::vec3 &pos,
+	glm::vec3 lastPos,
+	ChunkManager &cm,
+	glm::vec3 dimensions,
+	CubeWireRenderer *cw,
+	glm::vec3 delta,
+	glm::ivec3 block)
+{
+	cw->addCube(block, { 1,0,0,1 });
+
+	if (delta.x < 0)
+	{
+		if (isSolid(cm.getBlock(block)))
+		{
+			pos.x = floorf(block.x + dimensions.x) + 1;
+		}
+	}else if(delta.x > 0)
+	{
+		if (isSolid(cm.getBlock(block)))
+		{
+			pos.x = floorf(block.x + dimensions.x) - 1;
+		}
+	}
+
+	if (delta.y < 0)//down
+	{
+		if (isSolid(cm.getBlock(block)))
+		{
+			pos.y = block.y + dimensions.y;
+		}
+	}else if (delta.y > 0)//up
+	{
+		if (isSolid(cm.getBlock(block)))
+		{
+			pos.y = floorf(block.y) - 1;
+		}
+	}
+	
+	
+
+
+
+}
+
+
+void resolveConstrains(glm::vec3 &pos, glm::vec3 lastPos, ChunkManager &cm, glm::vec3 dimensions, CubeWireRenderer *cw)
+{
+	dimensions.x /= 2;
+	//dimensions.y /= 2;
+	dimensions.z /= 2;
+
+	glm::vec3 delta = pos - lastPos;
+
+	glm::vec3 posCopy = pos;
+	posCopy.x += 0.5;
+	posCopy.z += 0.5;
+	
+	//foreach(x,y,functionPtr,boolDir)
+
+	for (int x = ceil(posCopy.x - dimensions.x)-1; x <= ceil(posCopy.x - dimensions.x); x++)
+	{
+		for withDir(y, ceil(posCopy.y - dimensions.y) ,floorf(posCopy.y) + 1, 1)
+		{
+			for (int z = ceil(posCopy.z - dimensions.z) - 1; z <= ceil(posCopy.z - dimensions.z); z++)
+			{
+				resolveConstrainsOnBlock(pos, lastPos, cm, dimensions, cw, delta, { x,y,z });
 			}
 		}
 	}
