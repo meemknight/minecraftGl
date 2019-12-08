@@ -33,7 +33,7 @@ glm::vec3 playerLastPos;
 int initGame()
 {
 	camera.position.y = 100;
-	camera.speed *= 0.081;
+	camera.speed *= 0.81;
 	camera.position.x = 0;
 	camera.position.z = 0;
 
@@ -134,26 +134,8 @@ int gameLogic(float deltaTime)
 
 #pragma region player phisics
 	
-	constexpr float r = 0.80;
-
-	glm::vec3 position = playerLastPos;
-	glm::vec3 vect = camera.position - playerLastPos;
-	glm::vec3 newLastPos;
-
-	newLastPos = position;
-	position.x += vect.x;
-	resolveConstrains(position, newLastPos, chunkManager, { 1, 1.9 * r, 1 * r }, &cubeWireRenderer);
-	
-	newLastPos = position;
-	position.y += vect.y;
-	resolveConstrains(position, newLastPos, chunkManager, { 1 * r, 1.9, 1 * r }, &cubeWireRenderer);
-	
-	newLastPos = position;
-	position.z += vect.z;
-	resolveConstrains(position, newLastPos, chunkManager, { 1 * r, 1.9 * r, 1 }, &cubeWireRenderer);
-	
-	camera.position = position;
-	playerLastPos = position;
+	resolveConstrains(camera.position, playerLastPos, chunkManager, { 1, 1.9, 1}, nullptr);
+	playerLastPos = camera.position;
 
 #pragma endregion
 
