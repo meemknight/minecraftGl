@@ -1,7 +1,7 @@
 #include "phisics.h"
 #include "tools.h"
 
-#define withDir( component, begin, end, direction) (int component = (direction) ? (begin) : (end); (direction) ? (component) <= (end) : (component) >= (begin); (direction) ? (component)++ : (component)--)
+#define withDir( component, begin, end, direction) (int component = (direction) ? (begin) : (end); (direction) ? (component) < (end) : (component) > (begin); (direction) ? (component)++ : (component)--)
 
 static std::vector<glm::ivec4> blocksToCheck;
 
@@ -104,7 +104,7 @@ static void resolveConstrainsOnY(glm::vec3 &pos, glm::vec3 lastPos, ChunkManager
 		{
 			if (isSolid(cm.getBlock(i)))
 			{
-				pos.y = floorf(i.y + dimensions.y + 1);
+				pos.y = i.y + dimensions.y;
 				break;
 			}
 		}
@@ -113,7 +113,7 @@ static void resolveConstrainsOnY(glm::vec3 &pos, glm::vec3 lastPos, ChunkManager
 	else
 	if (delta.y > 0)//up
 	{
-		float yUp = ceil(posCopy.y - dimensions.y) + dimensions.y + 1;
+		float yUp = floor(posCopy.y) + 1;
 
 		int x = floorf(posCopy.x - dimensions.x);
 		int z;
@@ -135,7 +135,7 @@ static void resolveConstrainsOnY(glm::vec3 &pos, glm::vec3 lastPos, ChunkManager
 		{
 			if (isSolid(cm.getBlock(i)))
 			{
-				pos.y = floor(i.y) - 1;
+				pos.y = i.y - 1;
 				break;
 			}
 		}
@@ -223,7 +223,7 @@ static void resolveConstrainsOnBlock(
 {
 	cw->addCube(block, { 1,0,0,1 });
 
-	if (delta.x < 0)
+	if (delta.x < 0) //left
 	{
 		if (isSolid(cm.getBlock(block)))
 		{
@@ -237,7 +237,7 @@ static void resolveConstrainsOnBlock(
 		}
 	}
 
-	if (delta.y < 0)//down
+	if (delta.y < 0) //down
 	{
 		if (isSolid(cm.getBlock(block)))
 		{
@@ -251,9 +251,20 @@ static void resolveConstrainsOnBlock(
 		}
 	}
 	
-	
-
-
+	if (delta.z < 0) //left
+	{
+		if (isSolid(cm.getBlock(block)))
+		{
+			pos.z = floorf(block.z + dimensions.z) + 1;
+		}
+	}
+	else if (delta.z > 0)
+	{
+		if (isSolid(cm.getBlock(block)))
+		{
+			pos.z = floorf(block.z + dimensions.z) - 1;
+		}
+	}
 
 }
 
@@ -267,23 +278,30 @@ void resolveConstrains(glm::vec3 &pos, glm::vec3 lastPos, ChunkManager &cm, glm:
 	glm::vec3 delta = pos - lastPos;
 
 	glm::vec3 posCopy = pos;
-	posCopy.x += 0.5;
-	posCopy.z += 0.5;
+	//posCopy.x += dimensions.x;
+	//posCopy.z += dimensions.z;
 	
 	//foreach(x,y,functionPtr,boolDir)
 
-	for (int x = ceil(posCopy.x - dimensions.x)-1; x <= ceil(posCopy.x - dimensions.x); x++)
-	{
-		for withDir(y, ceil(posCopy.y - dimensions.y) ,floorf(posCopy.y) + 1, 1)
-		{
-			for (int z = ceil(posCopy.z - dimensions.z) - 1; z <= ceil(posCopy.z - dimensions.z); z++)
+	for (int x = floor(posCopy.x - dimensions.x + 0.5); x <= floor(posCopy.x + dimensions.x + 0.5); x++)
+		for (int y = ceil(posCopy.y - dimensions.y); y <= floor(posCopy.y) + 1; y++)
+			for (int z = floor(posCopy.z - dimensions.z + 0.5); z <= floor(posCopy.z + dimensions.z + 0.5); z++)
 			{
 				resolveConstrainsOnBlock(pos, lastPos, cm, dimensions, cw, delta, { x,y,z });
 			}
-		}
-	}
 
+	//for withDir(x, ceil(posCopy.x - dimensions.x)-1, ceil(posCopy.x - dimensions.x), delta.x < 0)
+	//{
+	//	for withDir(y, ceil(posCopy.y - dimensions.y), floor(posCopy.y) + 1, delta.y<0)
+	//	{
+	//		for withDir(z, ceil(posCopy.z - dimensions.z) - 1, ceil(posCopy.z - dimensions.z), delta.z < 0)
+	//		{
+	//			resolveConstrainsOnBlock(pos, lastPos, cm, dimensions, cw, delta, { x,y,z });
+	//		}
+	//	}
+	//}
 
+	//resolveConstrainsOnY(pos, lastPos, cm, dimensions, cw, delta);
 }
 
 constexpr float rayMarch = 0.01;

@@ -134,8 +134,26 @@ int gameLogic(float deltaTime)
 
 #pragma region player phisics
 	
-	resolveConstrains(camera.position, playerLastPos, chunkManager, { 1, 1.9, 1 }, &cubeWireRenderer);
-	playerLastPos = camera.position;
+	constexpr float r = 0.80;
+
+	glm::vec3 position = playerLastPos;
+	glm::vec3 vect = camera.position - playerLastPos;
+	glm::vec3 newLastPos;
+
+	newLastPos = position;
+	position.x += vect.x;
+	resolveConstrains(position, newLastPos, chunkManager, { 1, 1.9 * r, 1 * r }, &cubeWireRenderer);
+	
+	newLastPos = position;
+	position.y += vect.y;
+	resolveConstrains(position, newLastPos, chunkManager, { 1 * r, 1.9, 1 * r }, &cubeWireRenderer);
+	
+	newLastPos = position;
+	position.z += vect.z;
+	resolveConstrains(position, newLastPos, chunkManager, { 1 * r, 1.9 * r, 1 }, &cubeWireRenderer);
+	
+	camera.position = position;
+	playerLastPos = position;
 
 #pragma endregion
 
