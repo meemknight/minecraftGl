@@ -275,13 +275,120 @@ void resolveConstrains(glm::vec3 &pos, glm::vec3 lastPos, ChunkManager &cm, glm:
 	//dimensions.y /= 2;
 	dimensions.z /= 2;
 
-	glm::vec3 delta = pos - lastPos;
 
 	glm::vec3 posCopy = pos;
 	//posCopy.x += dimensions.x;
 	//posCopy.z += dimensions.z;
 	
-	//foreach(x,y,functionPtr,boolDir)
+
+	glm::vec3 delta = pos - lastPos;
+
+	if(delta.x > 0) // dreapta
+	{
+		int x = floor(posCopy.x + dimensions.x + 0.5);
+		for (int y = ceil(posCopy.y - dimensions.y); y <= floor(posCopy.y - 0.1) + 1; y++)
+			for (int z = floor(posCopy.z - dimensions.z + 0.5); z <= floor(posCopy.z + dimensions.z + 0.5); z++)
+			{
+				glm::ivec3 block = { x,y,z };
+				cw->addCube(block, { 1,0,0,1 });
+				if (isSolid(cm.getBlock(block)))
+				{
+					pos.x = floorf(block.x + dimensions.x) - 1;
+				}
+			}
+	}
+	else if (delta.x < 0)  // stanga
+	{
+		int x = floor(posCopy.x - dimensions.x + 0.5);
+		for (int y = ceil(posCopy.y - dimensions.y); y <= floor(posCopy.y - 0.1) + 1; y++)
+			for (int z = floor(posCopy.z - dimensions.z + 0.5); z <= floor(posCopy.z + dimensions.z + 0.5); z++)
+			{
+				glm::ivec3 block = { x,y,z };
+				cw->addCube(block, { 1,0,0,1 });
+				if (isSolid(cm.getBlock(block)))
+				{
+					pos.x = floorf(block.x + dimensions.x) + 1;
+				}
+			}
+	}
+
+	if(delta.y > 0) // sus
+	{
+		int y = floor(posCopy.y) + 1;
+		for (int x = floor(posCopy.x - dimensions.x + 0.5); x <= floor(posCopy.x + dimensions.x + 0.5); x++)
+			for (int z = floor(posCopy.z - dimensions.z + 0.5); z <= floor(posCopy.z + dimensions.z + 0.5); z++)
+			{
+				glm::ivec3 block = { x,y,z };
+				cw->addCube(block, { 1,0,0,1 });
+				if (isSolid(cm.getBlock(block)))
+				{
+					pos.y = block.y - 1;
+				}
+			}
+	
+	}else if(delta.y < 0)
+	{
+		int y = ceil(posCopy.y - dimensions.y);
+		for (int x = floor(posCopy.x - dimensions.x + 0.5); x <= floor(posCopy.x + dimensions.x + 0.5); x++)
+			for (int z = floor(posCopy.z - dimensions.z + 0.5); z <= floor(posCopy.z + dimensions.z + 0.5); z++)
+			{
+				glm::ivec3 block = { x,y,z };
+				cw->addCube(block, { 1,0,0,1 });
+				if (isSolid(cm.getBlock(block)))
+				{
+					pos.y = block.y + dimensions.y;
+				}
+			}
+	
+	}
+
+	if (delta.z > 0) // fata
+	{
+		int z = floor(posCopy.z + dimensions.z + 0.5);
+		for (int x = floor(posCopy.x - dimensions.x + 0.5); x <= floor(posCopy.x + dimensions.x + 0.5); x++)
+			for (int y = ceil(posCopy.y - dimensions.y); y <= floor(posCopy.y - 0.1) + 1; y++)
+			{
+				glm::ivec3 block = { x,y,z };
+				cw->addCube(block, { 1,0,0,1 });
+				if (isSolid(cm.getBlock(block)))
+				{
+					pos.z = floorf(block.z + dimensions.z) - 1;
+				}
+			}
+
+	
+	}else if (delta.z < 0)
+	{
+		int z = floor(posCopy.z - dimensions.z + 0.5);
+		for (int x = floor(posCopy.x - dimensions.x + 0.5); x <= floor(posCopy.x + dimensions.x + 0.5); x++)
+			for (int y = ceil(posCopy.y - dimensions.y); y <= floor(posCopy.y - 0.1) + 1; y++)
+			{
+				glm::ivec3 block = { x,y,z };
+				cw->addCube(block, { 1,0,0,1 });
+				if (isSolid(cm.getBlock(block)))
+				{
+					pos.z = floorf(block.z + dimensions.z) + 1;
+				}
+			}
+	
+	}
+
+}
+
+/*
+void resolveConstrains(glm::vec3 &pos, glm::vec3 lastPos, ChunkManager &cm, glm::vec3 dimensions, CubeWireRenderer *cw)
+{
+	dimensions.x /= 2;
+	//dimensions.y /= 2;
+	dimensions.z /= 2;
+
+
+	glm::vec3 posCopy = pos;
+	//posCopy.x += dimensions.x;
+	//posCopy.z += dimensions.z;
+
+
+	glm::vec3 delta = pos - lastPos;
 
 	for (int x = floor(posCopy.x - dimensions.x + 0.5); x <= floor(posCopy.x + dimensions.x + 0.5); x++)
 		for (int y = ceil(posCopy.y - dimensions.y); y <= floor(posCopy.y) + 1; y++)
@@ -290,19 +397,8 @@ void resolveConstrains(glm::vec3 &pos, glm::vec3 lastPos, ChunkManager &cm, glm:
 				resolveConstrainsOnBlock(pos, lastPos, cm, dimensions, cw, delta, { x,y,z });
 			}
 
-	//for withDir(x, ceil(posCopy.x - dimensions.x)-1, ceil(posCopy.x - dimensions.x), delta.x < 0)
-	//{
-	//	for withDir(y, ceil(posCopy.y - dimensions.y), floor(posCopy.y) + 1, delta.y<0)
-	//	{
-	//		for withDir(z, ceil(posCopy.z - dimensions.z) - 1, ceil(posCopy.z - dimensions.z), delta.z < 0)
-	//		{
-	//			resolveConstrainsOnBlock(pos, lastPos, cm, dimensions, cw, delta, { x,y,z });
-	//		}
-	//	}
-	//}
-
-	//resolveConstrainsOnY(pos, lastPos, cm, dimensions, cw, delta);
 }
+*/
 
 constexpr float rayMarch = 0.01;
 glm::vec3 returnedVector;
