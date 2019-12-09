@@ -44,7 +44,8 @@ void CubeWireRenderer::draw()
 	glBindVertexArray(vertexArray);
 	sp->bind();
 
-	glNamedBufferData(perGeometryAttributes, dataToDraw.size * sizeof(float), dataToDraw.data, GL_STREAM_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, perGeometryAttributes);
+	glBufferData(GL_ARRAY_BUFFER, dataToDraw.size * sizeof(float), dataToDraw.data, GL_STREAM_DRAW);
 
 	glm::mat4 m = c->getProjectionViewMatrix();
 	glUniformMatrix4fv(u_mat, 1, GL_FALSE, &m[0][0]);

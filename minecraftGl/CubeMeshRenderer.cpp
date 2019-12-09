@@ -134,19 +134,21 @@ void CubeMeshRenderer::draw(Chunk **chunk, int size)
 	{
 		Chunk &c = *chunk[index];
 		
-		for (int i = 0; i < FACE::FACES_SIZE; i++)
-		{
-			if (c.positionData[i].size)
-			{
-				glNamedBufferData(positionsBuffer[i], c.positionData[i].size * sizeof(float), c.positionData[i].data, GL_STREAM_DRAW);
-			}
-		}
+		//for (int i = 0; i < FACE::FACES_SIZE; i++)
+		//{
+		//	if (c.positionData[i].size)
+		//	{
+		//		glNamedBufferData(positionsBuffer[i], c.positionData[i].size * sizeof(float), c.positionData[i].data, GL_STREAM_DRAW);
+		//	}
+		//}
 
 		for (int i = 0; i < FACE::FACES_SIZE; i++)
 		{
 			if (c.positionData[i].size)
 			{
 				glBindVertexArray(vertexArrays[i]);
+				glBindBuffer(GL_ARRAY_BUFFER, positionsBuffer[i]);
+				glBufferData(GL_ARRAY_BUFFER, c.positionData[i].size * sizeof(float), c.positionData[i].data, GL_STREAM_DRAW);
 				glDrawElementsInstanced(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0, c.positionData[i].size / 5);
 			}
 		}
@@ -189,19 +191,20 @@ void CubeMeshRenderer::create()
 	matUniformLocation = sp->getUniformLocation("u_mat");
 	magnifierUniformLocation = sp->getUniformLocation("u_magnifier");
 
-	glCreateBuffers(FACE::FACES_SIZE, facesBuffer);
-	glCreateBuffers(FACE::FACES_SIZE, facesIndexBuffer);
-	glCreateBuffers(FACE::FACES_SIZE, positionsBuffer);
+	glGenBuffers(FACE::FACES_SIZE, facesBuffer);
+	glGenBuffers(FACE::FACES_SIZE, facesIndexBuffer);
+	glGenBuffers(FACE::FACES_SIZE, positionsBuffer);
 	glGenVertexArrays(FACE::FACES_SIZE, vertexArrays);
 
 	for(int i=0; i<FACE::FACES_SIZE; i++)
 	{
-		glNamedBufferData(facesBuffer[i], sizeof(frontCubeData), cubeData[i], GL_STATIC_DRAW);
-		glNamedBufferData(facesIndexBuffer[i], sizeof(frontIndexBufferData), cubeIndexData[i], GL_STATIC_DRAW);
-
 		glBindVertexArray(vertexArrays[i]);
 		glBindBuffer(GL_ARRAY_BUFFER, facesBuffer[i]);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, facesIndexBuffer[i]);
+
+		glBufferData(GL_ARRAY_BUFFER, sizeof(frontCubeData), cubeData[i], GL_STATIC_DRAW);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(frontIndexBufferData), cubeIndexData[i], GL_STATIC_DRAW);
+
 		glVertexAttribPointer(0, 3, GL_FLOAT, 0, sizeof(float) * 5, 0);
 		glEnableVertexAttribArray(0);
 		glVertexAttribPointer(1, 2, GL_FLOAT, 0, sizeof(float) * 5, (void*)(sizeof(float) * 3));
