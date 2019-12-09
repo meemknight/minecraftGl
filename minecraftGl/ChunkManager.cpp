@@ -193,13 +193,7 @@ Block &ChunkManager::getBlockRefUnsafe(glm::ivec3 pos, Chunk **outC)
 
 	//ilog(c[0]->position.x, c[0]->position.z);
 
-
-	if (pos.y < 0)
-		std::terminate();
-
-	if (pos.y > BUILD_LIMIT)
-		std::terminate();
-
+	//todo when i perform collision on blocks outside, there should be something here to handle this prooblem.
 	Block &b =c[0]->getBlock(pos);
 	c[0]->shouldRecreate = 1;
 
@@ -213,11 +207,22 @@ Block &ChunkManager::getBlockRefUnsafe(glm::ivec3 pos, Chunk **outC)
 
 Block ChunkManager::getBlock(glm::ivec3 pos)
 {
-	return getBlockRefUnsafe(pos);
+	if(pos.y<0 || pos.y >= BUILD_LIMIT)
+	{
+		return BLOCK::air;
+	}else
+	{
+		return getBlockRefUnsafe(pos);
+	}
 }
 
 void ChunkManager::setBlock(glm::ivec3 pos, Block b)
 {
+	if (pos.y < 0 || pos.y >= BUILD_LIMIT)
+	{
+		return;
+	}
+
 	Chunk *c;
 	getBlockRefUnsafe(pos, &c) = b;
 

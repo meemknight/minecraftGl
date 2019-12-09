@@ -7,7 +7,13 @@
 #include "Camera.h"
 #include "platformIndependentCalls.h"
 #include <math.h>
+#include "tools.h"
 //#include <Windows.h>
+
+static bool isPositive(float n)
+{
+	return n >= 0;
+}
 
 glm::vec3 Camera::getFirstPersonPosition()
 {
@@ -279,31 +285,51 @@ void FirstPersonCamera::mouseUpdate(const glm::vec2 & pos)
 	delta.x *= -1;
 	delta.y *= -1;
 
-	//if (glm::length(delta) > 50.f) 
-	//{
-	//	oldMousePosition = pos;
-	//	return;
-	//}
 
 	glm::vec3 toRotate = glm::cross(viewDirection, upPositipon);
+	glm::vec3 oldPos = viewDirection;
+	glm::vec3 tiltTest = glm::mat3(glm::rotate(glm::radians(delta.y * rSpeed), toRotate)) * viewDirection;
 
 	viewDirection = glm::mat3(glm::rotate(glm::radians(delta.x * rSpeed), upPositipon)) * viewDirection;
 
+	/*
+	constexpr float maxUpDown = 0.95;
 	if (delta.y < 0)
 	{	//down
-		if (viewDirection.y < -0.95)
+		if (viewDirection.y < -maxUpDown)
+		{
+			//viewDirection.y = -maxUpDown;
+			
 			goto noMove;
+		}
 	}
 	else
 	{	//up
-		if (viewDirection.y > 0.95)
+		if (viewDirection.y > maxUpDown)
+		{
+			//viewDirection.y = maxUpDown;
 			goto noMove;
+		}
 	}
 
 	viewDirection = glm::mat3(glm::rotate(glm::radians(delta.y * rSpeed), toRotate)) * viewDirection;
 	viewDirection = glm::normalize(viewDirection);
+	*/
 
-noMove:
+	
+	if (isPositive(oldPos.x) == !isPositive(tiltTest.x) &&
+		isPositive(oldPos.z) == !isPositive(tiltTest.z))
+	{
+	
+		// no move
+	}else
+	{
+		glm::vec3 newDir = glm::mat3(glm::rotate(glm::radians(delta.y * rSpeed), toRotate)) * viewDirection;
+		newDir = glm::normalize(newDir);
+		viewDirection = newDir;
+	}
+
+	llog((viewDirection.x), (viewDirection.y), (viewDirection.z));
 
 	setRelMousePosition(getWindowSizeX() / 2, getWindowSizeY() / 2);
 	oldMousePosition = getRelMousePosition();

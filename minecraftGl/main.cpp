@@ -74,7 +74,6 @@ int main()
 	float heigth = 680;
 	
 	//glfwWindowHint(GLFW_SAMPLES, 4);
-
 	window = glfwCreateWindow(width, heigth, "Minicraft", NULL, NULL);
 
 	if (!window)
@@ -133,6 +132,8 @@ int main()
 	glfwDestroyWindow(window);
 	glfwTerminate();
 	
+	//while (1) {}
+
 	return 0;
 }
 

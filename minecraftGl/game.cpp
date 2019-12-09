@@ -194,7 +194,7 @@ int gameLogic(float deltaTime)
 
 #pragma endregion
 
-	llog((camera.position.x), (camera.position.y), (camera.position.z));
+	//llog((camera.position.x), (camera.position.y), (camera.position.z));
 	//llog(camera.viewDirection.x, camera.viewDirection.y, camera.viewDirection.z);
 
 

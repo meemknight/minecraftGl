@@ -270,7 +270,7 @@ static void resolveConstrainsOnBlock(
 
 void resolveConstrains(glm::vec3 &pos, glm::vec3 lastPos, ChunkManager &cm, glm::vec3 dimensions, CubeWireRenderer *cw) 
 {
-	constexpr float r = 0.90;
+	constexpr float r = 0.95;
 
 	glm::vec3 position = lastPos;
 	glm::vec3 vect = pos - lastPos;
@@ -523,6 +523,7 @@ void rayCastAdvanced(ChunkManager & cm, glm::vec3 position, glm::vec3 direction,
 		b = cm.getBlock(curentPos);
 	}else
 	{
+		b = BLOCK::air;
 		collide = {};
 		edge = {};
 	}
@@ -545,6 +546,7 @@ void rayCastAdvanced(ChunkManager & cm, glm::vec3 position, glm::vec3 direction,
 			curentPos = glm::floor(rayPos);
 			if (curentPos.y >= 0 && curentPos.y < BUILD_LIMIT)
 			{
+				//todo when go to the limit solve ghostblock
 				b = cm.getBlock(curentPos);
 			}
 			else
