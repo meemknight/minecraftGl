@@ -329,7 +329,8 @@ void FirstPersonCamera::mouseUpdate(const glm::vec2 & pos)
 		viewDirection = newDir;
 	}
 
-	llog((viewDirection.x), (viewDirection.y), (viewDirection.z));
+	//todo remove last camera problems
+	//llog((viewDirection.x), (viewDirection.y), (viewDirection.z));
 
 	setRelMousePosition(getWindowSizeX() / 2, getWindowSizeY() / 2);
 	oldMousePosition = getRelMousePosition();

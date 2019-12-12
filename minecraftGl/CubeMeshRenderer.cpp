@@ -121,7 +121,11 @@ unsigned int *cubeIndexData[FACE::FACES_SIZE]{ frontIndexBufferData, backIndexBu
 
 void CubeMeshRenderer::draw(Chunk **chunk, int size)
 {
+	assert(sp, "Error, no shader");
 	sp->bind();
+
+	assert(texture, "Error, no texture");
+	texture->bind();
 
 	glm::mat4 m = camera->getProjectionViewMatrix();
 	float mag = 1.f / (float)texture->subDivisions;
@@ -130,22 +134,16 @@ void CubeMeshRenderer::draw(Chunk **chunk, int size)
 	glUniform1i(textureUniformLocation, 0);
 	glUniform1f(magnifierUniformLocation, mag);
 
+	/*
 	for(int index=0; index<size;index++)
 	{
 		Chunk &c = *chunk[index];
-		
-		//for (int i = 0; i < FACE::FACES_SIZE; i++)
-		//{
-		//	if (c.positionData[i].size)
-		//	{
-		//		glNamedBufferData(positionsBuffer[i], c.positionData[i].size * sizeof(float), c.positionData[i].data, GL_STREAM_DRAW);
-		//	}
-		//}
 
 		for (int i = 0; i < FACE::FACES_SIZE; i++)
 		{
 			if (c.positionData[i].size)
 			{
+				//todo change order so that you don't have to bind, check if it is faster
 				glBindVertexArray(vertexArrays[i]);
 				glBindBuffer(GL_ARRAY_BUFFER, positionsBuffer[i]);
 				glBufferData(GL_ARRAY_BUFFER, c.positionData[i].size * sizeof(float), c.positionData[i].data, GL_STREAM_DRAW);
@@ -154,30 +152,36 @@ void CubeMeshRenderer::draw(Chunk **chunk, int size)
 		}
 
 	}
-
-	/*
+	*/
+	
 	int sizes[FACE::FACES_SIZE] = {};
 
 	for (int index = 0; index < size; index++)
 	{
+		Chunk &c = *chunk[index];
 		for (int i = 0; i < FACE::FACES_SIZE; i++)
 		{
-			Chunk &c = *chunk[index];
 			sizes[i] += c.positionData[i].size;
 		}
 	}
 
-	for (int index = 0; index < size; index++)
+	for (int i = 0; i < FACE::FACES_SIZE; i++)
 	{
-		for (int i = 0; i < FACE::FACES_SIZE; i++)
+		glBindBuffer(GL_ARRAY_BUFFER, positionsBuffer[i]);
+		glBufferData(GL_ARRAY_BUFFER, sizes[i] * sizeof(float), nullptr, GL_STREAM_DRAW);
+		int pos = 0;
+		for (int index = 0; index < size; index++)
 		{
-			if (sizes[i])
-			{
-				glNamedBufferData(positionsBuffer[i], c.positionData[i].size * sizeof(float), c.positionData[i].data, GL_STREAM_DRAW);
-			}
+			Chunk &c = *chunk[index];
+			
+			glBufferSubData(GL_ARRAY_BUFFER, pos * sizeof(float),  c.positionData[i].size * sizeof(float), c.positionData[i].data);
+			pos += c.positionData[i].size;
 		}
+
+		glBindVertexArray(vertexArrays[i]);
+		glDrawElementsInstanced(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0, sizes[i] / 5);
 	}
-	*/
+	
 	glBindVertexArray(0);
 }
 
@@ -187,6 +191,8 @@ void CubeMeshRenderer::cleanup()
 
 void CubeMeshRenderer::create()
 {
+	//singleCubeData.reserve()
+
 	textureUniformLocation = sp->getUniformLocation("u_texture");
 	matUniformLocation = sp->getUniformLocation("u_mat");
 	magnifierUniformLocation = sp->getUniformLocation("u_magnifier");
@@ -227,4 +233,8 @@ void CubeMeshRenderer::create()
 
 	glBindVertexArray(0);
 
+}
+
+void CubeMeshRenderer::addSingleCube(int x, int y, int z, Block type)
+{
 }

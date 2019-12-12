@@ -182,15 +182,14 @@ int gameLogic(float deltaTime)
 
 	cubeRenderer.draw(c, chunksToLoad.size());
 
-
-	glUseProgram(0);
-	glDisable(GL_DEPTH_TEST);
-	glBegin(GL_TRIANGLES);
-	glVertex3f(0.f, 0.005f, 0);
-	glVertex3f(-0.005f, -0.005f,0);
-	glVertex3f(0.005f, -0.005f,0);
-	glEnd();
-	glEnable(GL_DEPTH_TEST);
+	//glUseProgram(0);
+	//glDisable(GL_DEPTH_TEST);
+	//glBegin(GL_TRIANGLES);
+	//glVertex3f(0.f, 0.005f, 0);
+	//glVertex3f(-0.005f, -0.005f,0);
+	//glVertex3f(0.005f, -0.005f,0);
+	//glEnd();
+	//glEnable(GL_DEPTH_TEST);
 
 #pragma endregion
 

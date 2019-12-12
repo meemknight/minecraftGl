@@ -26,6 +26,9 @@ struct CubeMeshRenderer
 	void cleanup();
 	void create();
 
+	void addSingleCube(int x, int y, int z, Block type);
+	void addSignleCube(glm::vec3 pos, Block type) { addSingleCube(pos.x, pos.y, pos.z, type); }
+
 	GLint textureUniformLocation = -1;
 	GLint matUniformLocation = -1;
 	GLint indexUniformLocation = -1;
