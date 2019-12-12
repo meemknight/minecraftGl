@@ -134,25 +134,6 @@ void CubeMeshRenderer::draw(Chunk **chunk, int size)
 	glUniform1i(textureUniformLocation, 0);
 	glUniform1f(magnifierUniformLocation, mag);
 
-	/*
-	for(int index=0; index<size;index++)
-	{
-		Chunk &c = *chunk[index];
-
-		for (int i = 0; i < FACE::FACES_SIZE; i++)
-		{
-			if (c.positionData[i].size)
-			{
-				//todo change order so that you don't have to bind, check if it is faster
-				glBindVertexArray(vertexArrays[i]);
-				glBindBuffer(GL_ARRAY_BUFFER, positionsBuffer[i]);
-				glBufferData(GL_ARRAY_BUFFER, c.positionData[i].size * sizeof(float), c.positionData[i].data, GL_STREAM_DRAW);
-				glDrawElementsInstanced(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0, c.positionData[i].size / 5);
-			}
-		}
-
-	}
-	*/
 	
 	int sizes[FACE::FACES_SIZE] = {};
 
@@ -163,6 +144,12 @@ void CubeMeshRenderer::draw(Chunk **chunk, int size)
 		{
 			sizes[i] += c.positionData[i].size;
 		}
+
+	}
+	
+	for(int i=0; i< FACE::FACES_SIZE; i++)
+	{
+		sizes[i] += additionalBlocks.size() * 5;
 	}
 
 	for (int i = 0; i < FACE::FACES_SIZE; i++)
@@ -170,6 +157,22 @@ void CubeMeshRenderer::draw(Chunk **chunk, int size)
 		glBindBuffer(GL_ARRAY_BUFFER, positionsBuffer[i]);
 		glBufferData(GL_ARRAY_BUFFER, sizes[i] * sizeof(float), nullptr, GL_STREAM_DRAW);
 		int pos = 0;
+
+		for (int index = 0; index < additionalBlocks.size(); index++)
+		{
+			glm::vec3 &p = additionalBlocks[index].pos;
+			float f[5];
+			f[0] = p.x;
+			f[1] = p.y;
+			f[2] = p.z;
+			BlockFace face = getBlockFace(additionalBlocks[index].b, i);
+			f[3] = face.x;
+			f[4] = face.y;
+
+			glBufferSubData(GL_ARRAY_BUFFER, pos * sizeof(float), 5 * sizeof(float), f);
+			pos += 5;
+		}
+
 		for (int index = 0; index < size; index++)
 		{
 			Chunk &c = *chunk[index];
@@ -182,6 +185,8 @@ void CubeMeshRenderer::draw(Chunk **chunk, int size)
 		glDrawElementsInstanced(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0, sizes[i] / 5);
 	}
 	
+	additionalBlocks.clear();
+
 	glBindVertexArray(0);
 }
 
@@ -191,7 +196,7 @@ void CubeMeshRenderer::cleanup()
 
 void CubeMeshRenderer::create()
 {
-	//singleCubeData.reserve()
+	additionalBlocks.reserve(4);
 
 	textureUniformLocation = sp->getUniformLocation("u_texture");
 	matUniformLocation = sp->getUniformLocation("u_mat");

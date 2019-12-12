@@ -7,6 +7,12 @@
 #include "FloatVector.h"
 #include "Chunk.h"
 
+struct BlockWithPos
+{
+	glm::vec3 pos;
+	Block b;
+};
+
 struct CubeMeshRenderer
 {
 	CubeMeshRenderer() {};
@@ -21,6 +27,8 @@ struct CubeMeshRenderer
 	GLuint vertexArrays[FACE::FACES_SIZE];
 
 	FloatVector positionData[FACE::FACES_SIZE];
+
+	std::vector<BlockWithPos> additionalBlocks;
 
 	void draw(Chunk **c, int size);
 	void cleanup();

@@ -180,6 +180,7 @@ int gameLogic(float deltaTime)
 	Chunk **c = chunkManager.requestChunks(chunksToLoad.data(), chunksToLoad.size());
 	chunkManager.bakeUnbakedChunks(15, { camera.position.x, camera.position.z });
 
+	cubeRenderer.additionalBlocks.push_back({ { 0,100,0 }, BLOCK::gold_block });
 	cubeRenderer.draw(c, chunksToLoad.size());
 
 	//glUseProgram(0);
