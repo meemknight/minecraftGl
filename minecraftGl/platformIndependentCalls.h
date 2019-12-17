@@ -1,6 +1,9 @@
 #pragma once
 #include <glm/glm.hpp>
 
+//#define MGL_INDEPENDENT
+#define MGL_WIN
+
 void errorMessage(const char *c);
 
 ///sets the mouse pos relative to the window's drawing area

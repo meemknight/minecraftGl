@@ -1,9 +1,9 @@
-#version 330 core
+#version 330
 
-in layout (location = 0) vec4 model;
-in layout (location = 1) vec2 texCoord;
-in layout (location = 2) vec3 translation;
-in layout (location = 3) vec2 texIndex;
+layout (location = 0) in vec4 model;
+layout (location = 1) in vec2 texCoord;
+layout (location = 2) in vec3 translation;
+layout (location = 3) in vec2 texIndex;
 
 out vec2 v_texCoord;
 uniform mat4 u_mat;

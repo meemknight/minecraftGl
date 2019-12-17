@@ -1,8 +1,8 @@
-#version 330 core
+#version 330
 
-in layout (location = 0) vec4 model;
-in layout (location = 1) vec3 translation;
-in layout (location = 2) vec4 color;
+layout (location = 0) in vec4 model;
+layout (location = 1) in vec3 translation;
+layout (location = 2) in vec4 color;
 
 out vec4 v_color;
 uniform mat4 u_mat;

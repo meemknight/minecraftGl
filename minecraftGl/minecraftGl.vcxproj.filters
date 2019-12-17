@@ -54,6 +54,9 @@
     <ClCompile Include="debugTools.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="winMain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h">

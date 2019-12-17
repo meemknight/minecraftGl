@@ -1,4 +1,6 @@
 #include "platformIndependentCalls.h"
+
+#ifdef MGL_INDEPENDENT
 #include "game.h"
 
 #include <GL/glew.h>
@@ -105,7 +107,6 @@ int main()
 		int time2 = clock();
 
 		ShowCursor(0);
-		Sleep(1000);
 		while (!glfwWindowShouldClose(window))
 		{
 			lbuttonPressed = 0;
@@ -141,7 +142,7 @@ int main()
 ///////////////////////////////////////////////
 void errorMessage(const char *c) 
 {
-	MessageBoxA(0, c, "error", MB_ICONERROR);
+	std::cout << "error: " << c;
 }
 
 
@@ -194,3 +195,5 @@ void showMouse(bool show)
 {
 
 }
+
+#endif // MGL_INDEPENDENT
