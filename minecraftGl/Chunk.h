@@ -24,15 +24,17 @@ struct Chunk
 
 	Block blockData[CHUNK_SIZE][BUILD_LIMIT][CHUNK_SIZE];
 
-	void clear() { memset(blockData, 0, sizeof(blockData)); }
+	void clearBlockData() { memset(blockData, 0, sizeof(blockData)); }
 
-	Block &getBlock(glm::vec3 v) { return getBlock(v.x, v.y, v.z); }
+	Block &getBlock(glm::ivec3 v) { return getBlock(v.x, v.y, v.z); }
 	Block &getBlock(int x, int y, int z) { return blockData[x][y][z]; }
 		
-	glm::vec3 position;
-	glm::vec3 getPositionInUnits() { return { position.x * CHUNK_SIZE, position.y, position.z * CHUNK_SIZE }; }
+	//the position is rel to chunk mesh
+	glm::ivec3 position;
+	glm::ivec3 getPositionInUnits() { return { position.x * CHUNK_SIZE, position.y, position.z * CHUNK_SIZE }; }
 
-	int shouldRecreate = 0;
+	unsigned char shouldRecreate = 0;
+	unsigned char shouldReSave = 0;
 
 	Chunk *neighbours[4] = { 0 };
 

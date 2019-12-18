@@ -6,6 +6,11 @@
 #include "game.h"
 #include <GL/glew.h>
 #include <ctime>
+#include <stdio.h>
+#include <io.h>
+#include <fcntl.h>
+
+#include "tools.h"
 
 LRESULT CALLBACK windProc(HWND, UINT, WPARAM, LPARAM);
 static bool quit = 0;
@@ -20,8 +25,10 @@ static int lbuttonPressed = 0;
 static int rbuttonPressed = 0;
 
 
-int APIENTRY WinMain(HINSTANCE h, HINSTANCE, LPSTR cmd, int show)
+int MAIN
 {
+	HINSTANCE h = GetModuleHandle(0);
+
 	WNDCLASS wc = {};
 	wc.hInstance = h;
 	wc.lpfnWndProc = windProc;
@@ -39,8 +46,8 @@ int APIENTRY WinMain(HINSTANCE h, HINSTANCE, LPSTR cmd, int show)
 		wc.lpszClassName,
 		"Minicraft",
 		WS_OVERLAPPEDWINDOW | WS_VISIBLE,
-		CW_USEDEFAULT,
-		CW_USEDEFAULT,
+		600,
+		100,
 		width,
 		heigth,
 		NULL,
@@ -95,6 +102,11 @@ int APIENTRY WinMain(HINSTANCE h, HINSTANCE, LPSTR cmd, int show)
 	
 	}
 
+	closeGame();
+
+	while (1) {};
+
+	return 0;
 }
 
 LRESULT CALLBACK windProc(HWND wind, UINT m, WPARAM wp, LPARAM lp)
@@ -234,6 +246,7 @@ int isRMouseHeld()
 
 void showMouse(bool show)
 {
+	ShowCursor(show);
 }
 
 #endif // MGL_WIN

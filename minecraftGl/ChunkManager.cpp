@@ -5,8 +5,12 @@
 #include "ChunkManager.h"
 #include "PerlinNoise.hpp"
 #include "tools.h"
+#include "fileHandler.h"
 
 static siv::PerlinNoise noise;
+
+extern ChunkFileHandler fileHandler;
+
 
 float constexpr E = 2.71828182846;
 
@@ -87,6 +91,7 @@ Chunk **ChunkManager::requestChunks(glm::ivec3 *requestedC, int size)
 				returnVector.push_back(chunkData[pos].chunk);
 			}
 		}
+		ilog("resized buffer:", size);
 
 		return returnVector.data();
 	}
@@ -99,6 +104,7 @@ Chunk **ChunkManager::requestChunks(glm::ivec3 *requestedC, int size)
 	//first see what data is used
 	for (int i = 0; i < chunkData.size(); i++)
 	{
+		//this are the requested chunks (0 - size)
 		for(int j=0; j<size; j++)
 		{
 			if (chunkData[i].chunk && chunkData[i].position.x == requestedC[j].x && chunkData[i].position.y == requestedC[j].z)
@@ -106,6 +112,7 @@ Chunk **ChunkManager::requestChunks(glm::ivec3 *requestedC, int size)
 				chunkData[i].used = 1;
 				requestedC[j].y = 1;
 				returnVector.push_back(chunkData[i].chunk);
+				break;
 			}
 		}
 	}
@@ -195,7 +202,6 @@ Block &ChunkManager::getBlockRefUnsafe(glm::ivec3 pos, Chunk **outC)
 
 	//todo when i perform collision on blocks outside, there should be something here to handle this prooblem.
 	Block &b =c[0]->getBlock(pos);
-	c[0]->shouldRecreate = 1;
 
 	if (outC)
 	{
@@ -222,9 +228,17 @@ void ChunkManager::setBlock(glm::ivec3 pos, Block b)
 	{
 		return;
 	}
+	
+	
 
 	Chunk *c;
 	getBlockRefUnsafe(pos, &c) = b;
+
+	wlog("savedChunk: ", c->position.x, c->position.z);
+	fileHandler.saveChunk(*c);
+
+	c->shouldRecreate = 1;
+	c->shouldReSave = 1;
 
 	if(pos.x >= 0 && pos.x % 16 == 15)
 	{
@@ -263,12 +277,16 @@ void ChunkManager::setBlock(glm::ivec3 pos, Block b)
 
 void ChunkManager::setupChunk(Chunk *chunk, glm::vec2 p)
 {
+	if(chunk->shouldReSave)
+	{
+	
+	}
+
 	chunk->removeNeighboursLinkage();
-	chunk->clear();
+	//chunk->clearBlockData();
 	chunk->resetMeshes();
 	chunk->position = { p.x, 0 ,p.y };
-	int posX = p.x;
-	int posZ = p.y;
+
 #pragma region neighbours
 
 	Chunk *neighbours[4] = {};
@@ -404,11 +422,17 @@ foundAll:
 			}
 
 			chunk->getBlock(x, grassPos - 1, z) = BLOCK::grass;
+
+			for(int y= grassPos; y<BUILD_LIMIT; y++)
+			{
+				chunk->getBlock(x, y, z) = BLOCK::air;
+			}
 		}
 	}
 	
 	//chunk->bakeMeshes();
 	chunk->shouldRecreate = true;
+	chunk->shouldReSave = false;
 	for (int i = 0; i < FACE::FACES_SIZE; i++)
 	{
 		chunk->positionData[i].size = 0;

@@ -395,3 +395,6 @@ Debug
 Release
 minecraftGl/Debug
 minecraftGl/Release
+
+# saves
+/saves

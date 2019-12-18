@@ -9,6 +9,7 @@
 #include "stb_image.h"
 #include "phisics.h"
 #include "debugTools.h"
+#include "fileHandler.h"
 
 ShaderProgram sp;
 ShaderProgram spNoTexture;
@@ -25,6 +26,8 @@ CubeMeshRenderer cubeRenderer;
 CubeWireRenderer cubeWireRenderer;
 
 ChunkManager chunkManager;
+
+ChunkFileHandler fileHandler;
 
 std::vector<glm::ivec3> chunksToLoad;
 
@@ -199,4 +202,16 @@ int gameLogic(float deltaTime)
 
 
 	return 1;
+}
+
+void closeGame()
+{
+	//for(auto &i : chunkManager.loadedChunks)
+	//{
+	//	if(i.shouldReSave)
+	//	{
+	//		wlog("ClosedsavedChunk: ", i.position.x, i.position.y);
+	//	}
+	//}
+
 }
