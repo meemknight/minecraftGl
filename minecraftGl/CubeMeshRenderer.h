@@ -41,4 +41,5 @@ struct CubeMeshRenderer
 	GLint matUniformLocation = -1;
 	GLint indexUniformLocation = -1;
 	GLint magnifierUniformLocation = -1;
+	GLint ambienceUniformLocation = -1;
 };

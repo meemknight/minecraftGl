@@ -4,7 +4,7 @@ constexpr float r = 0.5f;
 
 #pragma region cubeData
 
-float frontCubeData[] =
+const float frontCubeData[] =
 {
 	-1.0f*r, 1.0f*r, 1.0*r,//pos
 	 0.0f, 1.0f,//texcoord
@@ -19,7 +19,7 @@ float frontCubeData[] =
 	 1.0f, 1.0f,
 };
 
-float backCubeData[] = 
+const float backCubeData[] =
 {
 	-1.0f*r, 1.0f*r, -1.0*r,//pos
 	 1.0f, 1.0f,//texcoord
@@ -34,7 +34,7 @@ float backCubeData[] =
 	 0.0f, 1.0f,
 };
 
-float topCubeData[] =
+const float topCubeData[] =
 {
 		-1.0f*r, 1.0f*r, -1.0*r,
 		0.0f, 1.0f,
@@ -49,22 +49,22 @@ float topCubeData[] =
 		1.0f, 1.0f,
 };
 
-float bottomCubeData[] =
+const float bottomCubeData[] =
 {
 		-1.0f*r, -1.0f*r, -1.0*r,
-		0.0f, 1.0f,
-
-		-1.0f*r, -1.0f*r, 1.0*r,
-		0.0f, 0.0f,
-
-		1.0f*r, -1.0f*r, 1.0*r,
 		1.0f, 0.0f,
 
-		1.0f*r, -1.0f*r, -1.0*r,
+		-1.0f*r, -1.0f*r, 1.0*r,
 		1.0f, 1.0f,
+
+		1.0f*r, -1.0f*r, 1.0*r,
+		0.0f, 1.0f,
+
+		1.0f*r, -1.0f*r, -1.0*r,
+		0.0f, 0.0f,
 };
 
-float leftCubeData[] = 
+const float leftCubeData[] =
 {
 	-1.0f*r, 1.0f*r, -1.0*r,
 	 0.0f, 1.0f,
@@ -79,7 +79,7 @@ float leftCubeData[] =
 	 1.0f, 1.0f,
 };
 
-float rightCubeData[] =
+const float rightCubeData[] =
 {
 	1.0f*r, 1.0f*r, -1.0*r,
 	 1.0f, 1.0f,
@@ -94,7 +94,7 @@ float rightCubeData[] =
 	 0.0f, 1.0f,
 };
 
-unsigned int frontIndexBufferData[] =
+const unsigned int frontIndexBufferData[] =
 {
 	0,
 	1,
@@ -104,7 +104,7 @@ unsigned int frontIndexBufferData[] =
 	2,
 };
 
-unsigned int backIndexBufferData[] =
+const unsigned int backIndexBufferData[] =
 {
 	3,
 	1,
@@ -115,8 +115,13 @@ unsigned int backIndexBufferData[] =
 };
 #pragma endregion
 
-float *cubeData[FACE::FACES_SIZE]{ frontCubeData, backCubeData, topCubeData, bottomCubeData, leftCubeData, rightCubeData };
-unsigned int *cubeIndexData[FACE::FACES_SIZE]{ frontIndexBufferData, backIndexBufferData, frontIndexBufferData, backIndexBufferData, frontIndexBufferData, backIndexBufferData };
+const float ambienceData[FACE::FACES_SIZE] = 
+{
+	0.85f, 0.85f, 1.f, 0.65f, 0.85f, 0.85f,
+};
+
+const float *cubeData[FACE::FACES_SIZE]{ frontCubeData, backCubeData, topCubeData, bottomCubeData, leftCubeData, rightCubeData };
+const unsigned int *cubeIndexData[FACE::FACES_SIZE]{ frontIndexBufferData, backIndexBufferData, frontIndexBufferData, backIndexBufferData, frontIndexBufferData, backIndexBufferData };
 
 
 void CubeMeshRenderer::draw(Chunk **chunk, int size)
@@ -182,6 +187,7 @@ void CubeMeshRenderer::draw(Chunk **chunk, int size)
 		}
 
 		glBindVertexArray(vertexArrays[i]);
+		glUniform1f(ambienceUniformLocation, ambienceData[i]);
 		glDrawElementsInstanced(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0, sizes[i] / 5);
 	}
 	
@@ -192,6 +198,7 @@ void CubeMeshRenderer::draw(Chunk **chunk, int size)
 
 void CubeMeshRenderer::cleanup()
 {
+	//todo
 }
 
 void CubeMeshRenderer::create()
@@ -201,6 +208,7 @@ void CubeMeshRenderer::create()
 	textureUniformLocation = sp->getUniformLocation("u_texture");
 	matUniformLocation = sp->getUniformLocation("u_mat");
 	magnifierUniformLocation = sp->getUniformLocation("u_magnifier");
+	ambienceUniformLocation = sp->getUniformLocation("u_ambience");
 
 	glGenBuffers(FACE::FACES_SIZE, facesBuffer);
 	glGenBuffers(FACE::FACES_SIZE, facesIndexBuffer);
@@ -242,4 +250,5 @@ void CubeMeshRenderer::create()
 
 void CubeMeshRenderer::addSingleCube(int x, int y, int z, Block type)
 {
+	//todo
 }

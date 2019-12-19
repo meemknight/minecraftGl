@@ -162,7 +162,7 @@ int gameLogic(float deltaTime)
 		{
 			if (edge.has_value())
 			{
-				chunkManager.setBlock(edge.value(), BLOCK::woodden_plank);
+				chunkManager.setBlock(edge.value(), BLOCK::bricks);
 			}
 		}
 

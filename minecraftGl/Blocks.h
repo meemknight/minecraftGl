@@ -22,9 +22,10 @@ namespace BLOCK
 		grass,
 		stone,
 		log,
-		woodden_plank,
+		wooden_plank,
 		cobblestone,
 		gold_block,
+		bricks,
 		BLOCKS_SIZE,
 	};
 }

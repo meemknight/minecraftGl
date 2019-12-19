@@ -7,9 +7,10 @@ static BlockFace frontFaces[BLOCK::BLOCKS_SIZE] =
 	{3, 15}, // grass
 	{1, 15},//stone
 	{4, 14},//log
-	{4, 15},//woodden_plank
+	{4, 15},//wooden_plank
 	{0, 14},//cobblestone
 	{7, 14},//gold_block
+	{7,15},//bricks
 };
 
 static BlockFace backFaces[BLOCK::BLOCKS_SIZE] =
@@ -19,9 +20,10 @@ static BlockFace backFaces[BLOCK::BLOCKS_SIZE] =
 	{3, 15}, // grass
 	{1, 15},//stone
 	{4, 14},//log
-	{4, 15},//woodden_plank
+	{4, 15},//wooden_plank
 	{0, 14},//cobblestone
 	{7, 14},//gold_block
+	{7,15},//bricks
 
 };
 
@@ -32,9 +34,10 @@ static BlockFace topFaces[BLOCK::BLOCKS_SIZE] =
 	{0, 15}, // grass
 	{1, 15},//stone
 	{5, 14},//log
-	{4, 15},//woodden_plank
+	{4, 15},//wooden_plank
 	{0, 14},//cobblestone
 	{7, 14},//gold_block
+	{7,15},//bricks
 
 };
 
@@ -45,9 +48,10 @@ static BlockFace bottomFaces[BLOCK::BLOCKS_SIZE] =
 	{2, 15}, // grass
 	{1, 15},//stone
 	{5, 14},//log
-	{4, 15},//woodden_plank
+	{4, 15},//wooden_plank
 	{0, 14},//cobblestone
 	{7, 14},//gold_block
+	{7,15},//bricks
 
 };
 
@@ -58,9 +62,10 @@ static BlockFace LeftFaces[BLOCK::BLOCKS_SIZE] =
 	{3, 15}, // grass
 	{1, 15},//stone
 	{4, 14},//log
-	{4, 15},//woodden_plank
+	{4, 15},//wooden_plank
 	{0, 14},//cobblestone
 	{7, 14},//gold_block
+	{7,15},//bricks
 
 };
 
@@ -71,9 +76,10 @@ static BlockFace RightFaces[BLOCK::BLOCKS_SIZE] =
 	{3, 15}, // grass
 	{1, 15},//stone
 	{4, 14},//log
-	{4, 15},//woodden_plank
+	{4, 15},//wooden_plank
 	{0, 14},//cobblestone
 	{7, 14},//gold_block
+	{7,15},//bricks
 
 };
 

@@ -46,7 +46,7 @@ int MAIN
 		wc.lpszClassName,
 		"Minicraft",
 		WS_OVERLAPPEDWINDOW | WS_VISIBLE,
-		600,
+		550,
 		100,
 		width,
 		heigth,
