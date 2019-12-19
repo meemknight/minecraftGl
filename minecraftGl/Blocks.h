@@ -1,6 +1,6 @@
 ﻿#pragma once
 
-using Block = unsigned int;
+using Block = unsigned char;
 using Face = int;
 
 enum FACE : int

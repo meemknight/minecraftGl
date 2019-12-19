@@ -234,9 +234,6 @@ void ChunkManager::setBlock(glm::ivec3 pos, Block b)
 	Chunk *c;
 	getBlockRefUnsafe(pos, &c) = b;
 
-	wlog("savedChunk: ", c->position.x, c->position.z);
-	fileHandler.saveChunk(*c);
-
 	c->shouldRecreate = 1;
 	c->shouldReSave = 1;
 
@@ -279,7 +276,8 @@ void ChunkManager::setupChunk(Chunk *chunk, glm::vec2 p)
 {
 	if(chunk->shouldReSave)
 	{
-	
+		wlog("savedChunk: ", chunk->position.x, chunk->position.z);
+		fileHandler.saveChunk(*chunk);
 	}
 
 	chunk->removeNeighboursLinkage();
@@ -401,31 +399,34 @@ foundAll:
 	}
 	*/
 	
-	for (int x = 0; x < CHUNK_SIZE; x++)
+	if(!fileHandler.loadChunk(*chunk))
 	{
-		for (int z = 0; z < CHUNK_SIZE; z++)
+		for (int x = 0; x < CHUNK_SIZE; x++)
 		{
-			double rx = (x + p.x * CHUNK_SIZE) / 160.0;
-			double rz = (z + p.y * CHUNK_SIZE) / 160.0;
-
-			stonePos = 150 * noise.octaveNoise0_1(rx, rz, 8);
-			grassPos = stonePos + 2;
-		
-			for (int y = 0; y < stonePos; y++)
+			for (int z = 0; z < CHUNK_SIZE; z++)
 			{
-				chunk->getBlock(x, y, z) = BLOCK::stone;
-			}
+				double rx = (x + p.x * CHUNK_SIZE) / 160.0;
+				double rz = (z + p.y * CHUNK_SIZE) / 160.0;
 
-			for (int y = stonePos; y < grassPos - 1; y++)
-			{
-				chunk->getBlock(x, y, z) = BLOCK::dirt;
-			}
+				stonePos = 150 * noise.octaveNoise0_1(rx, rz, 8);
+				grassPos = stonePos + 2;
 
-			chunk->getBlock(x, grassPos - 1, z) = BLOCK::grass;
+				for (int y = 0; y < stonePos; y++)
+				{
+					chunk->getBlock(x, y, z) = BLOCK::stone;
+				}
 
-			for(int y= grassPos; y<BUILD_LIMIT; y++)
-			{
-				chunk->getBlock(x, y, z) = BLOCK::air;
+				for (int y = stonePos; y < grassPos - 1; y++)
+				{
+					chunk->getBlock(x, y, z) = BLOCK::dirt;
+				}
+
+				chunk->getBlock(x, grassPos - 1, z) = BLOCK::grass;
+
+				for (int y = grassPos; y < BUILD_LIMIT; y++)
+				{
+					chunk->getBlock(x, y, z) = BLOCK::air;
+				}
 			}
 		}
 	}

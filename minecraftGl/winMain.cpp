@@ -104,8 +104,6 @@ int MAIN
 
 	closeGame();
 
-	while (1) {};
-
 	return 0;
 }
 

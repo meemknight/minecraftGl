@@ -103,7 +103,7 @@ struct FirstPersonCamera
 
 	float getTopDownAngle();
 
-	float rSpeed = 0.3f;
+	float rSpeed = 0.22f;
 
 	void getChunksInFrustrum(std::vector<glm::ivec3> &chunksToLoad);
 

@@ -10,6 +10,7 @@
 #include "phisics.h"
 #include "debugTools.h"
 #include "fileHandler.h"
+#include <filesystem>
 
 ShaderProgram sp;
 ShaderProgram spNoTexture;
@@ -35,8 +36,10 @@ glm::vec3 playerLastPos;
 
 int initGame()
 {
+	std::filesystem::create_directory("saves");
+
 	camera.position.y = 100;
-	camera.speed *= 0.81;
+	camera.speed *= 0.4;
 	camera.position.x = 0;
 	camera.position.z = 0;
 
@@ -206,12 +209,13 @@ int gameLogic(float deltaTime)
 
 void closeGame()
 {
-	//for(auto &i : chunkManager.loadedChunks)
-	//{
-	//	if(i.shouldReSave)
-	//	{
-	//		wlog("ClosedsavedChunk: ", i.position.x, i.position.y);
-	//	}
-	//}
-
+	for(auto &i : chunkManager.loadedChunks)
+	{
+		if(i.shouldReSave)
+		{
+			fileHandler.saveChunk(i);
+			wlog("ClosedsavedChunk: ", i.position.x, i.position.y);
+		}
+	}
+	Sleep(4000);
 }
