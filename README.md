@@ -29,3 +29,8 @@ around blocks or place and remove blocks. For that i made a very gross implement
 -I started to add some simple AABB type collision detection. It is now working just in one direction and one axe.
 ![](https://github.com/meemknight/photos/blob/master/mc6.png)
 ---
+
+-I created a save system that saves 4x4 chunks into a single file and uses lazyness so that it only saves chunks that 
+have actually been modified by the player.
+![](https://github.com/meemknight/photos/blob/master/mc7.png)
+---
