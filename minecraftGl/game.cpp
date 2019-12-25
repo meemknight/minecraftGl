@@ -36,6 +36,7 @@ glm::vec3 playerLastPos;
 
 int initGame()
 {
+	std::filesystem::remove_all("saves");
 	std::filesystem::create_directory("saves");
 
 	camera.position.y = 100;
@@ -184,9 +185,9 @@ int gameLogic(float deltaTime)
 
 	camera.getChunksInFrustrum(chunksToLoad);
 	Chunk **c = chunkManager.requestChunks(chunksToLoad.data(), chunksToLoad.size());
-	chunkManager.bakeUnbakedChunks(15, { camera.position.x, camera.position.z });
+	chunkManager.bakeUnbakedChunks(4, { camera.position.x, camera.position.z });
 
-	cubeRenderer.additionalBlocks.push_back({ { 0,100,0 }, BLOCK::gold_block });
+	cubeRenderer.addSingleCube(0, 100, 0, BLOCK::gold_block);
 	cubeRenderer.draw(c, chunksToLoad.size());
 
 	//glUseProgram(0);
@@ -202,7 +203,6 @@ int gameLogic(float deltaTime)
 
 	//llog((camera.position.x), (camera.position.y), (camera.position.z));
 	//llog(camera.viewDirection.x, camera.viewDirection.y, camera.viewDirection.z);
-
 
 	return 1;
 }

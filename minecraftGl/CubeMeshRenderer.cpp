@@ -141,10 +141,9 @@ void CubeMeshRenderer::draw(Chunk **chunk, int size)
 	glUniform1f(distanceUniformLocation, camera->farPlane);
 
 #pragma region cull unseen faces
-	llog(camera->viewDirection.x, camera->viewDirection.y, camera->viewDirection.z);
 
 	int mask[FACE::FACES_SIZE] = { 1,1,1,1,1,1 };
-	constexpr float margin = 0.9;
+	constexpr float margin = 0.7;
 
 	if(camera->viewDirection.x > margin)
 	{
@@ -292,5 +291,5 @@ void CubeMeshRenderer::create()
 
 void CubeMeshRenderer::addSingleCube(int x, int y, int z, Block type)
 {
-	//todo
+	additionalBlocks.push_back({ { x,y,z }, type });
 }

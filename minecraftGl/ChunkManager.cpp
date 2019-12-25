@@ -6,11 +6,11 @@
 #include "PerlinNoise.hpp"
 #include "tools.h"
 #include "fileHandler.h"
-
-static siv::PerlinNoise noise;
+#include "WorldGenerator.h"
 
 extern ChunkFileHandler fileHandler;
 
+WorldGenerator worldGeneraor(1234);
 
 float constexpr E = 2.71828182846;
 
@@ -344,89 +344,9 @@ foundAll:
 
 #pragma endregion
 
-	int stonePos;
-	int grassPos;
-
-		/*
-		for(int x=0; x<16; x++)
-		{
-			for(int z=0; z<16; z++)
-			{
-				stonePos = mountains[(x + (posX * 16) + (tx * (z + (posZ * 16))))];
-				stonePos = min(stonePos, 250);
-				grassPos = stonePos + 5;
-	
-				for(int y=0; y<stonePos; y++)
-				{
-					chunk->getBlock(x, y, z) = BLOCK::stone;
-				}
-
-				for (int y = stonePos; y < grassPos-1; y++)
-				{
-					chunk->getBlock(x, y, z) = BLOCK::dirt;
-				}
-
-				chunk->getBlock(x, grassPos-1, z) = BLOCK::grass;
-
-			}
-			
-		}
-		*/
-	/*
-	for (int x = 0; x < 16; x++)
-	{
-		for (int z = 0; z < 16; z++)
-		{
-			for (int y = 0; y < 30; y++)
-			{
-				if (y < 5)
-				{
-					chunk->getBlock(x, y, z) = BLOCK::stone;
-				}
-				else
-				{
-					chunk->getBlock(x, y, z) = (x + z) / 2 < y ? BLOCK::grass : BLOCK::dirt;
-					if ((x + z) / 2 < y)
-					{
-						break;
-					}
-				}
-
-			}
-		}
-	}
-	*/
-	
 	if(!fileHandler.loadChunk(*chunk))
 	{
-		for (int x = 0; x < CHUNK_SIZE; x++)
-		{
-			for (int z = 0; z < CHUNK_SIZE; z++)
-			{
-				double rx = (x + p.x * CHUNK_SIZE) / 160.0;
-				double rz = (z + p.y * CHUNK_SIZE) / 160.0;
-
-				stonePos = 150 * noise.octaveNoise0_1(rx, rz, 8);
-				grassPos = stonePos + 2;
-
-				for (int y = 0; y < stonePos; y++)
-				{
-					chunk->getBlock(x, y, z) = BLOCK::stone;
-				}
-
-				for (int y = stonePos; y < grassPos - 1; y++)
-				{
-					chunk->getBlock(x, y, z) = BLOCK::dirt;
-				}
-
-				chunk->getBlock(x, grassPos - 1, z) = BLOCK::grass;
-
-				for (int y = grassPos; y < BUILD_LIMIT; y++)
-				{
-					chunk->getBlock(x, y, z) = BLOCK::air;
-				}
-			}
-		}
+		worldGeneraor.setupChunk(chunk, p);
 	}
 	
 	//chunk->bakeMeshes();
