@@ -37,6 +37,8 @@ struct WorldGenerator
 	float stoneNoiseCompression = 120;
 	float heightNoiseCompression = 80;
 
+	int stoneOctaves = 6;
+
 	//this 2 numbers should not be too big(greater than 250 or too small)
 	//also min should be less than max
 	int minStonePos = 90;

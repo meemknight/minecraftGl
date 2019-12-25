@@ -12,40 +12,6 @@ extern ChunkFileHandler fileHandler;
 
 WorldGenerator worldGeneraor(1234);
 
-float constexpr E = 2.71828182846;
-
-float sigmoid(float x)
-{
-	return 1.f / (1.f + pow(E, -x));
-}
-
-float xEcuation(int pos)
-{
-	float x = pos / 100.f;
-	//x *= (pos / 8) % 2 == 0 ? 1 : -1;
-	float rez = sin(x);
-	rez = (rez + 1.f) / 2.f;
-	//rez = sigmoid(rez);
-	rez *= 25;
-	return rez;
-}
-
-float zEcuation(int pos)
-{
-	float x = pos / 100.f;
-	//x *= (pos / 8) % 2 == 0 ? 1 : -1;
-	float rez = cos(x);
-	rez = (rez + 1.f) / 2.f;
-	//rez = sigmoid(rez);
-	rez *= 25;
-	return rez;
-}
-
-int xzEcuatiom(int x, int z)
-{
-	return (int)((xEcuation(x) + zEcuation(z)) / 2.f);
-}
-
 void ChunkManager::reserveData(int size)
 {
 	chunksCount = size;
@@ -276,6 +242,7 @@ void ChunkManager::setupChunk(Chunk *chunk, glm::vec2 p)
 	if(chunk->shouldReSave)
 	{
 		fileHandler.saveChunk(*chunk);
+		chunk->shouldReSave = false;
 	}
 
 	chunk->removeNeighboursLinkage();
@@ -347,11 +314,11 @@ foundAll:
 	if(!fileHandler.loadChunk(*chunk))
 	{
 		worldGeneraor.setupChunk(chunk, p);
+		chunk->shouldReSave = true;
 	}
 	
 	//chunk->bakeMeshes();
 	chunk->shouldRecreate = true;
-	chunk->shouldReSave = false;
 	for (int i = 0; i < FACE::FACES_SIZE; i++)
 	{
 		chunk->positionData[i].size = 0;

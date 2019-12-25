@@ -20,7 +20,7 @@ int width;
 int height;
 
 //Camera camera(60.f, &width, &height, 0.1, 200);
-FirstPersonCamera camera(60.f, 0.1, 300, &width, &height);
+FirstPersonCamera camera(60.f, 0.1, 200, &width, &height);
 
 CubeMeshRenderer cubeRenderer;
 
@@ -163,7 +163,7 @@ int gameLogic(float deltaTime)
 		{
 			if (edge.has_value())
 			{
-				chunkManager.setBlock(edge.value(), BLOCK::bricks);
+				chunkManager.setBlock(edge.value(), BLOCK::leaves);
 			}
 		}
 

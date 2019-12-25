@@ -26,6 +26,10 @@ namespace BLOCK
 		cobblestone,
 		gold_block,
 		bricks,
+		sand,
+		sand_stone,
+		snow_dirt,
+		leaves,
 		BLOCKS_SIZE,
 	};
 }

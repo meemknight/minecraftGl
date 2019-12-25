@@ -27,7 +27,7 @@ void WorldGenerator::setupChunk(Chunk * chunk, glm::vec2 p)
 				float percent = 1.5-((float)(y - minStonePos)/ float(delta));
 				float newStoneCnance = stoneChance * percent * percent;
 
-				if(stoneNoise.octaveNoise0_1(rx, ry, rz, 6) < newStoneCnance)
+				if(stoneNoise.octaveNoise0_1(rx, ry, rz, stoneOctaves) < newStoneCnance)
 				{
 					chunk->getBlock(x, y, z) = BLOCK::stone;
 				}
@@ -43,7 +43,7 @@ void WorldGenerator::setupChunk(Chunk * chunk, glm::vec2 p)
 					double rx = (x + p.x * CHUNK_SIZE) / dirtHeigthCompresion;
 					double rz = (z + p.y * CHUNK_SIZE) / dirtHeigthCompresion;
 
-					int dirtDepth = biomeHeigthNoise.octaveNoise0_1(rx, rz) * dirtHeigth;
+					int dirtDepth = biomeHeigthNoise.noise0_1(rx, rz) * dirtHeigth;
 					chunk->getBlock(x, y, z) = BLOCK::grass;
 					for (int copy = y - 1; copy > y - dirtDepth; copy--)
 					{
