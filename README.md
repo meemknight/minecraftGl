@@ -36,5 +36,5 @@ have actually been modified by the player.
 ---
 
 -I have improved the world generation and added customizeble biomes that can be seen here
-![](https://github.com/meemknight/photos/blob/master/mc8.png)
+![](https://github.com/meemknight/photos/blob/master/mc8.jpg)
 ---
