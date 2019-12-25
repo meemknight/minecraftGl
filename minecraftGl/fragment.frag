@@ -7,6 +7,8 @@ in vec2 v_texCoord;
 
 uniform float u_ambience;
 
+uniform int u_distance;
+
 void main()
 {
 	color = texture(u_texture, v_texCoord);

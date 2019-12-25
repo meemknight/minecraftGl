@@ -47,7 +47,7 @@ int initGame()
 
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
-	//glEnable(GL_MULTISAMPLE);
+	glEnable(GL_MULTISAMPLE);
 	//glEnable(GL_SAMPLE_SHADING);
 
 	glLineWidth(4);
@@ -214,8 +214,7 @@ void closeGame()
 		if(i.shouldReSave)
 		{
 			fileHandler.saveChunk(i);
-			wlog("ClosedsavedChunk: ", i.position.x, i.position.y);
 		}
 	}
-	Sleep(4000);
+	Sleep(2000);
 }

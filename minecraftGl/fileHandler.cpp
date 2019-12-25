@@ -51,12 +51,6 @@ bool ChunkFileHandler::loadChunk(Chunk & c)
 
 	f.read((char*)positions, count * sizeof(glm::ivec2));
 
-	ilog("loaded file with:", char(count + '0'), "chunk(s)");
-	for (int i = 0; i < count; i++)
-	{
-		ilog(positions[i].x, positions[i].y);
-	}
-
 	//then we see if that chunk was already loaded
 	int loadIndex = -1;
 	for (int i = 0; i < count; i++)
@@ -138,12 +132,6 @@ void ChunkFileHandler::saveChunk(Chunk & c)
 
 		f.read((char*)positions, count * sizeof(glm::ivec2));
 
-		ilog("chunk saved and has", char('0' + count), "chunk(s)");
-		for (int i = 0; i < count; i++)
-		{
-			ilog(positions[i].x, positions[i].y);
-		}
-
 		//then we see if that chunk was already loaded
 		int loadIndex = -1;
 		for (int i = 0; i < count; i++)
@@ -193,7 +181,6 @@ void ChunkFileHandler::appendChunkDataInFile(std::fstream & f, Chunk & c)
 
 void ChunkFileHandler::loadChunkAtIndex(std::fstream & f, Chunk & c, int index)
 {
-	ilog("loadingChunk at index:", char('0' + index));
 	f.seekg(headDist + (chunkDataSize * index), std::ios_base::beg);
 	f.read((char*)c.blockData, chunkDataSize);
 }

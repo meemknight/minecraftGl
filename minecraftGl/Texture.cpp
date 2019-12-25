@@ -77,7 +77,7 @@ void Texture::create(const char * name)
 		//		break;
 		//	}
 		//}
-		//glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, 4);
+		//glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, 1);
 
 		stbi_image_free(buff);
 	}

@@ -63,7 +63,7 @@ void ShaderProgram::deleteProgram()
 	id = 0;
 }
 
-
+//todo remove this 
 int ShaderProgram::getUniformLocation(const char* name)
 {
 	if (locations.find(name) == locations.end())

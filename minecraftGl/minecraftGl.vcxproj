@@ -27,6 +27,7 @@
     <ClCompile Include="debugTools.cpp" />
     <ClCompile Include="fileHandler.cpp" />
     <ClCompile Include="FloatVector.cpp" />
+    <ClCompile Include="Frustum.cpp" />
     <ClCompile Include="game.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="phisics.cpp" />
@@ -44,6 +45,7 @@
     <ClInclude Include="debugTools.h" />
     <ClInclude Include="fileHandler.h" />
     <ClInclude Include="FloatVector.h" />
+    <ClInclude Include="Frustum.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="PerlinNoise.hpp" />
     <ClInclude Include="phisics.h" />

@@ -91,7 +91,6 @@ Chunk **ChunkManager::requestChunks(glm::ivec3 *requestedC, int size)
 				returnVector.push_back(chunkData[pos].chunk);
 			}
 		}
-		ilog("resized buffer:", size);
 
 		return returnVector.data();
 	}
@@ -276,7 +275,6 @@ void ChunkManager::setupChunk(Chunk *chunk, glm::vec2 p)
 {
 	if(chunk->shouldReSave)
 	{
-		wlog("savedChunk: ", chunk->position.x, chunk->position.z);
 		fileHandler.saveChunk(*chunk);
 	}
 

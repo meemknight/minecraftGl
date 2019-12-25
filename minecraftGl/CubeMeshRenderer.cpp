@@ -138,7 +138,7 @@ void CubeMeshRenderer::draw(Chunk **chunk, int size)
 	glUniformMatrix4fv(matUniformLocation, 1, GL_FALSE, &m[0][0]);
 	glUniform1i(textureUniformLocation, 0);
 	glUniform1f(magnifierUniformLocation, mag);
-
+	glUniform1f(distanceUniformLocation, camera->farPlane);
 	
 	int sizes[FACE::FACES_SIZE] = {};
 
@@ -209,6 +209,7 @@ void CubeMeshRenderer::create()
 	matUniformLocation = sp->getUniformLocation("u_mat");
 	magnifierUniformLocation = sp->getUniformLocation("u_magnifier");
 	ambienceUniformLocation = sp->getUniformLocation("u_ambience");
+	distanceUniformLocation = sp->getUniformLocation("u_distance");
 
 	glGenBuffers(FACE::FACES_SIZE, facesBuffer);
 	glGenBuffers(FACE::FACES_SIZE, facesIndexBuffer);
