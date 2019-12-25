@@ -24,6 +24,8 @@
 //	THE SOFTWARE.
 //
 //----------------------------------------------------------------------------------------
+//some parts have been slightly changed
+
 
 # pragma once
 # include <cstdint>
@@ -111,15 +113,20 @@ namespace siv
 			return noise(x, y, 0.0);
 		}
 
-		double noise(double x, double y, double z) const
+		inline double noise(double x, double y, double z) const
 		{
-			const std::int32_t X = static_cast<std::int32_t>(std::floor(x)) & 255;
-			const std::int32_t Y = static_cast<std::int32_t>(std::floor(y)) & 255;
-			const std::int32_t Z = static_cast<std::int32_t>(std::floor(z)) & 255;
+			//modified here
+			double florX = std::floor(x);
+			double florY = std::floor(y);
+			double florZ = std::floor(z);
 
-			x -= std::floor(x);
-			y -= std::floor(y);
-			z -= std::floor(z);
+			const std::int32_t X = static_cast<std::int32_t>(florX) & 255;
+			const std::int32_t Y = static_cast<std::int32_t>(florY) & 255;
+			const std::int32_t Z = static_cast<std::int32_t>(florZ) & 255;
+
+			x -= florX;
+			y -= florY;
+			z -= florZ;
 
 			const double u = Fade(x);
 			const double v = Fade(y);
@@ -171,19 +178,50 @@ namespace siv
 
 		double octaveNoise(double x, double y, double z, std::int32_t octaves) const
 		{
-			double result = 0.0;
-			double amp = 1.0;
-
-			for (std::int32_t i = 0; i < octaves; ++i)
+			if(octaves > 8)
 			{
-				result += noise(x, y, z) * amp;
-				x *= 2.0;
-				y *= 2.0;
-				z *= 2.0;
-				amp *= 0.5;
+				double result = 0.0;
+				double amp = 1.0;
+
+				for (std::int32_t i = 0; i < octaves; ++i)
+				{
+					result += noise(x, y, z) * amp;
+					x *= 2.0;
+					y *= 2.0;
+					z *= 2.0;
+					amp *= 0.5;
+				}
+
+				return result;
 			}
 
-			return result;
+			double xData[8] = { x };
+			double yData[8] = { y };
+			double zData[8] = { z };
+			double rez[8] = { 0 };
+			double amp[8] = { 1 };
+
+			for (std::int32_t i = 1; i < octaves; ++i)
+			{
+				xData[i] = xData[i - 1] * 2.0;
+				yData[i] = yData[i - 1] * 2.0;
+				zData[i] = zData[i - 1] * 2.0;
+				amp[i] = amp[i-1] * 0.5;
+			}
+
+			for(int i=0; i<octaves; i++)
+			{
+				rez[i] = noise(xData[i], yData[i], zData[i]) * amp[i];
+			}
+
+			//rez[0] = noise(xData[0], yData[0], zData[0]) * amp[0];
+
+			for (int i = 1; i < octaves; i++)
+			{
+				rez[0] += rez[i];
+			}
+
+			return rez[0];
 		}
 
 		double noise0_1(double x) const

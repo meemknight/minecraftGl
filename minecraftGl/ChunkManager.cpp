@@ -194,13 +194,11 @@ void ChunkManager::setBlock(glm::ivec3 pos, Block b)
 		return;
 	}
 	
-	
-
 	Chunk *c;
 	getBlockRefUnsafe(pos, &c) = b;
 
-	c->shouldRecreate = 1;
-	c->shouldReSave = 1;
+	c->shouldRecreate = true;
+	c->shouldReSave = true;
 
 	if(pos.x >= 0 && pos.x % 16 == 15)
 	{
@@ -242,7 +240,7 @@ void ChunkManager::setupChunk(Chunk *chunk, glm::vec2 p)
 	if(chunk->shouldReSave)
 	{
 		fileHandler.saveChunk(*chunk);
-		chunk->shouldReSave = false;
+		chunk->shouldReSave = false; //todo
 	}
 
 	chunk->removeNeighboursLinkage();
@@ -314,7 +312,7 @@ foundAll:
 	if(!fileHandler.loadChunk(*chunk))
 	{
 		worldGeneraor.setupChunk(chunk, p);
-		chunk->shouldReSave = true;
+		chunk->shouldReSave = false;//todo
 	}
 	
 	//chunk->bakeMeshes();

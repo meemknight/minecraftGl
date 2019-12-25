@@ -39,8 +39,8 @@ int initGame()
 	std::filesystem::remove_all("saves");
 	std::filesystem::create_directory("saves");
 
-	camera.position.y = 100;
-	camera.speed *= 0.4;
+	camera.position.y = 150;
+	camera.speed *= 1;
 	camera.position.x = 0;
 	camera.position.z = 0;
 
