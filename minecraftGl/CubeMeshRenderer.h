@@ -18,6 +18,7 @@ struct CubeMeshRenderer
 	CubeMeshRenderer() {};
 	
 	ShaderProgram *sp;
+	//todo remove this
 	FirstPersonCamera *camera;
 	Texture *texture;
 

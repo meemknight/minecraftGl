@@ -139,56 +139,97 @@ void CubeMeshRenderer::draw(Chunk **chunk, int size)
 	glUniform1i(textureUniformLocation, 0);
 	glUniform1f(magnifierUniformLocation, mag);
 	glUniform1f(distanceUniformLocation, camera->farPlane);
-	
-	int sizes[FACE::FACES_SIZE] = {};
 
+#pragma region cull unseen faces
+	llog(camera->viewDirection.x, camera->viewDirection.y, camera->viewDirection.z);
+
+	int mask[FACE::FACES_SIZE] = { 1,1,1,1,1,1 };
+	constexpr float margin = 0.9;
+
+	if(camera->viewDirection.x > margin)
+	{
+		mask[FACE::right] = 0;
+	}else if(camera->viewDirection.x < -margin)
+	{
+		mask[FACE::left] = 0;
+	}
+
+	if (camera->viewDirection.y > margin)
+	{
+		mask[FACE::top] = 0;
+	}
+	else if (camera->viewDirection.y < -margin)
+	{
+		mask[FACE::bottom] = 0;
+	}
+
+	if (camera->viewDirection.z > margin)
+	{
+		mask[FACE::front] = 0;
+	}
+	else if (camera->viewDirection.z < -margin)
+	{
+		mask[FACE::back] = 0;
+	}
+
+#pragma endregion
+
+	int sizes[FACE::FACES_SIZE] = {};
 	for (int index = 0; index < size; index++)
 	{
-		Chunk &c = *chunk[index];
-		for (int i = 0; i < FACE::FACES_SIZE; i++)
-		{
-			sizes[i] += c.positionData[i].size;
-		}
-
+			Chunk &c = *chunk[index];
+			for (int i = 0; i < FACE::FACES_SIZE; i++)
+			{
+				if (mask[i])
+				{
+					sizes[i] += c.positionData[i].size;
+				}
+			}
 	}
 	
 	for(int i=0; i< FACE::FACES_SIZE; i++)
 	{
-		sizes[i] += additionalBlocks.size() * 5;
+		if(mask[i])
+		{
+			sizes[i] += additionalBlocks.size() * 5;
+		}
 	}
 
 	for (int i = 0; i < FACE::FACES_SIZE; i++)
 	{
-		glBindBuffer(GL_ARRAY_BUFFER, positionsBuffer[i]);
-		glBufferData(GL_ARRAY_BUFFER, sizes[i] * sizeof(float), nullptr, GL_STREAM_DRAW);
-		int pos = 0;
-
-		for (int index = 0; index < additionalBlocks.size(); index++)
+		if (mask[i])
 		{
-			glm::vec3 &p = additionalBlocks[index].pos;
-			float f[5];
-			f[0] = p.x;
-			f[1] = p.y;
-			f[2] = p.z;
-			BlockFace face = getBlockFace(additionalBlocks[index].b, i);
-			f[3] = face.x;
-			f[4] = face.y;
+			glBindBuffer(GL_ARRAY_BUFFER, positionsBuffer[i]);
+			glBufferData(GL_ARRAY_BUFFER, sizes[i] * sizeof(float), nullptr, GL_STREAM_DRAW);
+			int pos = 0;
 
-			glBufferSubData(GL_ARRAY_BUFFER, pos * sizeof(float), 5 * sizeof(float), f);
-			pos += 5;
+			for (int index = 0; index < additionalBlocks.size(); index++)
+			{
+				glm::vec3 &p = additionalBlocks[index].pos;
+				float f[5];
+				f[0] = p.x;
+				f[1] = p.y;
+				f[2] = p.z;
+				BlockFace face = getBlockFace(additionalBlocks[index].b, i);
+				f[3] = face.x;
+				f[4] = face.y;
+
+				glBufferSubData(GL_ARRAY_BUFFER, pos * sizeof(float), 5 * sizeof(float), f);
+				pos += 5;
+			}
+
+			for (int index = 0; index < size; index++)
+			{
+				Chunk &c = *chunk[index];
+
+				glBufferSubData(GL_ARRAY_BUFFER, pos * sizeof(float), c.positionData[i].size * sizeof(float), c.positionData[i].data);
+				pos += c.positionData[i].size;
+			}
+
+			glBindVertexArray(vertexArrays[i]);
+			glUniform1f(ambienceUniformLocation, ambienceData[i]);
+			glDrawElementsInstanced(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0, sizes[i] / 5);
 		}
-
-		for (int index = 0; index < size; index++)
-		{
-			Chunk &c = *chunk[index];
-			
-			glBufferSubData(GL_ARRAY_BUFFER, pos * sizeof(float),  c.positionData[i].size * sizeof(float), c.positionData[i].data);
-			pos += c.positionData[i].size;
-		}
-
-		glBindVertexArray(vertexArrays[i]);
-		glUniform1f(ambienceUniformLocation, ambienceData[i]);
-		glDrawElementsInstanced(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0, sizes[i] / 5);
 	}
 	
 	additionalBlocks.clear();
