@@ -12,46 +12,107 @@ private:
 	int chanceCounter = 0;
 public:
 
-	bool blendUp = true;
 	bool biomeBlend = true;
+
+	
 
 	struct BiomeData
 	{
+		void averageWith(BiomeData o)
+		{
+			bottomBlockDepth = (bottomBlockDepth + o.bottomBlockDepth) / 2.f;
+			minStonePos = (minStonePos + o.minStonePos) / 2.f;
+			maxStonePos = (maxStonePos + o.maxStonePos) / 2.f;
+			stoneChance = (stoneChance + o.stoneChance) / 2.f;
+			realismExponent = (realismExponent + o.realismExponent) / 2.f;
+			octaves = (octaves + o.octaves) / 2.f;
+		}
+
+		void combineWith(BiomeData bd2, float percentKeep)
+		{
+			float oneMinusPercentKeep = 1 - percentKeep;
+			bottomBlockDepth = bottomBlockDepth * percentKeep + bd2.bottomBlockDepth * oneMinusPercentKeep;
+			bottomBlockDepth = bottomBlockDepth < 1 ? 1 : bottomBlockDepth;
+			minStonePos = minStonePos * percentKeep + bd2.minStonePos * oneMinusPercentKeep;
+			maxStonePos = maxStonePos * percentKeep + bd2.maxStonePos * oneMinusPercentKeep;
+			stoneChance = stoneChance * percentKeep + bd2.stoneChance * oneMinusPercentKeep;
+			realismExponent = realismExponent * percentKeep + bd2.realismExponent * oneMinusPercentKeep;
+			octaves = octaves * percentKeep + bd2.octaves * oneMinusPercentKeep;
+		}
+
 		int chanceFactor;
 		Block topBlock;
 		Block bottomBlock;
 		float bottomBlockDepth;
 		float minStonePos;
 		float maxStonePos;
+		float stoneChance;
+		//higher means less floaty islands
+		float realismExponent;
+		float octaves;
 	};
 
 	void setDefaultBiomes()
 	{
-		biomes.resize(3);
+
+		//crazy desert
+		//biomes.push_back({});
+		//biomes[biomes.size() - 1].chanceFactor = 1;
+		//biomes[biomes.size() - 1].topBlock = BLOCK::sand;
+		//biomes[biomes.size() - 1].bottomBlock = BLOCK::sand_stone;
+		//biomes[biomes.size() - 1].bottomBlockDepth = 5;
+		//biomes[biomes.size() - 1].minStonePos = 90;
+		//biomes[biomes.size() - 1].maxStonePos = 160;
+		//biomes[biomes.size() - 1].stoneChance = 0.5;
+		//biomes[biomes.size() - 1].realismExponent = 0.8;
+		//biomes[biomes.size() - 1].octaves = 7;
 
 		//desert
-		biomes[0].chanceFactor = 1;
-		biomes[0].topBlock = BLOCK::sand;
-		biomes[0].bottomBlock = BLOCK::sand_stone;
-		biomes[0].bottomBlockDepth = 10;
-		biomes[0].minStonePos = 80;
-		biomes[0].maxStonePos = 100;
+		biomes.push_back({});
+		biomes[biomes.size()-1].chanceFactor = 1;
+		biomes[biomes.size()-1].topBlock = BLOCK::sand;
+		biomes[biomes.size()-1].bottomBlock = BLOCK::sand_stone;
+		biomes[biomes.size()-1].bottomBlockDepth = 15;
+		biomes[biomes.size()-1].minStonePos = 90;
+		biomes[biomes.size()-1].maxStonePos = 120;
+		biomes[biomes.size() - 1].stoneChance = 0.6;
+		biomes[biomes.size() - 1].realismExponent = 2;
+		biomes[biomes.size() - 1].octaves = 2;
 
 		//plains
-		biomes[1].chanceFactor = 2;
-		biomes[1].topBlock = BLOCK::grass;
-		biomes[1].bottomBlock = BLOCK::dirt;
-		biomes[1].bottomBlockDepth = 6;
-		biomes[1].minStonePos = 90;
-		biomes[1].maxStonePos = 150;
+		biomes.push_back({});
+		biomes[biomes.size() - 1].chanceFactor = 1;
+		biomes[biomes.size() - 1].topBlock = BLOCK::grass;
+		biomes[biomes.size() - 1].bottomBlock = BLOCK::dirt;
+		biomes[biomes.size() - 1].bottomBlockDepth = 6;
+		biomes[biomes.size() - 1].minStonePos = 90;
+		biomes[biomes.size() - 1].maxStonePos = 150;
+		biomes[biomes.size() - 1].stoneChance = 0.4;
+		biomes[biomes.size() - 1].realismExponent = 2;
+		biomes[biomes.size() - 1].octaves = 6;
 
 		//ice
-		biomes[2].chanceFactor = 1;
-		biomes[2].topBlock = BLOCK::snow_dirt;
-		biomes[2].bottomBlock = BLOCK::dirt;
-		biomes[2].bottomBlockDepth = 4;
-		biomes[2].minStonePos = 120;
-		biomes[2].maxStonePos = 200;
+		biomes.push_back({});
+		biomes[biomes.size() - 1].chanceFactor = 1;
+		biomes[biomes.size() - 1].topBlock = BLOCK::snow_dirt;
+		biomes[biomes.size() - 1].bottomBlock = BLOCK::dirt;
+		biomes[biomes.size() - 1].bottomBlockDepth = 4;
+		biomes[biomes.size() - 1].minStonePos = 120;
+		biomes[biomes.size() - 1].maxStonePos = 200;
+		biomes[biomes.size() - 1].stoneChance = 0.4;
+		biomes[biomes.size() - 1].realismExponent = 2;
+		biomes[biomes.size() - 1].octaves = 6;
+
+		//ice plains
+		//biomes.push_back({});
+		//biomes[biomes.size() - 1].chanceFactor = 2;
+		//biomes[biomes.size() - 1].topBlock = BLOCK::snow_dirt;
+		//biomes[biomes.size() - 1].bottomBlock = BLOCK::dirt;
+		//biomes[biomes.size() - 1].bottomBlockDepth = 4;
+		//biomes[biomes.size() - 1].minStonePos = 140;
+		//biomes[biomes.size() - 1].maxStonePos = 180;
+		//biomes[biomes.size() - 1].stoneChance = 0.2;
+		//biomes[biomes.size() - 1].realismExponent = 3;
 
 		for(const auto &i: biomes)
 		{
@@ -100,32 +161,29 @@ public:
 		//see where is advance:
 		float percentIn = (advance - accumulated) / (float)biomes[pos].chanceFactor;
 		
-		if(percentIn >= 0.8 && pos < biomes.size()-1 && blendUp)//blend right
+		if(percentIn >= 1- blendTresshold && pos < biomes.size()-1)//blend right
 		{
 			BiomeData bd = biomes[pos];
-			const BiomeData &bd2 = biomes[pos + 1];
-			float oneMinusPercentKeep = (percentIn - 0.8) / 0.2;
-			float percentKeep = 1-oneMinusPercentKeep;
-
-			bd.bottomBlockDepth = bd.bottomBlockDepth * percentKeep + bd2.bottomBlockDepth * oneMinusPercentKeep;
-			bd.bottomBlockDepth = bd.bottomBlockDepth < 1 ? 1 : bd.bottomBlockDepth;
-			bd.minStonePos = bd.minStonePos * percentKeep + bd2.minStonePos * oneMinusPercentKeep;
-			bd.maxStonePos = bd.maxStonePos * percentKeep + bd2.maxStonePos * oneMinusPercentKeep;
+			BiomeData bd2 = biomes[pos + 1];
 			
+			bd2.averageWith(bd);
+			
+			float percentKeep = 1- (percentIn - (1 - blendTresshold)) / blendTresshold;
+
+			bd.combineWith(bd2, percentKeep);
 			//blend up
 			return bd;
 		}else
-		if (percentIn <= 0.2 && pos > 0 && !blendUp)//blend left
+		if (percentIn <= blendTresshold && pos > 0)//blend left
 		{
 			BiomeData bd = biomes[pos];
-			const BiomeData &bd2 = biomes[pos - 1];
-			float percentKeep = (percentIn) / 0.2;
+			BiomeData bd2 = biomes[pos - 1];
+			bd2.averageWith(bd);
+
+			float percentKeep = (percentIn) / blendTresshold;
 			float oneMinusPercentKeep = 1 - percentKeep;
 
-			bd.bottomBlockDepth = bd.bottomBlockDepth * percentKeep + bd2.bottomBlockDepth * oneMinusPercentKeep;			
-			bd.bottomBlockDepth = bd.bottomBlockDepth < 1 ? 1 : bd.bottomBlockDepth;
-			bd.minStonePos = bd.minStonePos * percentKeep + bd2.minStonePos * oneMinusPercentKeep;
-			bd.maxStonePos = bd.maxStonePos * percentKeep + bd2.maxStonePos * oneMinusPercentKeep;
+			bd.combineWith(bd2, percentKeep);
 
 			return bd;
 		}
@@ -167,8 +225,6 @@ public:
 	float stoneNoiseCompression = 120;
 	float heightNoiseCompression = 80;
 
-	int stoneOctaves = 6;
-
 	//this 2 numbers should not be too big(greater than 250 or too small)
 	//also min should be less than max
 	//int minStonePos = 90;
@@ -176,12 +232,11 @@ public:
 
 	float biomeNoiseCompression = 150;
 
-	//this is between 0 and 1
-	float stoneChance = 0.4;
-
 	///grass && biome pass
 	//this is multiplied by a 0-1 value
 	int dirtHeigthCompresion = 40;
+
+	float blendTresshold = 0.1;
 
 };
 

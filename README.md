@@ -34,3 +34,7 @@ around blocks or place and remove blocks. For that i made a very gross implement
 have actually been modified by the player.
 ![](https://github.com/meemknight/photos/blob/master/mc7.png)
 ---
+
+-I have improved the world generation and added customizeble biomes that can be seen here
+![](https://github.com/meemknight/photos/blob/master/mc8.png)
+---
