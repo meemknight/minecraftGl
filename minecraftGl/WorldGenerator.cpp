@@ -1,12 +1,22 @@
 #include "WorldGenerator.h"
 
+static FastNoiseSIMD* myNoise = FastNoiseSIMD::NewFastNoiseSIMD();
+
 void WorldGenerator::setupChunk(Chunk * chunk, glm::vec2 p)
 {
+	myNoise->SetNoiseType(FastNoiseSIMD::NoiseType::PerlinFractal);
+	myNoise->SetAxisScales(1, 1, 1);
+
 	int stonePos;
 	int grassPos;
 
 	//todo remove
 	chunk->clearBlockData();
+
+	// Get a set of 16 x 16 x 16 Simplex Fractal noise
+	myNoise->SetFractalOctaves(2);
+	float* noiseSet = myNoise->GetSimplexFractalSet(p.x*CHUNK_SIZE, 0, p.y*CHUNK_SIZE, CHUNK_SIZE, BUILD_LIMIT, CHUNK_SIZE, 1);
+	int index = 0;
 
 	//stone pass
 	for (int x = 0; x < CHUNK_SIZE; x++)
@@ -25,17 +35,20 @@ void WorldGenerator::setupChunk(Chunk * chunk, glm::vec2 p)
 				chunk->getBlock(x, y, z) = BLOCK::stone;
 			}
 			 
-
 			double rx = (x + p.x * CHUNK_SIZE) / stoneNoiseCompression;
 			double rz = (z + p.y * CHUNK_SIZE) / stoneNoiseCompression;
 			for (int y = biomeData.minStonePos; y < biomeData.maxStonePos; y++)
 			{
 				double ry = y / heightNoiseCompression;
 				int delta = biomeData.maxStonePos - biomeData.minStonePos;
-				float percent = 1.5-((float)(y - biomeData.minStonePos)/ float(delta));
+				float percent = 1.5 - ((float)(y - biomeData.minStonePos) / float(delta));
 				float newStoneCnance = biomeData.stoneChance * std::pow(percent, biomeData.realismExponent);
-				
-				if(stoneNoise.octaveNoise0_1(rx, ry, rz, biomeData.octaves) < newStoneCnance)
+
+				//double noiseVal = stoneNoise.octaveNoise0_1(rx, ry, rz, biomeData.octaves);
+
+				float noiseVal = noiseSet[x*CHUNK_SIZE*BUILD_LIMIT + y * CHUNK_SIZE + z];
+
+				if(noiseVal < newStoneCnance)
 				{
 					chunk->getBlock(x, y, z) = BLOCK::stone;
 				}
@@ -63,5 +76,7 @@ void WorldGenerator::setupChunk(Chunk * chunk, glm::vec2 p)
 
 		}
 	}
+
+	FastNoiseSIMD::FreeNoiseSet(noiseSet);
 
 }

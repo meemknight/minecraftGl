@@ -3,6 +3,7 @@
 #include "Chunk.h"
 #include <glm/vec2.hpp>
 #include "Blocks.h"
+#include "FastNoiseSIMD/FastNoiseSIMD.h"
 
 struct WorldGenerator
 {

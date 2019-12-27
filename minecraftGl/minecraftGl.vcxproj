@@ -25,6 +25,13 @@
     <ClCompile Include="ChunkManager.cpp" />
     <ClCompile Include="CubeMeshRenderer.cpp" />
     <ClCompile Include="debugTools.cpp" />
+    <ClCompile Include="FastNoiseSIMD\FastNoiseSIMD.cpp" />
+    <ClCompile Include="FastNoiseSIMD\FastNoiseSIMD_avx2.cpp" />
+    <ClCompile Include="FastNoiseSIMD\FastNoiseSIMD_avx512.cpp" />
+    <ClCompile Include="FastNoiseSIMD\FastNoiseSIMD_internal.cpp" />
+    <ClCompile Include="FastNoiseSIMD\FastNoiseSIMD_neon.cpp" />
+    <ClCompile Include="FastNoiseSIMD\FastNoiseSIMD_sse2.cpp" />
+    <ClCompile Include="FastNoiseSIMD\FastNoiseSIMD_sse41.cpp" />
     <ClCompile Include="fileHandler.cpp" />
     <ClCompile Include="FloatVector.cpp" />
     <ClCompile Include="Frustum.cpp" />
@@ -44,6 +51,8 @@
     <ClInclude Include="ChunkManager.h" />
     <ClInclude Include="CubeMeshRenderer.h" />
     <ClInclude Include="debugTools.h" />
+    <ClInclude Include="FastNoiseSIMD\FastNoiseSIMD.h" />
+    <ClInclude Include="FastNoiseSIMD\FastNoiseSIMD_internal.h" />
     <ClInclude Include="fileHandler.h" />
     <ClInclude Include="FloatVector.h" />
     <ClInclude Include="Frustum.h" />
