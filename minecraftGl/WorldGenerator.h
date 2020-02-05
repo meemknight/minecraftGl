@@ -15,8 +15,6 @@ public:
 
 	bool biomeBlend = true;
 
-	
-
 	struct BiomeData
 	{
 		void averageWith(BiomeData o)
@@ -87,8 +85,8 @@ public:
 		biomes[biomes.size() - 1].bottomBlock = BLOCK::dirt;
 		biomes[biomes.size() - 1].bottomBlockDepth = 6;
 		biomes[biomes.size() - 1].minStonePos = 90;
-		biomes[biomes.size() - 1].maxStonePos = 150;
-		biomes[biomes.size() - 1].stoneChance = 0.4;
+		biomes[biomes.size() - 1].maxStonePos = 130;
+		biomes[biomes.size() - 1].stoneChance = 0.5;
 		biomes[biomes.size() - 1].realismExponent = 2;
 		biomes[biomes.size() - 1].octaves = 6;
 
@@ -237,7 +235,7 @@ public:
 	//this is multiplied by a 0-1 value
 	int dirtHeigthCompresion = 40;
 
-	float blendTresshold = 0.1;
+	float blendTresshold = 0.25;
 
 };
 

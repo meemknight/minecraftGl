@@ -18,11 +18,10 @@ namespace CN
 	};
 }
 
+
 struct Chunk
 {
 	Chunk() {}
-
-	Block blockData[CHUNK_SIZE][BUILD_LIMIT][CHUNK_SIZE];
 
 	void clearBlockData() { memset(blockData, 0, sizeof(blockData)); }
 
@@ -62,5 +61,10 @@ struct Chunk
 	//looks in the neighbours and removes itself from their list.
 	//it is used before deleting this chunk
 	void removeNeighboursLinkage();
+
+private:
+	friend class ChunkFileHandler;
+	//private because it is prone to change
+	Block blockData[CHUNK_SIZE][BUILD_LIMIT][CHUNK_SIZE];
 };
 

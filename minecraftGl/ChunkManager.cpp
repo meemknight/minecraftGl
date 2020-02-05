@@ -309,17 +309,18 @@ foundAll:
 
 #pragma endregion
 
-	if(!fileHandler.loadChunk(*chunk))
-	{
-		worldGeneraor.setupChunk(chunk, p);
-		chunk->shouldReSave = false;//todo
-	}
-	
 	//chunk->bakeMeshes();
 	chunk->shouldRecreate = true;
 	for (int i = 0; i < FACE::FACES_SIZE; i++)
 	{
 		chunk->positionData[i].size = 0;
+	}
+
+	//let this be the last instruction for cache considerations
+	if(!fileHandler.loadChunk(*chunk))
+	{
+		chunk->shouldReSave = true;//todo if this is true, chunks are always saved
+		worldGeneraor.setupChunk(chunk, p);
 	}
 
 }

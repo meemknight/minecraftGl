@@ -194,12 +194,15 @@ void setRelMousePosition(int x, int y)
 ///gets the mouse pos relative to the window's drawing area
 glm::ivec2 getRelMousePosition()
 {
+	//todo refactor
+
 	POINT p = {};
 	GetCursorPos(&p);
 
 	WINDOWPLACEMENT wp;
 
 	GetWindowPlacement(wind, &wp);
+	
 	p.x -= wp.rcNormalPosition.left;
 	p.y -= wp.rcNormalPosition.top;
 

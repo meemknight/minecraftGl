@@ -24,7 +24,7 @@
 //	THE SOFTWARE.
 //
 //----------------------------------------------------------------------------------------
-//some parts have been slightly changed
+//some parts have been slightly changed to accomodate for my needs
 
 
 # pragma once
@@ -35,6 +35,8 @@
 
 namespace siv
 {
+	using precision = double;
+
 	class PerlinNoise
 	{
 	private:

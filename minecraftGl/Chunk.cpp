@@ -5,7 +5,7 @@ constexpr static int DRAW_BOTTOM_CHUNKS = 0;
 
 static inline void setFace(int x, int y, int z, FloatVector fv[], Chunk &c, Face f, glm::vec3 chunkPosition)
 {
-	auto face = getBlockFace((c.blockData[x][y][z]), f);
+	auto face = getBlockFace((c.getBlock(x, y, z)), f);
 	fv[f].push(glm::vec3(x, y, z) + chunkPosition);
 	fv[f].push(face.x, face.y);
 }
