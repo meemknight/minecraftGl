@@ -38,6 +38,7 @@
     <ClCompile Include="game.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="phisics.cpp" />
+    <ClCompile Include="Entity.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="stb_image.cpp" />
     <ClCompile Include="Texture.cpp" />
@@ -60,6 +61,7 @@
     <ClInclude Include="PerlinNoise.hpp" />
     <ClInclude Include="phisics.h" />
     <ClInclude Include="platformIndependentCalls.h" />
+    <ClInclude Include="Entity.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="stb_image.h" />
     <ClInclude Include="Texture.h" />

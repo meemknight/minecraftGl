@@ -10,6 +10,7 @@
 #include "phisics.h"
 #include "debugTools.h"
 #include "fileHandler.h"
+#include "Entity.h"
 #include <filesystem>
 
 ShaderProgram sp;
@@ -32,7 +33,7 @@ ChunkFileHandler fileHandler;
 
 std::vector<glm::ivec3> chunksToLoad;
 
-glm::vec3 playerLastPos;
+Entity playerEntity;
 
 int initGame()
 {
@@ -44,7 +45,8 @@ int initGame()
 	camera.position.x = 0;
 	camera.position.z = 0;
 
-	playerLastPos = camera.position;
+	playerEntity.lastPos = camera.position;
+	playerEntity.position = camera.position;
 
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
@@ -94,32 +96,32 @@ int gameLogic(float deltaTime)
 #pragma region keys
 	if (isKeyPressed('W'))
 	{
-		camera.moveFront(deltaTime);
+		playerEntity.fly(camera).moveFront(deltaTime);
 	}
 
 	if (isKeyPressed('A'))
 	{
-		camera.moveLeft(deltaTime);
+		playerEntity.fly(camera).moveLeft(deltaTime);
 	}
 
 	if (isKeyPressed('S'))
 	{
-		camera.moveBack(deltaTime);
+		playerEntity.fly(camera).moveBack(deltaTime);
 	}
 
 	if (isKeyPressed('D'))
 	{
-		camera.moveRight(deltaTime);
+		playerEntity.fly(camera).moveRight(deltaTime);
 	}
 
 	if (isKeyPressed('R'))
 	{
-		camera.moveUp(deltaTime);
+		playerEntity.fly(camera).moveUp(deltaTime);
 	}
 
 	if (isKeyPressed('F'))
 	{
-		camera.moveDown(deltaTime);
+		playerEntity.fly(camera).moveDown(deltaTime);
 	}
 
 	if (isKeyPressed('P'))
@@ -141,8 +143,11 @@ int gameLogic(float deltaTime)
 
 #pragma region player phisics
 	
-	resolveConstrains(camera.position, playerLastPos, chunkManager, { 1, 1.9, 1}, nullptr);
-	playerLastPos = camera.position;
+	playerEntity.resolveConstrains(chunkManager, { 1, 1.9, 1 }, nullptr);
+	//resolveConstrains(camera.position, playerLastPos, chunkManager, { 1, 1.9, 1}, nullptr);
+	playerEntity.updatePositions();
+
+	camera.position = playerEntity.position;
 
 #pragma endregion
 
