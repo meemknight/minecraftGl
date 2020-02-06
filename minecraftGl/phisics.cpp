@@ -268,7 +268,59 @@ static void resolveConstrainsOnBlock(
 
 }
 
-void resolveConstrains(glm::vec3 &pos, glm::vec3 lastPos, ChunkManager &cm, glm::vec3 dimensions, CubeWireRenderer *cw, bool *grounded) 
+void resolveConstrainsBrute(glm::vec3 &pos, glm::vec3 lastPos, ChunkManager &cm, glm::vec3 dimensions, CubeWireRenderer *cw, bool *grounded);
+
+//does a smart check for block skipping
+void resolveConstrains(glm::vec3 &pos, glm::vec3 lastPos, ChunkManager &cm, glm::vec3 dimensions, CubeWireRenderer *cw, bool *grounded)
+{
+	float distance = glm::length(lastPos - pos);
+	
+	if(distance < 1.f)
+	{
+		resolveConstrainsBrute(pos,
+			lastPos,
+			cm,
+			dimensions,
+			cw,
+			grounded);
+	}
+	else
+	{
+		glm::vec3 newPos = lastPos;
+		glm::vec3 delta = pos - lastPos;
+		delta = glm::normalize(delta);
+		delta *= 0.9;
+
+		do
+		{
+			newPos += delta;
+			glm::vec3 posTest = newPos;
+			resolveConstrainsBrute(newPos,
+				lastPos,
+				cm,
+				dimensions,
+				cw,
+				grounded);
+
+			if (newPos != posTest)
+			{
+				return;
+			}
+
+		} while (glm::length((newPos + delta) - pos) > 1.0f);
+		//todo optimize this while
+	
+		resolveConstrainsBrute(newPos,
+			lastPos,
+			cm,
+			dimensions,
+			cw,
+			grounded);
+	}
+}
+
+//does only one check, regardless of the distance that the body has travelled
+void resolveConstrainsBrute(glm::vec3 &pos, glm::vec3 lastPos, ChunkManager &cm, glm::vec3 dimensions, CubeWireRenderer *cw, bool *grounded) 
 {
 	constexpr float r = 0.95;
 

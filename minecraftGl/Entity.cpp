@@ -12,12 +12,12 @@ void Entity::updatePositions()
 
 void Entity::applyGravity(float deltaTime)
 {
-	velocity.y -= deltaTime * 25;
+	velocity.y -= deltaTime * 20;
 }
 
 void Entity::applyVelocity(float deltaTime)
 {
-	const float c = 20;
+	const float c = 40;
 	velocity = glm::clamp(velocity, { -c,-c, -c }, { c, c, c });
 
 	std::cout << velocity.y << "\n";
@@ -36,6 +36,11 @@ void Entity::applyVelocity(float deltaTime)
 
 	if (std::fabs(velocity.z) < 0.01)
 	{velocity.z = 0;}
+
+	if(grounded && velocity.y < 0)
+	{
+		velocity.y = 0;
+	}
 
 }
 
