@@ -21,7 +21,7 @@ int width;
 int height;
 
 //Camera camera(60.f, &width, &height, 0.1, 200);
-FirstPersonCamera camera(60.f, 0.1, 150, &width, &height);
+FirstPersonCamera camera(60.f, 0.1, 200, &width, &height);
 
 CubeMeshRenderer cubeRenderer;
 
@@ -147,6 +147,11 @@ int gameLogic(float deltaTime)
 		dirStrave += 1;
 	}
 
+	if (isKeyPressedOn(VK_SPACE))
+	{
+		playerEntity.walk(camera).jump();
+	}
+
 	playerEntity.walk(camera).moveOnDirection(dirStrave, dirFront, deltaTime);
 
 	if (isKeyPressed('P'))
@@ -168,7 +173,9 @@ int gameLogic(float deltaTime)
 
 #pragma region player phisics
 	
-	//playerEntity.applyGravity(deltaTime);
+	playerEntity.applyGravity(deltaTime);
+
+	playerEntity.applyVelocity(deltaTime);
 
 	playerEntity.resolveConstrains(chunkManager, { 1, 1.9, 1 }, nullptr);
 	//resolveConstrains(camera.position, playerLastPos, chunkManager, { 1, 1.9, 1}, nullptr);

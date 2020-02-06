@@ -89,7 +89,11 @@ int MAIN
 			int deltaTime = time2 - time1;
 			time1 = clock();
 			
-			if (!gameLogic((float)deltaTime / CLOCKS_PER_SEC))
+			float fDeltaTime = (float)deltaTime / CLOCKS_PER_SEC;
+
+			fDeltaTime = min(fDeltaTime, 1.f / 20.f);
+
+			if (!gameLogic(fDeltaTime))
 			{
 				quit = true;
 			}
@@ -223,6 +227,11 @@ glm::ivec2 getWindowSize()
 int isKeyPressed(int key)
 {
 	return GetAsyncKeyState(key);
+}
+
+int isKeyPressedOn(int key)
+{
+	return GetAsyncKeyState(key) & 0x8000;
 }
 
 int isLMouseButtonPressed()

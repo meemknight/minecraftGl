@@ -268,7 +268,7 @@ static void resolveConstrainsOnBlock(
 
 }
 
-void resolveConstrains(glm::vec3 &pos, glm::vec3 lastPos, ChunkManager &cm, glm::vec3 dimensions, CubeWireRenderer *cw) 
+void resolveConstrains(glm::vec3 &pos, glm::vec3 lastPos, ChunkManager &cm, glm::vec3 dimensions, CubeWireRenderer *cw, bool *grounded) 
 {
 	constexpr float r = 0.95;
 
@@ -282,7 +282,19 @@ void resolveConstrains(glm::vec3 &pos, glm::vec3 lastPos, ChunkManager &cm, glm:
 
 	newLastPos = position;
 	position.y += vect.y;
+	float testY = position.y;
 	performCollision(position, newLastPos, cm, { dimensions.x * r, dimensions.y, dimensions.z * r }, cw);
+	if(grounded)
+	{
+		if (testY == position.y)
+		{
+			*grounded = 0;
+		}else
+		{
+			*grounded = 1;
+		}
+	}
+	
 
 	newLastPos = position;
 	position.z += vect.z;

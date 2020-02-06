@@ -25,6 +25,8 @@ struct walkMoveStruct
 	const FirstPersonCamera &fp;
 
 	void moveOnDirection(float x, float z, float deltaTime);
+	void jump();
+
 };
 
 
@@ -33,16 +35,22 @@ struct Entity
 	glm::vec3 position;
 	glm::vec3 lastPos;
 
+	glm::vec3 velocity = {};
+
 	void resolveConstrains(ChunkManager &cm, glm::vec3 dimensions, CubeWireRenderer *cw);
 
 	void updatePositions();
 
-	float flySpeed = 30;
+	float flySpeed = 10;
+	float jumpSpeed = 10;
 
 	void applyGravity(float deltaTime);
+
+	void applyVelocity(float deltaTime);
 
 	FlyMoveStruct fly(const FirstPersonCamera &f) { return { this, f }; };
 	walkMoveStruct walk(const FirstPersonCamera &f) { return { this, f }; };
 
+	bool grounded = 0;
 };
 

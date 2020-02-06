@@ -2,7 +2,7 @@
 
 void Entity::resolveConstrains(ChunkManager & cm, glm::vec3 dimensions, CubeWireRenderer * cw)
 {
-	::resolveConstrains(position, lastPos, cm, dimensions, cw);
+	::resolveConstrains(position, lastPos, cm, dimensions, cw, &grounded);
 }
 
 void Entity::updatePositions()
@@ -12,7 +12,31 @@ void Entity::updatePositions()
 
 void Entity::applyGravity(float deltaTime)
 {
-	position.y -= deltaTime;
+	velocity.y -= deltaTime * 25;
+}
+
+void Entity::applyVelocity(float deltaTime)
+{
+	const float c = 20;
+	velocity = glm::clamp(velocity, { -c,-c, -c }, { c, c, c });
+
+	std::cout << velocity.y << "\n";
+
+	position += velocity * deltaTime;
+
+	//drag
+	velocity.x += velocity.x * (-5.0f * deltaTime);
+	velocity.z += velocity.z * (-5.0f * deltaTime);
+
+	if(std::fabs(velocity.x) < 0.01)
+	{velocity.x = 0;}
+
+	if (std::fabs(velocity.y) < 0.01)
+	{velocity.y = 0;}
+
+	if (std::fabs(velocity.z) < 0.01)
+	{velocity.z = 0;}
+
 }
 
 void FlyMoveStruct::moveUp(float speed)
@@ -64,4 +88,10 @@ void walkMoveStruct::moveOnDirection(float x, float z, float deltaTime)
 
 	e->position.x += dirMove.x;
 	e->position.z += dirMove.y;
+}
+
+void walkMoveStruct::jump()
+{
+	if(e->grounded)
+	e->velocity.y = e->jumpSpeed;
 }

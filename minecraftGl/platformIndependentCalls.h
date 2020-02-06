@@ -19,6 +19,7 @@ inline int getWindowSizeX() { return getWindowSize().x; }
 inline int getWindowSizeY() { return getWindowSize().y; }
 
 int isKeyPressed(int key);
+int isKeyPressedOn(int key);
 
 int isLMouseButtonPressed();
 int isRMouseButtonPressed();
