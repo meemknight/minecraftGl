@@ -16,6 +16,7 @@ static BlockFace frontFaces[BLOCK::BLOCKS_SIZE] =
 	{4,11},//snow_dirt
 	{5, 12},//leaves
 	{7, 13},//herbs
+	{14, 14},//sappling
 
 };
 
@@ -35,6 +36,7 @@ static BlockFace backFaces[BLOCK::BLOCKS_SIZE] =
 	{4,11},//snow_dirt
 	{5, 12},//leaves
 	{7, 13},//herbs
+	{14, 14},//sappling
 
 };
 
@@ -54,6 +56,7 @@ static BlockFace topFaces[BLOCK::BLOCKS_SIZE] =
 	{2, 11}, // snow_grass
 	{5, 12},//leaves
 	{7, 13},//herbs
+	{14, 14},//sappling
 
 };
 
@@ -73,6 +76,7 @@ static BlockFace bottomFaces[BLOCK::BLOCKS_SIZE] =
 	{2, 15}, // snow_grass
 	{5, 12},//leaves
 	{7, 13},//herbs
+	{14, 14},//sappling
 
 };
 
@@ -92,6 +96,7 @@ static BlockFace LeftFaces[BLOCK::BLOCKS_SIZE] =
 	{4,11},//snow_dirt
 	{5, 12},//leaves
 	{7, 13},//herbs
+	{14, 14},//sappling
 
 };
 
@@ -111,6 +116,8 @@ static BlockFace RightFaces[BLOCK::BLOCKS_SIZE] =
 	{4,11},//snow_dirt
 	{5, 12},//leaves
 	{7, 13},//herbs
+	{14, 14},//sappling
+
 };
 
 static BlockFace *faces[FACE::FACES_SIZE] =
@@ -126,8 +133,13 @@ BlockFace getBlockFace(Block b, Face f)
 //todo is opaque
 bool isOpaque(Block b)
 {
-	if(b!=BLOCK::air && b!=BLOCK::herb)
+	if(b!=BLOCK::air)
 	{
+		if (isHerb(b))
+		{
+			return 0;
+		}
+
 		return 1;
 	}else
 	{
@@ -137,7 +149,7 @@ bool isOpaque(Block b)
 
 bool isHerb(Block b)
 {
-	if (b == BLOCK::herb)
+	if (b == BLOCK::herb || b == BLOCK::sappling)
 	{
 		return 1;
 	}
@@ -152,10 +164,16 @@ bool isCollideble(Block b)
 {
 	if (b != BLOCK::air)
 	{
+		if (isHerb(b))
+		{
+			return 0;
+		}
+
 		return 1;
 	}
 	else
 	{
+		
 		return 0;
 	}
 }

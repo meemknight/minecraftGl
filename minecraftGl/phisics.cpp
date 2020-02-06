@@ -304,13 +304,14 @@ void resolveConstrains(glm::vec3 &pos, glm::vec3 lastPos, ChunkManager &cm, glm:
 
 			if (newPos != posTest)
 			{
+				pos = newPos;
 				return;
 			}
 
 		} while (glm::length((newPos + delta) - pos) > 1.0f);
 		//todo optimize this while
 	
-		resolveConstrainsBrute(newPos,
+		resolveConstrainsBrute(pos,
 			lastPos,
 			cm,
 			dimensions,

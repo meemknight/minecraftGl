@@ -31,6 +31,7 @@ namespace BLOCK
 		snow_dirt,
 		leaves,
 		herb,
+		sappling,
 		BLOCKS_SIZE,
 	};
 }
