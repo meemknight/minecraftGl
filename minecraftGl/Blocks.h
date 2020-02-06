@@ -30,6 +30,7 @@ namespace BLOCK
 		sand_stone,
 		snow_dirt,
 		leaves,
+		herb,
 		BLOCKS_SIZE,
 	};
 }
@@ -41,5 +42,6 @@ struct BlockFace
 };
 
 BlockFace getBlockFace(Block b, Face f);
-bool isSolid(Block b);
+bool isOpaque(Block b);
 bool isCollideble(Block b);
+bool isHerb(Block b);

@@ -26,7 +26,7 @@ struct Chunk
 	void clearBlockData() { memset(blockData, 0, sizeof(blockData)); }
 
 	Block &getBlock(glm::ivec3 v) { return getBlock(v.x, v.y, v.z); }
-	Block &getBlock(int x, int y, int z) { return blockData[x][y][z]; }
+	Block &getBlock(int x, int y, int z) { return blockData[x][z][y]; }
 		
 	//the position is rel to chunk mesh
 	glm::ivec3 position;
@@ -37,12 +37,12 @@ struct Chunk
 
 	Chunk *neighbours[4] = { 0 };
 
-	FloatVector positionData[FACE::FACES_SIZE] = {};
+	FloatVector positionData[FACE::FACES_SIZE + 1] = {};
 
 	//sets the positionData to 0
 	void resetMeshes()
 	{
-		for (int i = 0; i < FACE::FACES_SIZE; i++)
+		for (int i = 0; i < FACE::FACES_SIZE + 1; i++)
 		{
 			positionData[i].size = 0;
 		}
@@ -50,7 +50,7 @@ struct Chunk
 
 	void cleanup()
 	{
-		for (int i = 0; i < FACE::FACES_SIZE; i++)
+		for (int i = 0; i < FACE::FACES_SIZE + 1; i++)
 		{
 			positionData[i].cleanup();
 		}
@@ -65,6 +65,6 @@ struct Chunk
 private:
 	friend class ChunkFileHandler;
 	//private because it is prone to change
-	Block blockData[CHUNK_SIZE][BUILD_LIMIT][CHUNK_SIZE];
+	Block blockData[CHUNK_SIZE][CHUNK_SIZE][BUILD_LIMIT];
 };
 

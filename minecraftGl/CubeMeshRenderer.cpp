@@ -113,6 +113,51 @@ const unsigned int backIndexBufferData[] =
 	2,
 	1,
 };
+
+const float herbsData[] =
+{
+	-1.0f*r, 1.0f*r, 1.0*r,//pos
+	 0.0f, 1.0f,//texcoord
+
+	-1.0f*r, -1.0f*r, 1.0*r,
+	 0.0f,  0.0f,
+
+	 1.0f*r, -1.0f*r, -1.0*r,
+	 1.0f,  0.0f,
+
+	 1.0f*r, 1.0f*r, -1.0*r,
+	 1.0f, 1.0f,
+	 // //todo flip texcoords v
+	-1.0f*r, 1.0f*r, -1.0*r,//pos
+	 0.0f, 1.0f,//texcoord
+
+	-1.0f*r, -1.0f*r, -1.0*r,
+	 0.0f,  0.0f,
+
+	 1.0f*r, -1.0f*r, 1.0*r,
+	 1.0f,  0.0f,
+
+	 1.0f*r, 1.0f*r, 1.0*r,
+	 1.0f, 1.0f,
+};
+
+const unsigned int herbsIndexBufferData[] =
+{
+	0,
+	1,
+	3,
+	3,
+	1,
+	2,
+	//
+	0+4,
+	1+4,
+	3+4,
+	3+4,
+	1+4,
+	2+4,
+};
+
 #pragma endregion
 
 const float ambienceData[FACE::FACES_SIZE] = 
@@ -174,6 +219,7 @@ void CubeMeshRenderer::draw(Chunk **chunk, int size)
 #pragma endregion
 
 	int sizes[FACE::FACES_SIZE] = {};
+	int herbsSize = 0;
 	for (int index = 0; index < size; index++)
 	{
 			Chunk &c = *chunk[index];
@@ -184,6 +230,8 @@ void CubeMeshRenderer::draw(Chunk **chunk, int size)
 					sizes[i] += c.positionData[i].size;
 				}
 			}
+
+			herbsSize += c.positionData[FACE::FACES_SIZE].size;
 	}
 	
 	for(int i=0; i< FACE::FACES_SIZE; i++)
@@ -231,6 +279,28 @@ void CubeMeshRenderer::draw(Chunk **chunk, int size)
 		}
 	}
 	
+	{
+		//herbs
+		int pos = 0;
+
+		glBindBuffer(GL_ARRAY_BUFFER, herbsPositionData);
+		glBufferData(GL_ARRAY_BUFFER, herbsSize * sizeof(float), nullptr, GL_STREAM_DRAW);
+
+		for (int index = 0; index < size; index++)
+		{
+			Chunk &c = *chunk[index];
+
+			glBufferSubData(GL_ARRAY_BUFFER, pos * sizeof(float), c.positionData[FACE::FACES_SIZE].size * sizeof(float), c.positionData[FACE::FACES_SIZE].data);
+			pos += c.positionData[FACE::FACES_SIZE].size;
+		}
+
+		glDisable(GL_CULL_FACE);
+		glBindVertexArray(herbsVertexArray);
+		glUniform1f(ambienceUniformLocation, ambienceData[0]);
+		glDrawElementsInstanced(GL_TRIANGLES, 12, GL_UNSIGNED_INT, 0, pos / 5);
+		glEnable(GL_CULL_FACE);
+	}
+
 	additionalBlocks.clear();
 
 	glBindVertexArray(0);
@@ -243,7 +313,7 @@ void CubeMeshRenderer::cleanup()
 
 void CubeMeshRenderer::create()
 {
-	additionalBlocks.reserve(4);
+	additionalBlocks.reserve(1);
 
 	textureUniformLocation = sp->getUniformLocation("u_texture");
 	matUniformLocation = sp->getUniformLocation("u_mat");
@@ -255,6 +325,11 @@ void CubeMeshRenderer::create()
 	glGenBuffers(FACE::FACES_SIZE, facesIndexBuffer);
 	glGenBuffers(FACE::FACES_SIZE, positionsBuffer);
 	glGenVertexArrays(FACE::FACES_SIZE, vertexArrays);
+
+	glGenBuffers(1, &herbsShapeData);
+	glGenBuffers(1, &herbsShapeIndexBuffer);
+	glGenBuffers(1, &herbsPositionData);
+	glGenVertexArrays(1, &herbsVertexArray);
 
 	for(int i=0; i<FACE::FACES_SIZE; i++)
 	{
@@ -283,6 +358,35 @@ void CubeMeshRenderer::create()
 		//glUniform1i(textureUniformLocation, 0);
 
 		positionData[i].reserve(5 * 1000);
+	}
+
+	positionData[FACE::FACES_SIZE].reserve(5 * 10);
+
+	//herbs
+	{
+		glBindVertexArray(herbsVertexArray);
+		glBindBuffer(GL_ARRAY_BUFFER, herbsShapeData);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, herbsShapeIndexBuffer);
+
+		glBufferData(GL_ARRAY_BUFFER, sizeof(herbsData), herbsData, GL_STATIC_DRAW);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(herbsIndexBufferData), herbsIndexBufferData, GL_STATIC_DRAW);
+
+		glVertexAttribPointer(0, 3, GL_FLOAT, 0, sizeof(float) * 5, 0);
+		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(1, 2, GL_FLOAT, 0, sizeof(float) * 5, (void*)(sizeof(float) * 3));
+		glEnableVertexAttribArray(1);
+
+		glBindBuffer(GL_ARRAY_BUFFER, herbsPositionData);
+		glEnableVertexAttribArray(2);
+		glVertexAttribPointer(2, 3, GL_FLOAT, 0, sizeof(float) * 5, 0);
+		glVertexAttribDivisor(2, 1);
+		glEnableVertexAttribArray(3);
+		glVertexAttribPointer(3, 2, GL_FLOAT, 0, sizeof(float) * 5, (void*)(sizeof(float) * 3));
+		glVertexAttribDivisor(3, 1);
+
+		texture->bind(0);
+		sp->bind();
+
 	}
 
 	glBindVertexArray(0);

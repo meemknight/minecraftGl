@@ -27,13 +27,18 @@ struct CubeMeshRenderer
 	GLuint positionsBuffer[FACE::FACES_SIZE];
 	GLuint vertexArrays[FACE::FACES_SIZE];
 
+	GLuint herbsShapeData;
+	GLuint herbsShapeIndexBuffer;
+	GLuint herbsVertexArray;
+	GLuint herbsPositionData;
+
 	FloatVector positionData[FACE::FACES_SIZE];
 
 	std::vector<BlockWithPos> additionalBlocks;
 
 	void draw(Chunk **c, int size);
 	void cleanup();
-	void create();
+	void create();//todo rename init
 
 	void addSingleCube(int x, int y, int z, Block type);
 	void addSingleCube(glm::vec3 pos, Block type) { addSingleCube(pos.x, pos.y, pos.z, type); }

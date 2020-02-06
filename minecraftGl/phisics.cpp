@@ -33,7 +33,7 @@ static void resolveConstrainsOnX(glm::vec3 &pos, glm::vec3 lastPos, ChunkManager
 
 		for (auto &i : blocksToCheck)
 		{
-			if (isSolid(cm.getBlock(i)))
+			if (isOpaque(cm.getBlock(i)))
 			{
 				pos.x = floorf(i.x + dimensions.x) + 1;
 				break;
@@ -63,7 +63,7 @@ static void resolveConstrainsOnX(glm::vec3 &pos, glm::vec3 lastPos, ChunkManager
 
 		for (auto &i : blocksToCheck)
 		{
-			if (isSolid(cm.getBlock(i)))
+			if (isOpaque(cm.getBlock(i)))
 			{
 				pos.x = floorf(i.x + dimensions.x) - 1;
 				break;
@@ -102,7 +102,7 @@ static void resolveConstrainsOnY(glm::vec3 &pos, glm::vec3 lastPos, ChunkManager
 
 		for (auto &i : blocksToCheck)
 		{
-			if (isSolid(cm.getBlock(i)))
+			if (isOpaque(cm.getBlock(i)))
 			{
 				pos.y = i.y + dimensions.y;
 				break;
@@ -133,7 +133,7 @@ static void resolveConstrainsOnY(glm::vec3 &pos, glm::vec3 lastPos, ChunkManager
 
 		for (auto &i : blocksToCheck)
 		{
-			if (isSolid(cm.getBlock(i)))
+			if (isOpaque(cm.getBlock(i)))
 			{
 				pos.y = i.y - 1;
 				break;
@@ -171,7 +171,7 @@ static void resolveConstrainsOnZ(glm::vec3 &pos, glm::vec3 lastPos, ChunkManager
 
 		for (auto &i : blocksToCheck)
 		{
-			if (isSolid(cm.getBlock(i)))
+			if (isOpaque(cm.getBlock(i)))
 			{
 				pos.z = floorf(i.z + dimensions.z) + 1;
 				break;
@@ -202,7 +202,7 @@ static void resolveConstrainsOnZ(glm::vec3 &pos, glm::vec3 lastPos, ChunkManager
 
 			for (auto &i : blocksToCheck)
 			{
-				if (isSolid(cm.getBlock(i)))
+				if (isOpaque(cm.getBlock(i)))
 				{
 					pos.z = floorf(i.z + dimensions.z) - 1;
 					break;
@@ -225,13 +225,13 @@ static void resolveConstrainsOnBlock(
 
 	if (delta.x < 0) //left
 	{
-		if (isSolid(cm.getBlock(block)))
+		if (isOpaque(cm.getBlock(block)))
 		{
 			pos.x = floorf(block.x + dimensions.x) + 1;
 		}
 	}else if(delta.x > 0)
 	{
-		if (isSolid(cm.getBlock(block)))
+		if (isOpaque(cm.getBlock(block)))
 		{
 			pos.x = floorf(block.x + dimensions.x) - 1;
 		}
@@ -239,13 +239,13 @@ static void resolveConstrainsOnBlock(
 
 	if (delta.y < 0) //down
 	{
-		if (isSolid(cm.getBlock(block)))
+		if (isOpaque(cm.getBlock(block)))
 		{
 			pos.y = block.y + dimensions.y;
 		}
 	}else if (delta.y > 0)//up
 	{
-		if (isSolid(cm.getBlock(block)))
+		if (isOpaque(cm.getBlock(block)))
 		{
 			pos.y = floorf(block.y) - 1;
 		}
@@ -253,14 +253,14 @@ static void resolveConstrainsOnBlock(
 	
 	if (delta.z < 0) //left
 	{
-		if (isSolid(cm.getBlock(block)))
+		if (isOpaque(cm.getBlock(block)))
 		{
 			pos.z = floorf(block.z + dimensions.z) + 1;
 		}
 	}
 	else if (delta.z > 0)
 	{
-		if (isSolid(cm.getBlock(block)))
+		if (isOpaque(cm.getBlock(block)))
 		{
 			pos.z = floorf(block.z + dimensions.z) - 1;
 		}
@@ -383,7 +383,7 @@ void performCollision(glm::vec3 &pos, glm::vec3 lastPos, ChunkManager &cm, glm::
 				{
 					cw->addCube(block, { 1,0,0,1 });
 				}
-				if (isSolid(cm.getBlock(block)))
+				if (isOpaque(cm.getBlock(block)))
 				{
 					pos.x = floorf(block.x + dimensions.x) - 1;
 				}
@@ -400,7 +400,7 @@ void performCollision(glm::vec3 &pos, glm::vec3 lastPos, ChunkManager &cm, glm::
 				{
 					cw->addCube(block, { 1,0,0,1 });
 				}
-				if (isSolid(cm.getBlock(block)))
+				if (isOpaque(cm.getBlock(block)))
 				{
 					pos.x = floorf(block.x + dimensions.x) + 1;
 				}
@@ -418,7 +418,7 @@ void performCollision(glm::vec3 &pos, glm::vec3 lastPos, ChunkManager &cm, glm::
 				{
 					cw->addCube(block, { 1,0,0,1 });
 				}
-				if (isSolid(cm.getBlock(block)))
+				if (isOpaque(cm.getBlock(block)))
 				{
 					pos.y = block.y - 1;
 				}
@@ -435,7 +435,7 @@ void performCollision(glm::vec3 &pos, glm::vec3 lastPos, ChunkManager &cm, glm::
 				{
 					cw->addCube(block, { 1,0,0,1 });
 				}
-				if (isSolid(cm.getBlock(block)))
+				if (isOpaque(cm.getBlock(block)))
 				{
 					pos.y = block.y + dimensions.y;
 				}
@@ -454,7 +454,7 @@ void performCollision(glm::vec3 &pos, glm::vec3 lastPos, ChunkManager &cm, glm::
 				{
 					cw->addCube(block, { 1,0,0,1 });
 				}
-				if (isSolid(cm.getBlock(block)))
+				if (isOpaque(cm.getBlock(block)))
 				{
 					pos.z = floorf(block.z + dimensions.z) - 1;
 				}
@@ -472,7 +472,7 @@ void performCollision(glm::vec3 &pos, glm::vec3 lastPos, ChunkManager &cm, glm::
 				{
 					cw->addCube(block, { 1,0,0,1 });
 				}
-				if (isSolid(cm.getBlock(block)))
+				if (isOpaque(cm.getBlock(block)))
 				{
 					pos.z = floorf(block.z + dimensions.z) + 1;
 				}

@@ -1,13 +1,22 @@
 #include "Chunk.h"
+#include "tools.h"
 
 constexpr static int DRAW_EDGE_CHUNKS = 0;
 constexpr static int DRAW_BOTTOM_CHUNKS = 0;
 
 static inline void setFace(int x, int y, int z, FloatVector fv[], Chunk &c, Face f, glm::vec3 chunkPosition)
 {
-	auto face = getBlockFace((c.getBlock(x, y, z)), f);
-	fv[f].push(glm::vec3(x, y, z) + chunkPosition);
-	fv[f].push(face.x, face.y);
+	if(isHerb(c.getBlock(x, y, z)))
+	{
+		auto face = getBlockFace((c.getBlock(x, y, z)), FACE::front);
+		fv[FACE::FACES_SIZE].push(glm::vec3(x, y, z) + chunkPosition);
+		fv[FACE::FACES_SIZE].push(face.x, face.y);
+	}else
+	{
+		auto face = getBlockFace((c.getBlock(x, y, z)), f);
+		fv[f].push(glm::vec3(x, y, z) + chunkPosition);
+		fv[f].push(face.x, face.y);
+	}
 }
 
 void Chunk::removeNeighboursLinkage()
@@ -47,12 +56,12 @@ void Chunk::bakeMeshes()
 		{
 			for (int z = 0; z < CHUNK_SIZE; z++)
 			{
-				if (blockData[x][y][z] != BLOCK::air)
+				if (getBlock(x,y,z) != BLOCK::air && !isHerb(getBlock(x, y, z)))
 				{
 					//top
 					if (y < BUILD_LIMIT - 1)
 					{
-						if (!isSolid(blockData[x][y + 1][z]))
+						if (!isOpaque(getBlock(x, y+1, z)))
 						{
 							setFace(x, y, z, positionData, *this, FACE::top, chunkPosition);
 						}
@@ -65,7 +74,7 @@ void Chunk::bakeMeshes()
 					//bottom
 					if (y > 0)
 					{
-						if (!isSolid(blockData[x][y - 1][z]))
+						if (!isOpaque(getBlock(x, y-1, z)))
 						{
 							setFace(x, y, z, positionData, *this, FACE::bottom, chunkPosition);
 
@@ -82,7 +91,7 @@ void Chunk::bakeMeshes()
 					//front
 					if (z < 15)
 					{
-						if (!isSolid(blockData[x][y][z + 1]))
+						if (!isOpaque(getBlock(x, y, z+1)))
 						{
 							setFace(x, y, z, positionData, *this, FACE::front, chunkPosition);
 						}
@@ -91,7 +100,7 @@ void Chunk::bakeMeshes()
 					{
 						if (neighbours[CN::front])
 						{
-							if (!isSolid(neighbours[CN::front]->blockData[x][y][0]))
+							if (!isOpaque(neighbours[CN::front]->getBlock(x, y, 0)))
 							{
 								setFace(x, y, z, positionData, *this, FACE::front, chunkPosition);
 							}
@@ -105,7 +114,7 @@ void Chunk::bakeMeshes()
 					//back
 					if (z > 0)
 					{
-						if (!isSolid(blockData[x][y][z - 1]))
+						if (!isOpaque(getBlock(x, y, z-1)))
 						{
 							setFace(x, y, z, positionData, *this, FACE::back, chunkPosition);
 						}
@@ -114,7 +123,7 @@ void Chunk::bakeMeshes()
 					{
 						if (neighbours[CN::back])
 						{
-							if (!isSolid(neighbours[CN::back]->blockData[x][y][15]))
+							if (!isOpaque(neighbours[CN::back]->getBlock(x, y, 15)))
 							{
 								setFace(x, y, z, positionData, *this, FACE::back, chunkPosition);
 							}
@@ -129,7 +138,7 @@ void Chunk::bakeMeshes()
 					//left
 					if (x > 0)
 					{
-						if (!isSolid(blockData[x - 1][y][z]))
+						if (!isOpaque(getBlock(x - 1, y, z)))
 						{
 							setFace(x, y, z, positionData, *this, FACE::left, chunkPosition);
 						}
@@ -138,7 +147,7 @@ void Chunk::bakeMeshes()
 					{
 						if (neighbours[CN::left])
 						{
-							if (!isSolid(neighbours[CN::left]->blockData[15][y][z]))
+							if (!isOpaque(neighbours[CN::left]->getBlock(15, y, z)))
 							{
 								setFace(x, y, z, positionData, *this, FACE::left, chunkPosition);
 							}
@@ -153,7 +162,7 @@ void Chunk::bakeMeshes()
 					//right
 					if (x < 15)
 					{
-						if (!isSolid(blockData[x + 1][y][z]))
+						if (!isOpaque(getBlock(x + 1, y, z)))
 						{
 							setFace(x, y, z, positionData, *this, FACE::right, chunkPosition);
 						}
@@ -162,7 +171,7 @@ void Chunk::bakeMeshes()
 					{
 						if (neighbours[CN::right])
 						{
-							if (!isSolid(neighbours[CN::right]->blockData[0][y][z]))
+							if (!isOpaque(neighbours[CN::right]->getBlock(0, y, z)))
 							{
 								setFace(x, y, z, positionData, *this, FACE::right, chunkPosition);
 							}
@@ -172,6 +181,10 @@ void Chunk::bakeMeshes()
 							setFace(x, y, z, positionData, *this, FACE::right, chunkPosition);
 						}
 					}
+				}else if(isHerb(getBlock(x, y, z)))
+				{
+					//herbs
+					setFace(x, y, z, positionData, *this, FACE::front, chunkPosition);
 				}
 			}
 		}

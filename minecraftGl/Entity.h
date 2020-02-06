@@ -19,7 +19,7 @@ struct FlyMoveStruct
 };
 
 
-struct walkMoveStruct
+struct WalkMoveStruct
 {
 	Entity *e;
 	const FirstPersonCamera &fp;
@@ -41,15 +41,15 @@ struct Entity
 
 	void updatePositions();
 
-	float flySpeed = 10;
-	float jumpSpeed = 10;
+	float flySpeed = 6;
+	float jumpSpeed = 13;
 
 	void applyGravity(float deltaTime);
 
 	void applyVelocity(float deltaTime);
 
 	FlyMoveStruct fly(const FirstPersonCamera &f) { return { this, f }; };
-	walkMoveStruct walk(const FirstPersonCamera &f) { return { this, f }; };
+	WalkMoveStruct walk(const FirstPersonCamera &f) { return { this, f }; };
 
 	bool grounded = 0;
 };

@@ -12,15 +12,13 @@ void Entity::updatePositions()
 
 void Entity::applyGravity(float deltaTime)
 {
-	velocity.y -= deltaTime * 20;
+	velocity.y -= deltaTime * 32;
 }
 
 void Entity::applyVelocity(float deltaTime)
 {
 	const float c = 40;
 	velocity = glm::clamp(velocity, { -c,-c, -c }, { c, c, c });
-
-	std::cout << velocity.y << "\n";
 
 	position += velocity * deltaTime;
 
@@ -74,7 +72,7 @@ void FlyMoveStruct::moveBack(float speed)
 	moveFront(-speed);
 }
 
-void walkMoveStruct::moveOnDirection(float x, float z, float deltaTime)
+void WalkMoveStruct::moveOnDirection(float x, float z, float deltaTime)
 {
 	float angle = fp.getTopDownAngle();
 
@@ -95,7 +93,7 @@ void walkMoveStruct::moveOnDirection(float x, float z, float deltaTime)
 	e->position.z += dirMove.y;
 }
 
-void walkMoveStruct::jump()
+void WalkMoveStruct::jump()
 {
 	if(e->grounded)
 	e->velocity.y = e->jumpSpeed;

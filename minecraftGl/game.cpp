@@ -202,7 +202,7 @@ int gameLogic(float deltaTime)
 		{
 			if (edge.has_value())
 			{
-				chunkManager.setBlock(edge.value(), BLOCK::leaves);
+				chunkManager.setBlock(edge.value(), BLOCK::herb);
 			}
 		}
 
