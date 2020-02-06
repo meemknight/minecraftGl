@@ -83,7 +83,7 @@ public:
 		biomes[biomes.size() - 1].chanceFactor = 1;
 		biomes[biomes.size() - 1].topBlock = BLOCK::grass;
 		biomes[biomes.size() - 1].bottomBlock = BLOCK::dirt;
-		biomes[biomes.size() - 1].bottomBlockDepth = 6;
+		biomes[biomes.size() - 1].bottomBlockDepth = 8;
 		biomes[biomes.size() - 1].minStonePos = 90;
 		biomes[biomes.size() - 1].maxStonePos = 130;
 		biomes[biomes.size() - 1].stoneChance = 0.5;
@@ -95,7 +95,7 @@ public:
 		biomes[biomes.size() - 1].chanceFactor = 1;
 		biomes[biomes.size() - 1].topBlock = BLOCK::snow_dirt;
 		biomes[biomes.size() - 1].bottomBlock = BLOCK::dirt;
-		biomes[biomes.size() - 1].bottomBlockDepth = 4;
+		biomes[biomes.size() - 1].bottomBlockDepth = 6;
 		biomes[biomes.size() - 1].minStonePos = 120;
 		biomes[biomes.size() - 1].maxStonePos = 200;
 		biomes[biomes.size() - 1].stoneChance = 0.4;

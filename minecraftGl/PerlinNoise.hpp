@@ -32,10 +32,14 @@
 # include <numeric>
 # include <algorithm>
 # include <random>
+# include <type_traits>
 
 namespace siv
 {
-	using precision = double;
+	using precision = float;
+
+	inline float floorType(float f) { return floorf(f); }
+	inline double floorType(double f) { return floor(f); }
 
 	class PerlinNoise
 	{
@@ -43,21 +47,21 @@ namespace siv
 
 		std::uint8_t p[512];
 
-		static double Fade(double t) noexcept
+		static precision Fade(precision t) noexcept
 		{
 			return t * t * t * (t * (t * 6 - 15) + 10);
 		}
 
-		static double Lerp(double t, double a, double b) noexcept
+		static precision Lerp(precision t, precision a, precision b) noexcept
 		{
 			return a + t * (b - a);
 		}
 
-		static double Grad(std::uint8_t hash, double x, double y, double z) noexcept
+		static precision Grad(std::uint8_t hash, precision x, precision y, precision z) noexcept
 		{
 			const std::uint8_t h = hash & 15;
-			const double u = h < 8 ? x : y;
-			const double v = h < 4 ? y : h == 12 || h == 14 ? x : z;
+			const precision u = h < 8 ? x : y;
+			const precision v = h < 4 ? y : h == 12 || h == 14 ? x : z;
 			return ((h & 1) == 0 ? u : -u) + ((h & 2) == 0 ? v : -v);
 		}
 
@@ -105,22 +109,22 @@ namespace siv
 			}
 		}
 
-		double noise(double x) const
+		precision noise(precision x) const
 		{
 			return noise(x, 0.0, 0.0);
 		}
 
-		double noise(double x, double y) const
+		precision noise(precision x, precision y) const
 		{
 			return noise(x, y, 0.0);
 		}
 
-		inline double noise(double x, double y, double z) const
+		inline precision noise(precision x, precision y, precision z) const
 		{
 			//modified here
-			double florX = std::floor(x);
-			double florY = std::floor(y);
-			double florZ = std::floor(z);
+			precision florX = floorType(x);
+			precision florY = floorType(y);
+			precision florZ = floorType(z);
 
 			const std::int32_t X = static_cast<std::int32_t>(florX) & 255;
 			const std::int32_t Y = static_cast<std::int32_t>(florY) & 255;
@@ -130,9 +134,9 @@ namespace siv
 			y -= florY;
 			z -= florZ;
 
-			const double u = Fade(x);
-			const double v = Fade(y);
-			const double w = Fade(z);
+			const precision u = Fade(x);
+			const precision v = Fade(y);
+			const precision w = Fade(z);
 
 			const std::int32_t A = p[X] + Y, AA = p[A] + Z, AB = p[A + 1] + Z;
 			const std::int32_t B = p[X + 1] + Y, BA = p[B] + Z, BB = p[B + 1] + Z;
@@ -147,10 +151,10 @@ namespace siv
 						Grad(p[BB + 1], x - 1, y - 1, z - 1))));
 		}
 
-		double octaveNoise(double x, std::int32_t octaves) const
+		precision octaveNoise(precision x, std::int32_t octaves) const
 		{
-			double result = 0.0;
-			double amp = 1.0;
+			precision result = 0.0;
+			precision amp = 1.0;
 
 			for (std::int32_t i = 0; i < octaves; ++i)
 			{
@@ -162,10 +166,10 @@ namespace siv
 			return result;
 		}
 
-		double octaveNoise(double x, double y, std::int32_t octaves) const
+		precision octaveNoise(precision x, precision y, std::int32_t octaves) const
 		{
-			double result = 0.0;
-			double amp = 1.0;
+			precision result = 0.0;
+			precision amp = 1.0;
 
 			for (std::int32_t i = 0; i < octaves; ++i)
 			{
@@ -178,12 +182,12 @@ namespace siv
 			return result;
 		}
 
-		double octaveNoise(double x, double y, double z, std::int32_t octaves) const
+		precision octaveNoise(precision x, precision y, precision z, std::int32_t octaves) const
 		{
 			if(octaves > 8)
 			{
-				double result = 0.0;
-				double amp = 1.0;
+				precision result = 0.0;
+				precision amp = 1.0;
 
 				for (std::int32_t i = 0; i < octaves; ++i)
 				{
@@ -197,11 +201,11 @@ namespace siv
 				return result;
 			}
 
-			double xData[8] = { x };
-			double yData[8] = { y };
-			double zData[8] = { z };
-			double rez[8] = { 0 };
-			double amp[8] = { 1 };
+			precision xData[8] = { x };
+			precision yData[8] = { y };
+			precision zData[8] = { z };
+			precision rez[8] = { 0 };
+			precision amp[8] = { 1 };
 
 			for (std::int32_t i = 1; i < octaves; ++i)
 			{
@@ -226,34 +230,34 @@ namespace siv
 			return rez[0];
 		}
 
-		double noise0_1(double x) const
+		precision noise0_1(precision x) const
 		{
-			return noise(x) * 0.5 + 0.5;
+			return noise(x) * (precision)0.5 + (precision)0.5;
 		}
 
-		double noise0_1(double x, double y) const
+		precision noise0_1(precision x, precision y) const
 		{
-			return noise(x, y) * 0.5 + 0.5;
+			return noise(x, y) * (precision)0.5 + (precision)0.5;
 		}
 
-		double noise0_1(double x, double y, double z) const
+		precision noise0_1(precision x, precision y, precision z) const
 		{
-			return noise(x, y, z) * 0.5 + 0.5;
+			return noise(x, y, z) * (precision)0.5 + (precision)0.5;
 		}
 
-		double octaveNoise0_1(double x, std::int32_t octaves) const
+		precision octaveNoise0_1(precision x, std::int32_t octaves) const
 		{
-			return octaveNoise(x, octaves) * 0.5 + 0.5;
+			return octaveNoise(x, octaves) * (precision)0.5 + (precision)0.5;
 		}
 
-		double octaveNoise0_1(double x, double y, std::int32_t octaves) const
+		precision octaveNoise0_1(precision x, precision y, std::int32_t octaves) const
 		{
-			return octaveNoise(x, y, octaves) * 0.5 + 0.5;
+			return octaveNoise(x, y, octaves) * (precision)0.5 + (precision)0.5;
 		}
 
-		double octaveNoise0_1(double x, double y, double z, std::int32_t octaves) const
+		precision octaveNoise0_1(precision x, precision y, precision z, std::int32_t octaves) const
 		{
-			return octaveNoise(x, y, z, octaves) * 0.5 + 0.5;
+			return octaveNoise(x, y, z, octaves) * (precision)0.5 + (precision)0.5;
 		}
 	};
 }

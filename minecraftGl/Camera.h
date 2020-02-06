@@ -44,7 +44,7 @@ struct FirstPersonCamera
 
 	void mouseUpdate(const glm::vec2 &pos);
 
-	float getTopDownAngle();
+	float getTopDownAngle() const;
 
 	float rSpeed = 0.22f;
 

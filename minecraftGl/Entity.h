@@ -19,6 +19,15 @@ struct FlyMoveStruct
 };
 
 
+struct walkMoveStruct
+{
+	Entity *e;
+	const FirstPersonCamera &fp;
+
+	void moveOnDirection(float x, float z, float deltaTime);
+};
+
+
 struct Entity
 {
 	glm::vec3 position;
@@ -30,7 +39,10 @@ struct Entity
 
 	float flySpeed = 30;
 
+	void applyGravity(float deltaTime);
+
 	FlyMoveStruct fly(const FirstPersonCamera &f) { return { this, f }; };
+	walkMoveStruct walk(const FirstPersonCamera &f) { return { this, f }; };
 
 };
 

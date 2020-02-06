@@ -204,7 +204,7 @@ void FirstPersonCamera::mouseUpdate(const glm::vec2 & pos)
 	oldMousePosition = getRelMousePosition();
 }
 
-float FirstPersonCamera::getTopDownAngle()
+float FirstPersonCamera::getTopDownAngle() const
 {
 	glm::vec2 dir = {viewDirection.x, viewDirection.z};
 	dir = glm::normalize(dir);

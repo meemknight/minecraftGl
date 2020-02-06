@@ -21,7 +21,7 @@ int width;
 int height;
 
 //Camera camera(60.f, &width, &height, 0.1, 200);
-FirstPersonCamera camera(60.f, 0.1, 200, &width, &height);
+FirstPersonCamera camera(60.f, 0.1, 150, &width, &height);
 
 CubeMeshRenderer cubeRenderer;
 
@@ -94,35 +94,60 @@ int gameLogic(float deltaTime)
 #pragma endregion
 
 #pragma region keys
+	//if (isKeyPressed('W'))
+	//{
+	//	playerEntity.fly(camera).moveFront(deltaTime);
+	//}
+	//
+	//if (isKeyPressed('A'))
+	//{
+	//	playerEntity.fly(camera).moveLeft(deltaTime);
+	//}
+	//
+	//if (isKeyPressed('S'))
+	//{
+	//	playerEntity.fly(camera).moveBack(deltaTime);
+	//}
+	//
+	//if (isKeyPressed('D'))
+	//{
+	//	playerEntity.fly(camera).moveRight(deltaTime);
+	//}
+	//
+	//if (isKeyPressed('R'))
+	//{
+	//	playerEntity.fly(camera).moveUp(deltaTime);
+	//}
+	//
+	//if (isKeyPressed('F'))
+	//{
+	//	playerEntity.fly(camera).moveDown(deltaTime);
+	//}
+
+	int dirFront = 0;
+	int dirStrave = 0;
+
 	if (isKeyPressed('W'))
 	{
-		playerEntity.fly(camera).moveFront(deltaTime);
-	}
-
-	if (isKeyPressed('A'))
-	{
-		playerEntity.fly(camera).moveLeft(deltaTime);
+		dirFront += 1;
 	}
 
 	if (isKeyPressed('S'))
 	{
-		playerEntity.fly(camera).moveBack(deltaTime);
+		dirFront -= 1;
+	}
+
+	if (isKeyPressed('A'))
+	{
+		dirStrave -= 1;
 	}
 
 	if (isKeyPressed('D'))
 	{
-		playerEntity.fly(camera).moveRight(deltaTime);
+		dirStrave += 1;
 	}
 
-	if (isKeyPressed('R'))
-	{
-		playerEntity.fly(camera).moveUp(deltaTime);
-	}
-
-	if (isKeyPressed('F'))
-	{
-		playerEntity.fly(camera).moveDown(deltaTime);
-	}
+	playerEntity.walk(camera).moveOnDirection(dirStrave, dirFront, deltaTime);
 
 	if (isKeyPressed('P'))
 	{
@@ -143,6 +168,8 @@ int gameLogic(float deltaTime)
 
 #pragma region player phisics
 	
+	//playerEntity.applyGravity(deltaTime);
+
 	playerEntity.resolveConstrains(chunkManager, { 1, 1.9, 1 }, nullptr);
 	//resolveConstrains(camera.position, playerLastPos, chunkManager, { 1, 1.9, 1}, nullptr);
 	playerEntity.updatePositions();
