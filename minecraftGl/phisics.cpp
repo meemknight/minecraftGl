@@ -361,65 +361,70 @@ void performCollision(glm::vec3 &pos, glm::vec3 lastPos, ChunkManager &cm, glm::
 {
 	constexpr float topMarj = 0.1;
 
-	dimensions.x /= 2;
+	dimensions.x /= 2.f;
 	//dimensions.y /= 2;
-	dimensions.z /= 2;
-
+	dimensions.z /= 2.f;
 
 	glm::vec3 posCopy = pos;
 	//posCopy.x += dimensions.x;
 	//posCopy.z += dimensions.z;
-	
 
 	glm::vec3 delta = pos - lastPos;
 
+	const int xBeg = floorf(posCopy.x - dimensions.x + 0.5);
+	const int xEnd = floorf(posCopy.x + dimensions.x + 0.5);
+	const int yBeg = ceilf(posCopy.y - dimensions.y);
+	const int yEnd = floorf(posCopy.y - topMarj) + 1;
+	const int zBeg = floorf(posCopy.z - dimensions.z + 0.5);
+	const int zEnd = floorf(posCopy.z + dimensions.z + 0.5);
+
 	if(delta.x > 0) // dreapta
 	{
-		int x = floor(posCopy.x + dimensions.x + 0.5);
-		for (int y = ceil(posCopy.y - dimensions.y); y <= floor(posCopy.y - topMarj) + 1; y++)
-			for (int z = floor(posCopy.z - dimensions.z + 0.5); z <= floor(posCopy.z + dimensions.z + 0.5); z++)
+		int x = xEnd;
+		for (int y = yBeg; y <= yEnd; y++)
+			for (int z = zBeg; z <= zEnd; z++)
 			{
 				glm::ivec3 block = { x,y,z };
 				if(cw)
 				{
 					cw->addCube(block, { 1,0,0,1 });
 				}
-				if (isOpaque(cm.getBlock(block)))
+				if (isCollideble(cm.getBlock(block)))
 				{
-					pos.x = floorf(block.x + dimensions.x) - 1;
+					pos.x = block.x - dimensions.x*2;
 				}
 			}
 	}
 	else if (delta.x < 0)  // stanga
 	{
-		int x = floor(posCopy.x - dimensions.x + 0.5);
-		for (int y = ceil(posCopy.y - dimensions.y); y <= floor(posCopy.y - topMarj) + 1; y++)
-			for (int z = floor(posCopy.z - dimensions.z + 0.5); z <= floor(posCopy.z + dimensions.z + 0.5); z++)
+		int x = xBeg;
+		for (int y = yBeg; y <= yEnd; y++)
+			for (int z = zBeg; z <= zEnd; z++)
 			{
 				glm::ivec3 block = { x,y,z };
 				if (cw)
 				{
 					cw->addCube(block, { 1,0,0,1 });
 				}
-				if (isOpaque(cm.getBlock(block)))
+				if (isCollideble(cm.getBlock(block)))
 				{
-					pos.x = floorf(block.x + dimensions.x) + 1;
+					pos.x = block.x + dimensions.x * 2;
 				}
 			}
 	}
 
 	if(delta.y > 0) // sus
 	{
-		int y = floor(posCopy.y) + 1;
-		for (int x = floor(posCopy.x - dimensions.x + 0.5); x <= floor(posCopy.x + dimensions.x + 0.5); x++)
-			for (int z = floor(posCopy.z - dimensions.z + 0.5); z <= floor(posCopy.z + dimensions.z + 0.5); z++)
+		int y = floorf(posCopy.y) + 1;
+		for (int x = xBeg; x <= xEnd; x++)
+			for (int z = zBeg; z <= zEnd; z++)
 			{
 				glm::ivec3 block = { x,y,z };
 				if (cw)
 				{
 					cw->addCube(block, { 1,0,0,1 });
 				}
-				if (isOpaque(cm.getBlock(block)))
+				if (isCollideble(cm.getBlock(block)))
 				{
 					pos.y = block.y - 1;
 				}
@@ -427,16 +432,16 @@ void performCollision(glm::vec3 &pos, glm::vec3 lastPos, ChunkManager &cm, glm::
 	
 	}else if(delta.y < 0)
 	{
-		int y = ceil(posCopy.y - dimensions.y);
-		for (int x = floor(posCopy.x - dimensions.x + 0.5); x <= floor(posCopy.x + dimensions.x + 0.5); x++)
-			for (int z = floor(posCopy.z - dimensions.z + 0.5); z <= floor(posCopy.z + dimensions.z + 0.5); z++)
+		int y = yBeg;
+		for (int x = xBeg; x <= xEnd; x++)
+			for (int z = zBeg; z <= zEnd; z++)
 			{
 				glm::ivec3 block = { x,y,z };
 				if (cw)
 				{
 					cw->addCube(block, { 1,0,0,1 });
 				}
-				if (isOpaque(cm.getBlock(block)))
+				if (isCollideble(cm.getBlock(block)))
 				{
 					pos.y = block.y + dimensions.y;
 				}
@@ -446,36 +451,36 @@ void performCollision(glm::vec3 &pos, glm::vec3 lastPos, ChunkManager &cm, glm::
 
 	if (delta.z > 0) // fata
 	{
-		int z = floor(posCopy.z + dimensions.z + 0.5);
-		for (int x = floor(posCopy.x - dimensions.x + 0.5); x <= floor(posCopy.x + dimensions.x + 0.5); x++)
-			for (int y = ceil(posCopy.y - dimensions.y); y <= floor(posCopy.y - topMarj) + 1; y++)
+		int z = zEnd;
+		for (int x = xBeg; x <= xEnd; x++)
+			for (int y = yBeg; y <= yEnd; y++)
 			{
 				glm::ivec3 block = { x,y,z };
 				if (cw)
 				{
 					cw->addCube(block, { 1,0,0,1 });
 				}
-				if (isOpaque(cm.getBlock(block)))
+				if (isCollideble(cm.getBlock(block)))
 				{
-					pos.z = floorf(block.z + dimensions.z) - 1;
+					pos.z = block.z - dimensions.z * 2;
 				}
 			}
 
 	
 	}else if (delta.z < 0)
 	{
-		int z = floor(posCopy.z - dimensions.z + 0.5);
-		for (int x = floor(posCopy.x - dimensions.x + 0.5); x <= floor(posCopy.x + dimensions.x + 0.5); x++)
-			for (int y = ceil(posCopy.y - dimensions.y); y <= floor(posCopy.y - topMarj) + 1; y++)
+		int z = zBeg;
+		for (int x = xBeg; x <= xEnd; x++)
+			for (int y = yBeg; y <= yEnd; y++)
 			{
 				glm::ivec3 block = { x,y,z };
 				if (cw)
 				{
 					cw->addCube(block, { 1,0,0,1 });
 				}
-				if (isOpaque(cm.getBlock(block)))
+				if (isCollideble(cm.getBlock(block)))
 				{
-					pos.z = floorf(block.z + dimensions.z) + 1;
+					pos.z = block.z + dimensions.z * 2;
 				}
 			}
 	

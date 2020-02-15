@@ -21,7 +21,7 @@ int width;
 int height;
 
 //Camera camera(60.f, &width, &height, 0.1, 200);
-FirstPersonCamera camera(60.f, 0.1, 200, &width, &height);
+FirstPersonCamera camera(80.f, 0.1, 200, &width, &height);
 
 CubeMeshRenderer cubeRenderer;
 
@@ -170,7 +170,6 @@ int gameLogic(float deltaTime)
 
 #pragma endregion
 
-
 #pragma region player phisics
 	
 	playerEntity.applyGravity(deltaTime);
@@ -178,7 +177,6 @@ int gameLogic(float deltaTime)
 	playerEntity.applyVelocity(deltaTime);
 
 	playerEntity.resolveConstrains(chunkManager, { 1, 1.9, 1 }, nullptr);
-	//resolveConstrains(camera.position, playerLastPos, chunkManager, { 1, 1.9, 1}, nullptr);
 	playerEntity.updatePositions();
 
 	camera.position = playerEntity.position;
@@ -248,6 +246,7 @@ int gameLogic(float deltaTime)
 
 void closeGame()
 {
+	FreeConsole();
 	for(auto &i : chunkManager.loadedChunks)
 	{
 		if(i.shouldReSave)
@@ -255,5 +254,5 @@ void closeGame()
 			fileHandler.saveChunk(i);
 		}
 	}
-	Sleep(2000);
+	Sleep(200);
 }

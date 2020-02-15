@@ -188,32 +188,36 @@ void CubeMeshRenderer::draw(Chunk **chunk, int size)
 #pragma region cull unseen faces
 
 	int mask[FACE::FACES_SIZE] = { 1,1,1,1,1,1 };
-	constexpr float margin = 0.7;
+	
+	{
+		float margin = 0.8;
 
-	if(camera->viewDirection.x > margin)
-	{
-		mask[FACE::right] = 0;
-	}else if(camera->viewDirection.x < -margin)
-	{
-		mask[FACE::left] = 0;
-	}
+		if (camera->viewDirection.x > margin)
+		{
+			mask[FACE::right] = 0;
+		}
+		else if (camera->viewDirection.x < -margin)
+		{
+			mask[FACE::left] = 0;
+		}
 
-	if (camera->viewDirection.y > margin)
-	{
-		mask[FACE::top] = 0;
-	}
-	else if (camera->viewDirection.y < -margin)
-	{
-		mask[FACE::bottom] = 0;
-	}
+		if (camera->viewDirection.y > margin)
+		{
+			mask[FACE::top] = 0;
+		}
+		else if (camera->viewDirection.y < -margin)
+		{
+			mask[FACE::bottom] = 0;
+		}
 
-	if (camera->viewDirection.z > margin)
-	{
-		mask[FACE::front] = 0;
-	}
-	else if (camera->viewDirection.z < -margin)
-	{
-		mask[FACE::back] = 0;
+		if (camera->viewDirection.z > margin)
+		{
+			mask[FACE::front] = 0;
+		}
+		else if (camera->viewDirection.z < -margin)
+		{
+			mask[FACE::back] = 0;
+		}
 	}
 
 #pragma endregion

@@ -5,6 +5,7 @@
 #include "ChunkManager.h"	
 #include "debugTools.h"
 
+void resolveConstrainsBrute(glm::vec3 &pos, glm::vec3 lastPos, ChunkManager &cm, glm::vec3 dimensions, CubeWireRenderer *cw, bool *grounded);
 void resolveConstrains(glm::vec3 &pos, glm::vec3 lastPos, ChunkManager &cm, glm::vec3 dimensions, CubeWireRenderer *cw, bool *grounded = nullptr);
 void performCollision(glm::vec3 &pos, glm::vec3 lastPos, ChunkManager &cm, glm::vec3 dimensions, CubeWireRenderer *cw);
 
