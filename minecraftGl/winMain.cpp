@@ -11,6 +11,7 @@
 #include <fcntl.h>
 
 #include "tools.h"
+#include "input.h"
 
 LRESULT CALLBACK windProc(HWND, UINT, WPARAM, LPARAM);
 static bool quit = 0;
@@ -27,6 +28,8 @@ static int rbuttonPressed = 0;
 
 int MAIN
 {
+	input::loadXinput();
+
 	HINSTANCE h = GetModuleHandle(0);
 
 	WNDCLASS wc = {};

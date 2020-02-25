@@ -38,3 +38,6 @@ have actually been modified by the player.
 -I have improved the world generation and added customizeble biomes that can be seen here
 ![](https://github.com/meemknight/photos/blob/master/mc8.jpg)
 ---
+
+-Now I'll take a small break from the world generator to fix bugs and add things like physics and controller input
+---

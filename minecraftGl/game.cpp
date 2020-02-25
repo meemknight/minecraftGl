@@ -11,6 +11,7 @@
 #include "debugTools.h"
 #include "fileHandler.h"
 #include "Entity.h"
+#include "input.h"
 #include <filesystem>
 
 ShaderProgram sp;
@@ -124,35 +125,14 @@ int gameLogic(float deltaTime)
 	//	playerEntity.fly(camera).moveDown(deltaTime);
 	//}
 
-	int dirFront = 0;
-	int dirStrave = 0;
-
-	if (isKeyPressed('W'))
-	{
-		dirFront += 1;
-	}
-
-	if (isKeyPressed('S'))
-	{
-		dirFront -= 1;
-	}
-
-	if (isKeyPressed('A'))
-	{
-		dirStrave -= 1;
-	}
-
-	if (isKeyPressed('D'))
-	{
-		dirStrave += 1;
-	}
+	glm::vec2 moveDirection = input::getMoveDirection();
 
 	if (isKeyPressedOn(VK_SPACE))
 	{
 		playerEntity.walk(camera).jump();
 	}
 
-	playerEntity.walk(camera).moveOnDirection(dirStrave, dirFront, deltaTime);
+	playerEntity.walk(camera).moveOnDirection(moveDirection.y, moveDirection.x, deltaTime);
 
 	if (isKeyPressed('P'))
 	{

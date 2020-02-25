@@ -82,7 +82,10 @@ void WalkMoveStruct::moveOnDirection(float x, float z, float deltaTime)
 	}
 
 	glm::vec2 dir = { x,z };
-	dir = glm::normalize(dir);
+	if(dir.length() > 1.f)
+	{
+		dir = glm::normalize(dir);
+	}
 
 	glm::vec2 dirMove = { dir.y, dir.x };
 	dirMove = glm::mat2x2{ cos(angle), sin(angle), -sin(angle), cos(angle) } * dirMove;

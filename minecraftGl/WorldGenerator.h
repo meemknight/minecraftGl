@@ -190,6 +190,13 @@ public:
 		return biomes[pos];
 	}
 
+	//https://en.wikipedia.org/wiki/Lehmer_random_number_generator
+	constexpr unsigned long long Lehmer(std::uint32_t state)
+	{
+		state = (state * 48271) % 2147483647;
+		return state % 100 + 1;
+	}
+
 	constexpr std::uint32_t  shiftNumber(std::uint32_t  nr)
 	{
 		std::uint32_t  copy = nr;

@@ -7,9 +7,9 @@ void WorldGenerator::setupChunk(Chunk * chunk, glm::vec2 p)
 {
 	myNoise->SetNoiseType(FastNoiseSIMD::NoiseType::Perlin);
 	{
-	float scaleXY = 1;
-	myNoise->SetAxisScales(1 * scaleXY, 1, 1 * scaleXY);
-	myNoise->SetFrequency(0.01);
+		float scaleXY = 1;
+		myNoise->SetAxisScales(1 * scaleXY, 1, 1 * scaleXY);
+		myNoise->SetFrequency(0.01);
 	}
 	
 	noiseForBiomes->SetNoiseType(FastNoiseSIMD::NoiseType::Cellular);
