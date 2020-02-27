@@ -22,5 +22,8 @@ namespace input
 
 	void loadXinput();
 	glm::vec2 getMoveDirection();
+	glm::vec2 getLookDirection();
+	bool isKeyPressedOn(int b);
+	bool isKeyHeld(int b);
 
 }

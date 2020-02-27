@@ -44,24 +44,67 @@ namespace input
 	}
 
 	int bindings[Buttons::buttonsCount] = { 0, 'W', 'S', 'A', 'D', VK_SPACE };
+	WORD bindingsController[Buttons::buttonsCount] = { 0, 0, 0, 0, 0, XINPUT_GAMEPAD_RIGHT_SHOULDER};
+
+	glm::vec2 getLookDirection()
+	{
+		glm::vec2 dir = {};
+
+		if (xInputLoaded)
+		{
+			XINPUT_STATE s;
+
+			if (xInputLoaded != 0 && DynamicXinputGetState(0, &s) == ERROR_SUCCESS)
+			{
+				XINPUT_GAMEPAD *pad = &s.Gamepad;
+
+				float retValX = pad->sThumbRX / (float)SHRT_MAX;
+
+				retValX = max(-1.f, retValX);
+				retValX = min(1.f, retValX);
+
+				if (abs(retValX) < 0.12)
+				{
+					retValX = 0.f;
+				}
+
+				float retValY = pad->sThumbRY / (float)SHRT_MAX;
+
+				retValY = max(-1.f, retValY);
+				retValY = min(1.f, retValY);
+
+				if (abs(retValY) < 0.12)
+				{
+					retValY = 0.f;
+				}
+
+				dir += glm::vec2{ -retValX, retValY };
+
+				dir = glm::clamp(dir, { -1,-1 }, { 1,1 });
+			}
+
+		}
+
+		return dir;
+	}
 
 	glm::vec2 getMoveDirection()
 	{
 		glm::vec2 dir = {};
 
-		if(isKeyPressed(bindings[Buttons::up]))
+		if(::isKeyPressed(bindings[Buttons::up]))
 		{
 			dir.x += 1;
 		}
-		if (isKeyPressed(bindings[Buttons::down]))
+		if (::isKeyPressed(bindings[Buttons::down]))
 		{
 			dir.x -= 1;
 		}
-		if (isKeyPressed(bindings[Buttons::left]))
+		if (::isKeyPressed(bindings[Buttons::left]))
 		{
 			dir.y -= 1;
 		}
-		if (isKeyPressed(bindings[Buttons::right]))
+		if (::isKeyPressed(bindings[Buttons::right]))
 		{
 			dir.y += 1;
 		}
@@ -70,7 +113,7 @@ namespace input
 		{
 			XINPUT_STATE s;
 
-			if (DynamicXinputGetState != nullptr && DynamicXinputGetState(0, &s) == ERROR_SUCCESS)
+			if (xInputLoaded != 0 && DynamicXinputGetState(0, &s) == ERROR_SUCCESS)
 			{
 				XINPUT_GAMEPAD *pad = &s.Gamepad;
 
@@ -102,6 +145,27 @@ namespace input
 		}
 
 		return dir;
+	}
+
+	bool isKeyPressedOn(int b)
+	{
+		return 0;
+	}
+
+	bool isKeyHeld(int b)
+	{
+		bool val = 0;
+		XINPUT_STATE s;
+
+		if (xInputLoaded != 0 && DynamicXinputGetState(0, &s) == ERROR_SUCCESS)
+		{
+			XINPUT_GAMEPAD *pad = &s.Gamepad;
+			val = (pad->wButtons & bindingsController[b]);
+		}
+
+		val |= ::isKeyPressed(bindings[b]);
+
+		return val;
 	}
 
 	

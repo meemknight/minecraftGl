@@ -42,7 +42,7 @@ struct FirstPersonCamera
 	void moveFront(float speed);
 	void moveBack(float speed);
 
-	void mouseUpdate(const glm::vec2 &pos);
+	void updatePosition(glm::vec2 delta);
 
 	float getTopDownAngle() const;
 

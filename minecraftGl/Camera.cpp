@@ -147,12 +147,8 @@ void FirstPersonCamera::moveBack(float speed)
 	moveFront(-speed);
 }
 
-void FirstPersonCamera::mouseUpdate(const glm::vec2 & pos)
+void FirstPersonCamera::updatePosition(glm::vec2 delta)
 {
-	glm::vec2 delta = pos - oldMousePosition;
-	delta.x *= -1;
-	delta.y *= -1;
-
 
 	glm::vec3 toRotate = glm::cross(viewDirection, upPositipon);
 	glm::vec3 oldPos = viewDirection;
@@ -167,7 +163,7 @@ void FirstPersonCamera::mouseUpdate(const glm::vec2 & pos)
 		if (viewDirection.y < -maxUpDown)
 		{
 			//viewDirection.y = -maxUpDown;
-			
+
 			goto noMove;
 		}
 	}
@@ -184,13 +180,14 @@ void FirstPersonCamera::mouseUpdate(const glm::vec2 & pos)
 	viewDirection = glm::normalize(viewDirection);
 	*/
 
-	
+
 	if (isPositive(oldPos.x) == !isPositive(tiltTest.x) &&
 		isPositive(oldPos.z) == !isPositive(tiltTest.z))
 	{
-	
+
 		// no move
-	}else
+	}
+	else
 	{
 		glm::vec3 newDir = glm::mat3(glm::rotate(glm::radians(delta.y * rSpeed), toRotate)) * viewDirection;
 		newDir = glm::normalize(newDir);
@@ -199,9 +196,6 @@ void FirstPersonCamera::mouseUpdate(const glm::vec2 & pos)
 
 	//todo remove last camera problems
 	//llog((viewDirection.x), (viewDirection.y), (viewDirection.z));
-
-	setRelMousePosition(getWindowSizeX() / 2, getWindowSizeY() / 2);
-	oldMousePosition = getRelMousePosition();
 }
 
 float FirstPersonCamera::getTopDownAngle() const

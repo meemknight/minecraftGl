@@ -21,6 +21,8 @@ Texture bloc;
 int width;
 int height;
 
+static glm::vec2 oldMousePosition;
+
 //Camera camera(60.f, &width, &height, 0.1, 200);
 FirstPersonCamera camera(80.f, 0.1, 200, &width, &height);
 
@@ -127,7 +129,7 @@ int gameLogic(float deltaTime)
 
 	glm::vec2 moveDirection = input::getMoveDirection();
 
-	if (isKeyPressedOn(VK_SPACE))
+	if (input::isKeyHeld(input::Buttons::jump))
 	{
 		playerEntity.walk(camera).jump();
 	}
@@ -146,7 +148,18 @@ int gameLogic(float deltaTime)
 		}
 	}
 
-	camera.mouseUpdate(getRelMousePosition());
+	//compute mouse delta
+	{
+		glm::vec2 delta = glm::vec2(getRelMousePosition()) - oldMousePosition;
+		delta.x *= -1;
+		delta.y *= -1;
+
+		camera.updatePosition(input::getLookDirection() * glm::vec2{8,8} + delta);
+
+		setRelMousePosition(getWindowSizeX() / 2, getWindowSizeY() / 2);
+		oldMousePosition = getRelMousePosition();
+	}
+
 
 #pragma endregion
 
