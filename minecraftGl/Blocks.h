@@ -32,6 +32,7 @@ namespace BLOCK
 		leaves,
 		herb,
 		sappling,
+		dead_bush,
 		BLOCKS_SIZE,
 	};
 }

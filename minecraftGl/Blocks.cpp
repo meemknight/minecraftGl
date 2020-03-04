@@ -17,6 +17,7 @@ static BlockFace frontFaces[BLOCK::BLOCKS_SIZE] =
 	{5, 12},//leaves
 	{7, 13},//herbs
 	{14, 14},//sappling
+	{7, 12},//dead_bush
 
 };
 
@@ -37,6 +38,7 @@ static BlockFace backFaces[BLOCK::BLOCKS_SIZE] =
 	{5, 12},//leaves
 	{7, 13},//herbs
 	{14, 14},//sappling
+	{7, 12},//dead_bush
 
 };
 
@@ -57,6 +59,7 @@ static BlockFace topFaces[BLOCK::BLOCKS_SIZE] =
 	{5, 12},//leaves
 	{7, 13},//herbs
 	{14, 14},//sappling
+	{7, 12},//dead_bush
 
 };
 
@@ -77,6 +80,7 @@ static BlockFace bottomFaces[BLOCK::BLOCKS_SIZE] =
 	{5, 12},//leaves
 	{7, 13},//herbs
 	{14, 14},//sappling
+	{7, 12},//dead_bush
 
 };
 
@@ -97,6 +101,7 @@ static BlockFace LeftFaces[BLOCK::BLOCKS_SIZE] =
 	{5, 12},//leaves
 	{7, 13},//herbs
 	{14, 14},//sappling
+	{7, 12},//dead_bush
 
 };
 
@@ -117,6 +122,7 @@ static BlockFace RightFaces[BLOCK::BLOCKS_SIZE] =
 	{5, 12},//leaves
 	{7, 13},//herbs
 	{14, 14},//sappling
+	{7, 12},//dead_bush
 
 };
 
@@ -149,7 +155,7 @@ bool isOpaque(Block b)
 
 bool isHerb(Block b)
 {
-	if (b == BLOCK::herb || b == BLOCK::sappling)
+	if (b == BLOCK::herb || b == BLOCK::sappling || b == BLOCK::dead_bush)
 	{
 		return 1;
 	}

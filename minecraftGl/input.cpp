@@ -20,6 +20,9 @@ namespace input
 	static XInputGetState_t *DynamicXinputGetState;
 	typedef DWORD WINAPI XInputSetState_t(DWORD dwUserIndex, XINPUT_VIBRATION* pState);
 	static XInputSetState_t *DynamicXinputSetState;
+	typedef DWORD WINAPI XInputGetKeystroke_t(DWORD dwUserIndex, DWORD dwReserved, PXINPUT_KEYSTROKE pKeystroke);
+	XInputGetKeystroke_t *DynamicXInputGetKeystroke;
+ 
 	static bool xInputLoaded = 0;
 
 	void loadXinput()
@@ -38,13 +41,14 @@ namespace input
 		{
 			DynamicXinputGetState = (XInputGetState_t*)GetProcAddress(xinputLib, "XInputGetState");
 			DynamicXinputSetState = (XInputSetState_t*)GetProcAddress(xinputLib, "XInputSetState");
+			DynamicXInputGetKeystroke = (XInputGetKeystroke_t*)GetProcAddress(xinputLib, "XInputGetKeystroke");
 			xInputLoaded = 1;
 		}
 
 	}
 
-	int bindings[Buttons::buttonsCount] = { 0, 'W', 'S', 'A', 'D', VK_SPACE };
-	WORD bindingsController[Buttons::buttonsCount] = { 0, 0, 0, 0, 0, XINPUT_GAMEPAD_RIGHT_SHOULDER};
+	int bindings[Buttons::buttonsCount] = { 0, 'W', 'S', 'A', 'D', VK_SPACE, 0, 0 };
+	WORD bindingsController[Buttons::buttonsCount] = { 0, 0, 0, 0, 0, XINPUT_GAMEPAD_RIGHT_SHOULDER, 0, 0};
 
 	glm::vec2 getLookDirection()
 	{
@@ -147,10 +151,23 @@ namespace input
 		return dir;
 	}
 
-	bool isKeyPressedOn(int b)
-	{
-		return 0;
-	}
+	//bool isKeyPressedOn(int b)
+	//{
+	//	bool val = 0;
+	//
+	//	XINPUT_KEYSTROKE info;
+	//
+	//	if(xInputLoaded != 0 && DynamicXInputGetKeystroke(0, 0, &info) == ERROR_SUCCESS)
+	//	{
+	//		if ((info.VirtualKey & VK_PAD_B) && (info.Flags & XINPUT_KEYSTROKE_KEYDOWN))
+	//		{
+	//			val = 1;
+	//		}
+	//	}
+	//
+	//	val |= ::isKeyPressedOn(bindings[b]);
+	//	return val;
+	//}
 
 	bool isKeyHeld(int b)
 	{
@@ -160,10 +177,38 @@ namespace input
 		if (xInputLoaded != 0 && DynamicXinputGetState(0, &s) == ERROR_SUCCESS)
 		{
 			XINPUT_GAMEPAD *pad = &s.Gamepad;
-			val = (pad->wButtons & bindingsController[b]);
+
+			if (b == input::Buttons::placeBlock || b == input::Buttons::breakBlock)
+			{
+				if (b == input::Buttons::placeBlock)
+				{
+					val = pad->bRightTrigger > 10;
+				}
+				else
+				{
+					val = pad->bLeftTrigger > 10;
+				}
+			}
+			else
+			{
+				val = (pad->wButtons & bindingsController[b]);
+			}
+
 		}
 
-		val |= ::isKeyPressed(bindings[b]);
+		if(b == input::Buttons::placeBlock || b == input::Buttons::breakBlock)
+		{
+			if(b == input::Buttons::placeBlock)
+			{
+				val |= ::isRMouseButtonPressed();
+			}else
+			{
+				val |= ::isLMouseButtonPressed();
+			}
+		}else
+		{
+			val |= ::isKeyPressed(bindings[b]);
+		}
 
 		return val;
 	}

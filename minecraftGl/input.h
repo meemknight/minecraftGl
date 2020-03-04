@@ -16,6 +16,8 @@ namespace input
 			left,
 			right,
 			jump,
+			breakBlock,
+			placeBlock,
 			buttonsCount
 		};
 	};

@@ -149,6 +149,7 @@ int gameLogic(float deltaTime)
 	}
 
 	//compute mouse delta
+	if(isFocused())
 	{
 		glm::vec2 delta = glm::vec2(getRelMousePosition()) - oldMousePosition;
 		delta.x *= -1;
@@ -189,15 +190,15 @@ int gameLogic(float deltaTime)
 		cubeWireRenderer.addCube({ coll.value() }, { 0.61,0.6,0.65,1 });
 		//ilog(coll.value().x, coll.value().y, coll.value().z);
 
-		if (coll && isRMouseButtonPressed())
+		if (coll && input::isKeyHeld(input::Buttons::placeBlock))
 		{
 			if (edge.has_value())
 			{
-				chunkManager.setBlock(edge.value(), BLOCK::gold_block);
+				chunkManager.setBlock(edge.value(), BLOCK::dead_bush);
 			}
 		}
 
-		if (coll && isLMouseButtonPressed())
+		if (coll && input::isKeyHeld(input::Buttons::breakBlock))
 		{
 			chunkManager.setBlock(coll.value(), BLOCK::air);
 		}

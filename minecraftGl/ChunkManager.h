@@ -1,5 +1,6 @@
 #pragma once
 #include "Chunk.h"
+#include "pinnedVector.h"
 #include "glm/vec2.hpp"
 #include <vector>
 
@@ -28,11 +29,13 @@ public:
 	ChunkManager() {};
 
 	//todo remove the usage of std::vector
-	std::vector<Chunk*> returnVector;
+	PinnedVector<Chunk*> returnVector;
 	std::vector<Chunk> loadedChunks;
 	std::vector<ChunkData> chunkData;
 
 	void reserveData(int size);
+
+	void smartReserveData(int size);
 
 	//y reserved, should be 0
 	Chunk **requestChunks(glm::ivec3 *chunks, int size);

@@ -28,3 +28,4 @@ int isLMouseHeld();
 int isRMouseHeld();
 
 void showMouse(bool show);
+bool isFocused();

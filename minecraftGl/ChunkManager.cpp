@@ -26,6 +26,15 @@ void ChunkManager::reserveData(int size)
 	loadedChunks.resize(chunksCount);
 	chunkData.resize(chunksCount);
 
+	cachedChunk = {};
+}
+
+void ChunkManager::smartReserveData(int size)
+{
+	//loadedChunks.
+
+
+
 }
 
 Chunk **ChunkManager::requestChunks(glm::ivec3 *requestedC, int size)
@@ -36,6 +45,17 @@ Chunk **ChunkManager::requestChunks(glm::ivec3 *requestedC, int size)
 
 	if(size > chunksCount)
 	{
+
+		//first save old data:
+		ilog("saving:", size);
+		for(int i=0; i< chunksCount; i++)
+		{
+			if (chunkData[i].chunk->shouldReSave && chunkData[i].chunk->fullyLoaded)
+			{
+				fileHandler.saveChunk(*chunkData[i].chunk);
+			}
+		}
+
 		reserveData(size);
 
 		//alocate new data

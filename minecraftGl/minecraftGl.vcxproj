@@ -62,6 +62,7 @@
     <ClInclude Include="input.h" />
     <ClInclude Include="PerlinNoise.hpp" />
     <ClInclude Include="phisics.h" />
+    <ClInclude Include="pinnedVector.h" />
     <ClInclude Include="platformIndependentCalls.h" />
     <ClInclude Include="Entity.h" />
     <ClInclude Include="Shader.h" />

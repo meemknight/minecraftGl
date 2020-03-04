@@ -25,6 +25,7 @@ static int rbutton = 0;
 static int lbuttonPressed = 0;
 static int rbuttonPressed = 0;
 
+static bool isFocus = 0;
 
 int MAIN
 {
@@ -137,6 +138,17 @@ LRESULT CALLBACK windProc(HWND wind, UINT m, WPARAM wp, LPARAM lp)
 
 	case WM_CLOSE:
 		quit = true;
+		break;
+
+	case WM_ACTIVATE:
+		if(wp == WA_ACTIVE)
+		{
+			isFocus = true;
+		}else if(wp == WA_INACTIVE)
+		{
+			isFocus = false;
+		}
+		break;
 
 	default:
 		l = DefWindowProc(wind, m, wp, lp);
@@ -260,6 +272,11 @@ int isRMouseHeld()
 void showMouse(bool show)
 {
 	ShowCursor(show);
+}
+
+bool isFocused()
+{
+	return GetActiveWindow() == wind;
 }
 
 #endif // MGL_WIN
