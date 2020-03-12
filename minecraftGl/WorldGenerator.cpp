@@ -40,7 +40,7 @@ void WorldGenerator::setupChunk(Chunk * chunk, glm::vec2 p)
 				float rx = (x + p.x * CHUNK_SIZE) / biomeNoiseCompression;
 				float rz = (z + p.y * CHUNK_SIZE) / biomeNoiseCompression;
 				//biomeData = blendBiomes((double)biomeNoiseData[x * CHUNK_SIZE + z]);
-				biomeData = blendBiomes(biomeNoise.noise0_1(rx, rz));
+				biomeData = blendBiomes(biomeNoise.noise2D_0_1(rx, rz));
 			}
 
 			for (int y = 0; y < biomeData.minStonePos; y++)
@@ -58,7 +58,7 @@ void WorldGenerator::setupChunk(Chunk * chunk, glm::vec2 p)
 					float percent = 1.5 - ((float)(y - biomeData.minStonePos) / float(delta));
 					float newStoneCnance = biomeData.stoneChance * std::powf(percent, biomeData.realismExponent);
 
-					float noiseVal = stoneNoise.octaveNoise0_1(rx, ry, rz, biomeData.octaves);
+					float noiseVal = stoneNoise.accumulatedOctaveNoise3D_0_1(rx, ry, rz, biomeData.octaves);
 
 					//float noiseVal = noiseSet[x*CHUNK_SIZE*BUILD_LIMIT + y * CHUNK_SIZE + z];
 
@@ -82,7 +82,7 @@ void WorldGenerator::setupChunk(Chunk * chunk, glm::vec2 p)
 				//todo optimise this line
 				float rx = (x + p.x * CHUNK_SIZE) / dirtHeigthCompresion;
 				float rz = (z + p.y * CHUNK_SIZE) / dirtHeigthCompresion;
-				int dirtDepth = biomeHeigthNoise.noise0_1(rx, rz) * biomeData.bottomBlockDepth;
+				int dirtDepth = biomeHeigthNoise.noise2D_0_1(rx, rz) * biomeData.bottomBlockDepth;
 				for (int y = biomeData.maxStonePos; y >= biomeData.minStonePos - 1; y--)
 				{
 					if (chunk->getBlock(x, y, z) == BLOCK::stone && chunk->getBlock(x, y + 1, z) == BLOCK::air)
@@ -103,4 +103,8 @@ void WorldGenerator::setupChunk(Chunk * chunk, glm::vec2 p)
 	//FastNoiseSIMD::FreeNoiseSet(noiseSet);
 	//FastNoiseSIMD::FreeNoiseSet(biomeNoiseData);
 
+}
+
+void generateStructure(ChunkManager & cm, Block * blocks, glm::vec3 pos, glm::vec3 size)
+{
 }
