@@ -247,4 +247,4 @@ public:
 
 };
 
-void generateStructure(ChunkManager &cm, Block *blocks, glm::vec3 pos, glm::vec3 size);
+void generateStructure(ChunkManager &cm, Block *blocks, glm::ivec3 pos, glm::ivec3 size, bool placeOverAnything, bool placeAir);

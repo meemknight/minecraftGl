@@ -12,6 +12,7 @@
 #include "fileHandler.h"
 #include "Entity.h"
 #include "input.h"
+#include "WorldGenerator.h"
 #include <filesystem>
 
 ShaderProgram sp;
@@ -167,7 +168,8 @@ int gameLogic(float deltaTime)
 		{
 			if (edge.has_value())
 			{
-				chunkManager.setBlock(edge.value(), BLOCK::dead_bush);
+				generateStructure(chunkManager, 0, edge.value(), {}, true, false);
+				//chunkManager.setBlock(edge.value(), BLOCK::dead_bush);
 			}
 		}
 

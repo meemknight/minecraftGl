@@ -105,6 +105,56 @@ void WorldGenerator::setupChunk(Chunk * chunk, glm::vec2 p)
 
 }
 
-void generateStructure(ChunkManager & cm, Block * blocks, glm::vec3 pos, glm::vec3 size)
+Block blockTest[] = 
 {
+	0,0,12,0,
+	0,0,12,0,
+	0,0,12,0,
+
+	0,0,12,0,
+	4,4,4,12,
+	0,0,12,0,
+
+	0,0,12,0,
+	0,0,12,0,
+	0,0,12,0,
+
+};
+
+void generateStructure(ChunkManager &cm, Block *blocks, glm::ivec3 pos, glm::ivec3 size, bool placeOverAnything, bool placeAir)
+{
+	blocks = blockTest;
+	size = { 3,4,3 };
+
+	glm::ivec3 end = pos + size;
+
+	for (int x = pos.x; x < end.x; x++)
+		for (int z = pos.z; z < end.z; z++)
+			for (int y = pos.y; y < end.y; y++)
+			{
+				Block b = blocks[y - pos.y + ((z - pos.z) * size.y) + ((x - pos.x)*size.y * size.z)];
+
+				if(placeOverAnything)
+				{
+					if ((b == BLOCK::air && placeAir) || b != BLOCK::air)
+					{
+
+						cm.setBlock({ x,y,z }, b);
+					}
+				}else
+				{
+					Block currentBlock = cm.getBlock({ x,y,z });
+					if(!isCollideble(currentBlock))
+					{
+						if ((b == BLOCK::air && placeAir) || b != BLOCK::air)
+						{
+
+							cm.setBlock({ x,y,z }, b);
+						}
+					}
+				}
+
+			}
+
+
 }
