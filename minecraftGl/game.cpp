@@ -50,6 +50,8 @@ int initGame()
 
 	playerEntity.lastPos = camera.position;
 	playerEntity.position = camera.position;
+	
+	//playerEntity.flySpeed *= 10;
 
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
@@ -97,35 +99,6 @@ int gameLogic(float deltaTime)
 #pragma endregion
 
 #pragma region keys
-	//if (isKeyPressed('W'))
-	//{
-	//	playerEntity.fly(camera).moveFront(deltaTime);
-	//}
-	//
-	//if (isKeyPressed('A'))
-	//{
-	//	playerEntity.fly(camera).moveLeft(deltaTime);
-	//}
-	//
-	//if (isKeyPressed('S'))
-	//{
-	//	playerEntity.fly(camera).moveBack(deltaTime);
-	//}
-	//
-	//if (isKeyPressed('D'))
-	//{
-	//	playerEntity.fly(camera).moveRight(deltaTime);
-	//}
-	//
-	//if (isKeyPressed('R'))
-	//{
-	//	playerEntity.fly(camera).moveUp(deltaTime);
-	//}
-	//
-	//if (isKeyPressed('F'))
-	//{
-	//	playerEntity.fly(camera).moveDown(deltaTime);
-	//}
 
 	glm::vec2 moveDirection = input::getMoveDirection();
 
@@ -155,7 +128,7 @@ int gameLogic(float deltaTime)
 		delta.x *= -1;
 		delta.y *= -1;
 
-		camera.updatePosition(input::getLookDirection() * glm::vec2{8,8} + delta);
+		camera.updatePosition(input::getLookDirection() * glm::vec2{12,12} + delta);
 
 		setRelMousePosition(getWindowSizeX() / 2, getWindowSizeY() / 2);
 		oldMousePosition = getRelMousePosition();

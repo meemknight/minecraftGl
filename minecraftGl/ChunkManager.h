@@ -20,7 +20,7 @@ struct ChunkDataSimple
 struct ChunkManager
 {
 private:
-	std::vector<ChunkDataSimple> chunksForSort;
+	PinnedVector<ChunkDataSimple> chunksForSort;
 	ChunkDataSimple cachedChunk;
 public:
 	//todo remove this
@@ -28,10 +28,9 @@ public:
 
 	ChunkManager() {};
 
-	//todo remove the usage of std::vector
 	PinnedVector<Chunk*> returnVector;
-	std::vector<Chunk> loadedChunks;
-	std::vector<ChunkData> chunkData;
+	PinnedVector<Chunk> loadedChunks;
+	PinnedVector<ChunkData> chunkData;
 
 	void reserveData(int size);
 

@@ -4,6 +4,7 @@
 #include <glm/vec2.hpp>
 #include "Blocks.h"
 #include "FastNoiseSIMD/FastNoiseSIMD.h"
+#include "ChunkManager.h"
 
 struct WorldGenerator
 {
@@ -246,3 +247,4 @@ public:
 
 };
 
+void generateStructure(ChunkManager &cm, Block *blocks, glm::vec3 pos, glm::vec3 size);

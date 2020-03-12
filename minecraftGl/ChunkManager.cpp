@@ -29,14 +29,6 @@ void ChunkManager::reserveData(int size)
 	cachedChunk = {};
 }
 
-void ChunkManager::smartReserveData(int size)
-{
-	//loadedChunks.
-
-
-
-}
-
 Chunk **ChunkManager::requestChunks(glm::ivec3 *requestedC, int size)
 {
 	cachedChunk = {};

@@ -32,15 +32,15 @@ template <class T, unsigned int maxElCount = 12000>
 struct PinnedVector
 {
 	T *beg = 0;
-	unsigned int size = 0;
+	unsigned int size_ = 0;
 
 	typedef T* iterator;
 	typedef const T* constIterator;
 
 	iterator begin() { return &((T*)beg)[0]; }
 	constIterator begin() const { return &((T*)beg)[0]; }
-	iterator end() { return &((T*)beg)[size]; }
-	constIterator end() const { return &((T*)beg)[size]; }
+	iterator end() { return &((T*)beg)[size_]; }
+	constIterator end() const { return &((T*)beg)[size_]; }
 
 	static constexpr unsigned int maxSize = maxElCount;
 
@@ -52,9 +52,9 @@ struct PinnedVector
 	PinnedVector(PinnedVector &&other)
 	{
 		this->beg = other.beg;
-		this->size = other.size;
+		this->size_ = other.size_;
 
-		other.size = 0;
+		other.size_ = 0;
 		other.beg = nullptr;
 
 		//?
@@ -64,9 +64,9 @@ struct PinnedVector
 	PinnedVector(PinnedVector &other)
 	{
 		initializeArena();
-		unsafeResize(other.size);
+		unsafeResize(other.size_);
 
-		memcpy(beg, other.beg, size * sizeof(T));
+		memcpy(beg, other.beg, size_ * sizeof(T));
 	}
 
 	void initializeArena();
@@ -77,12 +77,14 @@ struct PinnedVector
 
 	void reserve(unsigned int elementCount);
 
+	unsigned int size() { return size_; }
+
 	T *data();
 
 	PinnedVector &operator= (const PinnedVector& other)
 	{
-		this->unsafeResize(other.size);
-		memcpy(beg, other.beg, size * sizeof(T));
+		this->unsafeResize(other.size_);
+		memcpy(beg, other.beg, size_ * sizeof(T));
 		return *this;
 	}
 
@@ -95,13 +97,13 @@ struct PinnedVector
 
 	T &operator[] (unsigned int index)
 	{
-		PINNED_VECTOR_ASSERT(index < size);
+		PINNED_VECTOR_ASSERT(index < size_);
 		return static_cast<T*>(beg)[index];
 	}
 
 	T operator[] (unsigned int index) const
 	{
-		PINNED_VECTOR_ASSERT(index < size);
+		PINNED_VECTOR_ASSERT(index < size_);
 		return static_cast<T*>(beg)[index];
 	}
 
@@ -136,14 +138,14 @@ inline void PinnedVector<T, maxElCount>::unsafeResize(unsigned int elementCount)
 		initializeArena();
 	}
 
-	if (elementCount > size)
+	if (elementCount > size_)
 	{
 		VirtualAlloc(beg, elementCount * sizeof(T), MEM_COMMIT, PAGE_READWRITE);
-		size = elementCount;
+		size_ = elementCount;
 	}
 	else
 	{
-		size = elementCount;
+		size_ = elementCount;
 	}
 
 }
@@ -156,22 +158,22 @@ inline void PinnedVector<T, maxElCount>::resize(unsigned int elementCount)
 		initializeArena();
 	}
 
-	if (elementCount > size)
+	if (elementCount > size_)
 	{
 		VirtualAlloc(beg, elementCount * sizeof(T), MEM_COMMIT, PAGE_READWRITE);
-		for (int i = size; i < elementCount; i++)
+		for (int i = size_; i < elementCount; i++)
 		{
 			beg[i] = T();
 		}
-		size = elementCount;
+		size_ = elementCount;
 	}
 	else
 	{
-		for (int i = elementCount; i < size; i++)
+		for (int i = elementCount; i < size_; i++)
 		{
 			beg[i].~T();
 		}
-		elementCount = size;
+		elementCount = size_;
 	}
 }
 
@@ -190,34 +192,34 @@ inline T * PinnedVector<T, maxElCount>::data()
 template<class T, unsigned int maxElCount>
 inline void PinnedVector<T, maxElCount>::push_back(const T & el)
 {
-	unsafeResize(size + 1);
-	beg[size - 1] = el;
+	unsafeResize(size_ + 1);
+	beg[size_ - 1] = el;
 }
 
 template<class T, unsigned int maxElCount>
 inline void PinnedVector<T, maxElCount>::pop_back()
 {
 	///todo
-	beg[size - 1].~T();
-	unsafeResize(size - 1);
+	beg[size_ - 1].~T();
+	unsafeResize(size_ - 1);
 }
 
 template<class T, unsigned int maxElCount>
 inline void PinnedVector<T, maxElCount>::clear()
 {
-	for (int i = 0; i < size; i++)
+	for (int i = 0; i < size_; i++)
 	{
 		beg[i].~T();
 	}
-	size = 0;
+	size_ = 0;
 }
 
-//todo add commited size
+//todo add commited size_
 template<class T, unsigned int maxElCount>
 inline void PinnedVector<T, maxElCount>::free()
 {
 
-	for (int i = 0; i < size; i++)
+	for (int i = 0; i < size_; i++)
 	{
 		beg[i].~T();
 	}
@@ -238,7 +240,7 @@ inline void PinnedVector<T, maxElCount>::free()
 		VirtualFree(beg, 0, MEM_RELEASE);
 	}
 
-	size = 0;
+	size_ = 0;
 
 #endif // PINNED_VECTOR_MEMORY_CHECK
 

@@ -14,6 +14,7 @@
 #include "Chunk.h"
 #include "Frustum.h"
 
+//todo remove camera movement probably
 struct FirstPersonCamera
 {
 	FirstPersonCamera() {};
