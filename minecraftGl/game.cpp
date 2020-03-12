@@ -163,7 +163,7 @@ int gameLogic(float deltaTime)
 		cubeWireRenderer.addCube({ coll.value() }, { 0.61,0.6,0.65,1 });
 		//ilog(coll.value().x, coll.value().y, coll.value().z);
 
-		if (coll && input::isKeyHeld(input::Buttons::placeBlock))
+		if (coll && input::isKeyPressedOn(input::Buttons::placeBlock))
 		{
 			if (edge.has_value())
 			{
@@ -171,7 +171,7 @@ int gameLogic(float deltaTime)
 			}
 		}
 
-		if (coll && input::isKeyHeld(input::Buttons::breakBlock))
+		if (coll && input::isKeyPressedOn(input::Buttons::breakBlock))
 		{
 			chunkManager.setBlock(coll.value(), BLOCK::air);
 		}

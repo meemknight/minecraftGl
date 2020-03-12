@@ -97,6 +97,8 @@ int MAIN
 
 			fDeltaTime = min(fDeltaTime, 1.f / 20.f);
 
+			input::updateInput();
+
 			if (!gameLogic(fDeltaTime))
 			{
 				quit = true;

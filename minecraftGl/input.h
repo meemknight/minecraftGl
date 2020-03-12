@@ -28,4 +28,12 @@ namespace input
 	bool isKeyPressedOn(int b);
 	bool isKeyHeld(int b);
 
+	//used internally
+	namespace internal
+	{
+		bool getisKeyHeldDirect(int b, const XINPUT_STATE *s);
+	}
+
+	void updateInput();
+
 }

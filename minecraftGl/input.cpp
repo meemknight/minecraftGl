@@ -49,6 +49,10 @@ namespace input
 
 	int bindings[Buttons::buttonsCount] = { 0, 'W', 'S', 'A', 'D', VK_SPACE, 0, 0 };
 	WORD bindingsController[Buttons::buttonsCount] = { 0, 0, 0, 0, 0, XINPUT_GAMEPAD_RIGHT_SHOULDER, 0, 0};
+	float deadZone = 0.15;
+
+	int buttonsHeld[Buttons::buttonsCount] = {};
+	int buttonsPressed[Buttons::buttonsCount] = {};
 
 	glm::vec2 getLookDirection()
 	{
@@ -67,7 +71,7 @@ namespace input
 				retValX = max(-1.f, retValX);
 				retValX = min(1.f, retValX);
 
-				if (abs(retValX) < 0.12)
+				if (abs(retValX) < deadZone)
 				{
 					retValX = 0.f;
 				}
@@ -77,7 +81,7 @@ namespace input
 				retValY = max(-1.f, retValY);
 				retValY = min(1.f, retValY);
 
-				if (abs(retValY) < 0.12)
+				if (abs(retValY) < deadZone)
 				{
 					retValY = 0.f;
 				}
@@ -90,6 +94,11 @@ namespace input
 		}
 
 		return dir;
+	}
+
+	bool isKeyPressedOn(int b)
+	{
+		return buttonsPressed[b];
 	}
 
 	glm::vec2 getMoveDirection()
@@ -126,7 +135,7 @@ namespace input
 				retValX = max(-1.f, retValX);
 				retValX = min(1.f, retValX);
 
-				if (abs(retValX) < 0.12)
+				if (abs(retValX) < deadZone)
 				{
 					retValX = 0.f;
 				}
@@ -136,7 +145,7 @@ namespace input
 				retValY = max(-1.f, retValY);
 				retValY = min(1.f, retValY);
 
-				if (abs(retValY) < 0.12)
+				if (abs(retValY) < deadZone)
 				{
 					retValY = 0.f;
 				}
@@ -171,46 +180,92 @@ namespace input
 
 	bool isKeyHeld(int b)
 	{
-		bool val = 0;
-		XINPUT_STATE s;
+		return buttonsHeld[b];
+	}
 
-		if (xInputLoaded != 0 && DynamicXinputGetState(0, &s) == ERROR_SUCCESS)
+	namespace internal
+	{
+		bool getisKeyHeldDirect(int b, const XINPUT_STATE *s)
 		{
-			XINPUT_GAMEPAD *pad = &s.Gamepad;
+
+			bool val = 0;
+			
+			if(s)
+			{
+				const XINPUT_GAMEPAD *pad = &s->Gamepad;
+
+				if (b == input::Buttons::placeBlock || b == input::Buttons::breakBlock)
+				{
+					if (b == input::Buttons::placeBlock)
+					{
+						val = pad->bRightTrigger > 10;
+					}
+					else
+					{
+						val = pad->bLeftTrigger > 10;
+					}
+				}
+				else
+				{
+					val = (pad->wButtons & bindingsController[b]);
+				}
+
+			}
 
 			if (b == input::Buttons::placeBlock || b == input::Buttons::breakBlock)
 			{
 				if (b == input::Buttons::placeBlock)
 				{
-					val = pad->bRightTrigger > 10;
+					val |= ::isRMouseButtonPressed();
 				}
 				else
 				{
-					val = pad->bLeftTrigger > 10;
+					val |= ::isLMouseButtonPressed();
 				}
 			}
 			else
 			{
-				val = (pad->wButtons & bindingsController[b]);
+				val |= ::isKeyPressed(bindings[b]);
 			}
 
+			return val;
+
+		}
+	}
+
+	void updateInput()
+	{
+		XINPUT_STATE s;
+		bool read = 1;
+		if (xInputLoaded == 0 || DynamicXinputGetState(0, &s) != ERROR_SUCCESS)
+		{
+			read = 0;
 		}
 
-		if(b == input::Buttons::placeBlock || b == input::Buttons::breakBlock)
+		for(int i=0; i<Buttons::buttonsCount; i++)
 		{
-			if(b == input::Buttons::placeBlock)
+			bool state;
+			if(read == 1)
 			{
-				val |= ::isRMouseButtonPressed();
+				state = internal::getisKeyHeldDirect(i, &s);
 			}else
 			{
-				val |= ::isLMouseButtonPressed();
+				state = internal::getisKeyHeldDirect(i, nullptr);
 			}
-		}else
-		{
-			val |= ::isKeyPressed(bindings[b]);
+
+			buttonsPressed[i] = 0;
+
+			if(state)
+			{
+				if (buttonsHeld[i] == 0)
+				{
+					buttonsPressed[i] = 1;
+				}
+			}
+			buttonsHeld[i] = state;
+
 		}
 
-		return val;
 	}
 
 	
