@@ -37,7 +37,7 @@ public:
 	void smartReserveData(int size);
 
 	//y reserved, should be 0
-	Chunk **requestChunks(glm::ivec3 *chunks, int size);
+	Chunk **requestChunks(glm::ivec3 *chunks, int size, bool generateStructures, const glm::ivec2 playerPos);
 
 	Chunk **requestChunk(glm::ivec3 chunk);
 

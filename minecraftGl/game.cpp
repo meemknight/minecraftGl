@@ -84,7 +84,7 @@ int initGame()
 
 	//drawWireCube(&camera, nullptr, {0,0,0});
 
-	chunkManager.requestChunks(chunksToLoad.data(), chunksToLoad.size());
+	chunkManager.requestChunks(chunksToLoad.data(), chunksToLoad.size(), 1, { camera.position.x, camera.position.z });
 
 	return 1;
 }
@@ -168,8 +168,8 @@ int gameLogic(float deltaTime)
 		{
 			if (edge.has_value())
 			{
-				generateStructure(chunkManager, 0, edge.value(), {}, true, false);
-				//chunkManager.setBlock(edge.value(), BLOCK::dead_bush);
+				//generateStructure(chunkManager, 0, edge.value(), {}, true, false);
+				chunkManager.setBlock(edge.value(), BLOCK::wooden_plank);
 			}
 		}
 
@@ -190,7 +190,7 @@ int gameLogic(float deltaTime)
 	chunksToLoad.clear();
 
 	camera.getChunksInFrustrum(chunksToLoad);
-	Chunk **c = chunkManager.requestChunks(chunksToLoad.data(), chunksToLoad.size());
+	Chunk **c = chunkManager.requestChunks(chunksToLoad.data(), chunksToLoad.size(), 1, { camera.position.x, camera.position.z });
 	chunkManager.bakeUnbakedChunks(4, { camera.position.x, camera.position.z });
 
 	cubeRenderer.addSingleCube(0, 100, 0, BLOCK::gold_block);
@@ -218,7 +218,7 @@ void closeGame()
 	FreeConsole();
 	for(auto &i : chunkManager.loadedChunks)
 	{
-		if(i.shouldReSave)
+		if(i.shouldReSave && i.fullyLoaded)
 		{
 			fileHandler.saveChunk(i);
 		}

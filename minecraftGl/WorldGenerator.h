@@ -5,6 +5,7 @@
 #include "Blocks.h"
 #include "FastNoiseSIMD/FastNoiseSIMD.h"
 #include "ChunkManager.h"
+#include <random>
 
 struct WorldGenerator
 {
@@ -198,6 +199,18 @@ public:
 		return state % 100 + 1;
 	}
 
+	float mt_0_1(std::uint64_t seed);
+
+	constexpr float Lehmer_0_1(std::uint32_t state)
+	{
+		float percent = 0;
+
+		percent = (double)Lehmer(state) / (double)ULLONG_MAX;
+
+		return percent;
+	}
+
+
 	constexpr std::uint32_t  shiftNumber(std::uint32_t  nr)
 	{
 		std::uint32_t  copy = nr;
@@ -209,24 +222,32 @@ public:
 	}
 
 	WorldGenerator(std::uint32_t  seed): stoneSeed(seed),
-		biomeSeed(shiftNumber(stoneSeed)), heigthSeed(shiftNumber(biomeSeed))
+		biomeSeed(Lehmer(stoneSeed)), heigthSeed(Lehmer(biomeSeed)), treesSeed(Lehmer(heigthSeed))
 	{
 		stoneNoise.reseed(stoneSeed);
 		biomeNoise.reseed(biomeSeed);
 		biomeHeigthNoise.reseed(heigthSeed);
+		treeNoise.reseed(treesSeed);
+		noiseForTrees->SetSeed(treesSeed);
+		noiseForTrees->SetNoiseType(FastNoiseSIMD::NoiseType::WhiteNoise);
 
 		setDefaultBiomes();
 	};
 	
 	void setupChunk(Chunk *chunk, glm::vec2 p);
 
+	void setupStructuresInChunk(Chunk *chunk, glm::vec2 p, ChunkManager &cm);
+
 	const std::uint32_t stoneSeed;
 	const std::uint32_t biomeSeed;
 	const std::uint32_t heigthSeed;
+	const std::uint32_t treesSeed;
 
 	siv::PerlinNoise stoneNoise;
 	siv::PerlinNoise biomeNoise;
 	siv::PerlinNoise biomeHeigthNoise;
+	siv::PerlinNoise treeNoise;
+	FastNoiseSIMD* noiseForTrees = FastNoiseSIMD::NewFastNoiseSIMD();
 
 	///stone pass
 	float stoneNoiseCompression = 120;
@@ -238,6 +259,7 @@ public:
 	//int maxStonePos = 190;
 
 	float biomeNoiseCompression = 150;
+	float treeNoiseCompression = 30;
 
 	///grass && biome pass
 	//this is multiplied by a 0-1 value

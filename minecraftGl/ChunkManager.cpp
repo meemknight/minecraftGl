@@ -29,11 +29,16 @@ void ChunkManager::reserveData(int size)
 	cachedChunk = {};
 }
 
-Chunk **ChunkManager::requestChunks(glm::ivec3 *requestedC, int size)
+Chunk **ChunkManager::requestChunks(glm::ivec3 *requestedC, int size, bool generateStructures, const glm::ivec2 playerPos)
 {
 	cachedChunk = {};
 	//reset data return data
 	returnVector.clear();
+
+
+	//load the other data in unused spaces
+	int pos = 0; //pos in requestedC
+	bool unallocatedData = 0;
 
 	if(size > chunksCount)
 	{
@@ -70,7 +75,7 @@ Chunk **ChunkManager::requestChunks(glm::ivec3 *requestedC, int size)
 			}
 		}
 
-		return returnVector.data();
+		goto endOfFunction;
 	}
 
 	for (int i = 0; i < chunkData.size(); i++)
@@ -94,9 +99,6 @@ Chunk **ChunkManager::requestChunks(glm::ivec3 *requestedC, int size)
 		}
 	}
 
-	//load the other data in unused spaces
-	int pos = 0; //pos in requestedC
-	bool unallocatedData = 0;
 
 	for(pos=0; pos<size;pos++)
 	{
@@ -140,6 +142,23 @@ Chunk **ChunkManager::requestChunks(glm::ivec3 *requestedC, int size)
 
 	}
 	
+	endOfFunction:
+
+	//here load trees
+	if(generateStructures)
+	for(auto &c: returnVector)
+	{
+		glm::ivec3 pos = c->position;
+		unsigned long distance =
+			(pos.x * CHUNK_SIZE - playerPos.x) * (pos.x* CHUNK_SIZE - playerPos.x) + (pos.z* CHUNK_SIZE - playerPos.y) * (pos.z* CHUNK_SIZE - playerPos.y);
+
+		if(distance < 6'400)
+		{
+			worldGeneraor.setupStructuresInChunk(c, {c->position.x, c->position.z}, *this);
+		}
+	
+	}
+
 	return returnVector.data();
 }
 
@@ -150,7 +169,7 @@ Chunk **ChunkManager::requestChunk(glm::ivec3 chunk)
 		return &cachedChunk.chunk;
 	}
 
-	auto c = (Chunk**)requestChunks(&chunk, 1);
+	auto c = (Chunk**)requestChunks(&chunk, 1, 0, {});
 
 	cachedChunk.chunk = *c;
 	cachedChunk.position.x = chunk.x;
