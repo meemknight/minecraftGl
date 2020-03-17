@@ -18,7 +18,6 @@ namespace CN
 	};
 }
 
-
 struct Chunk
 {
 	Chunk() {}

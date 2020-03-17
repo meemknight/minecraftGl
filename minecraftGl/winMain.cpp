@@ -7,8 +7,8 @@
 #include <GL/glew.h>
 #include <ctime>
 #include <stdio.h>
-#include <io.h>
-#include <fcntl.h>
+//#include <io.h>
+//#include <fcntl.h>
 
 #include "tools.h"
 #include "input.h"

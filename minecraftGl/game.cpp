@@ -14,6 +14,7 @@
 #include "input.h"
 #include "WorldGenerator.h"
 #include <filesystem>
+#include "opengl2Dlib.h"
 
 ShaderProgram sp;
 ShaderProgram spNoTexture;
@@ -39,8 +40,18 @@ std::vector<glm::ivec3> chunksToLoad;
 
 Entity playerEntity;
 
+gl2d::Renderer2D renderer2d;
+
 int initGame()
 {
+	//renderer2d
+	{
+		renderer2d.create();
+
+
+	}
+
+
 	std::filesystem::remove_all("saves");
 	std::filesystem::create_directory("saves");
 
@@ -98,6 +109,7 @@ int gameLogic(float deltaTime)
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glViewport(0, 0, getWindowSizeX(), getWindowSizeY());
 #pragma endregion
+
 
 #pragma region keys
 
@@ -209,6 +221,18 @@ int gameLogic(float deltaTime)
 
 	//llog((camera.position.x), (camera.position.y), (camera.position.z));
 	//llog(camera.viewDirection.x, camera.viewDirection.y, camera.viewDirection.z);
+
+#pragma region 2d
+	
+	gl2d::enableNecessaryGLFeatures();
+	renderer2d.updateWindowMetrics(width, height);
+	//renderer2d.clearScreen();
+	renderer2d.renderRectangle({ width / 2 - 5, height / 2 - 5,5,5 }, Colors_Gray);
+	renderer2d.flush();
+	glDisable(GL_BLEND);
+
+#pragma endregion
+
 
 	return 1;
 }

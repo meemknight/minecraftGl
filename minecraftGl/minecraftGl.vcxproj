@@ -38,10 +38,12 @@
     <ClCompile Include="game.cpp" />
     <ClCompile Include="input.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="opengl2Dlib.cpp" />
     <ClCompile Include="phisics.cpp" />
     <ClCompile Include="Entity.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="stb_image.cpp" />
+    <ClCompile Include="stb_truetype.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="winMain.cpp" />
     <ClCompile Include="WorldGenerator.cpp" />
@@ -60,6 +62,7 @@
     <ClInclude Include="Frustum.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="input.h" />
+    <ClInclude Include="opengl2Dlib.h" />
     <ClInclude Include="PerlinNoise.hpp" />
     <ClInclude Include="phisics.h" />
     <ClInclude Include="pinnedVector.h" />
@@ -67,6 +70,7 @@
     <ClInclude Include="Entity.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="stb_image.h" />
+    <ClInclude Include="stb_truetype.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="tools.h" />
     <ClInclude Include="WorldGenerator.h" />
