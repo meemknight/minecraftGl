@@ -34,25 +34,25 @@ void WorldGenerator::setupChunk(Chunk * chunk, glm::vec2 p)
 {
 	myNoise->SetNoiseType(FastNoiseSIMD::NoiseType::Perlin);
 	{
-		float scaleXY = 1;
-		myNoise->SetAxisScales(1 * scaleXY, 1, 1 * scaleXY);
-		myNoise->SetFrequency(0.01);
+		float scale = 1.5;
+		myNoise->SetAxisScales(scale, scale, scale);
+		//note: small frequency is good for ores and things like that
+		myNoise->SetFrequency(0.022);
+		myNoise->SetFractalOctaves(2);
+
 	}
 	
-	noiseForBiomes->SetNoiseType(FastNoiseSIMD::NoiseType::Cellular);
-	noiseForBiomes->SetCellularReturnType(FastNoiseSIMD::CellularReturnType::NoiseLookup);
-	noiseForBiomes->SetCellularDistanceFunction(FastNoiseSIMD::CellularDistanceFunction::Natural);
-	noiseForBiomes->SetFrequency(0.02);
+	//noiseForBiomes->SetNoiseType(FastNoiseSIMD::NoiseType::Cellular);
+	//noiseForBiomes->SetCellularReturnType(FastNoiseSIMD::CellularReturnType::NoiseLookup);
+	//noiseForBiomes->SetCellularDistanceFunction(FastNoiseSIMD::CellularDistanceFunction::Natural);
+	//noiseForBiomes->SetFrequency(0.02);
 
 	int stonePos;
 	int grassPos;
 
-	//todo remove
-	//chunk->clearBlockData();
 
-	// Get a set of 16 x 16 x 16 Simplex Fractal noise
-	myNoise->SetFractalOctaves(4);
-	//float* noiseSet = myNoise->GetSimplexFractalSet(p.x*CHUNK_SIZE, 0, p.y*CHUNK_SIZE, CHUNK_SIZE, BUILD_LIMIT, CHUNK_SIZE, 1);
+	//Get a set of 16 x 16 x 16 Simplex Fractal noise
+	float* caveNoiseSet = myNoise->GetSimplexFractalSet(p.x*CHUNK_SIZE, 0, p.y*CHUNK_SIZE, CHUNK_SIZE, (BUILD_LIMIT-10), CHUNK_SIZE, 1);
 	int index = 0;
 
 	//float* biomeNoiseData = noiseForBiomes->GetSimplexFractalSet(p.x*CHUNK_SIZE, 0, p.y*CHUNK_SIZE, 1, CHUNK_SIZE, CHUNK_SIZE, 1);
@@ -86,8 +86,6 @@ void WorldGenerator::setupChunk(Chunk * chunk, glm::vec2 p)
 					float newStoneCnance = biomeData.stoneChance * std::powf(percent, biomeData.realismExponent);
 
 					float noiseVal = stoneNoise.accumulatedOctaveNoise3D_0_1(rx, ry, rz, biomeData.octaves);
-
-					//float noiseVal = noiseSet[x*CHUNK_SIZE*BUILD_LIMIT + y * CHUNK_SIZE + z];
 
 					if (noiseVal < newStoneCnance)
 					{
@@ -124,10 +122,27 @@ void WorldGenerator::setupChunk(Chunk * chunk, glm::vec2 p)
 				}
 			}
 
+			///caves pass
+			int maxH = std::min(BUILD_LIMIT - 10, (int)biomeData.maxStonePos);
+			for (int y = 1; y < maxH; y++)
+			{
+				float caveNoiseVal = caveNoiseSet[x*CHUNK_SIZE*(BUILD_LIMIT - 10) + y * CHUNK_SIZE + z];
+				float caveTressholdSets[] = { 0.5,0.3, 0.32, 0.42, 0.5, 0.6,1 };
+				float caveTressHold = caveTressholdSets
+				[(int)(((float)y / (float)maxH) * (sizeof(caveTressholdSets) / sizeof(caveTressholdSets[0])))];
+
+				//small numbers are more lickely
+				if (caveNoiseVal > caveTressHold)
+				{
+					chunk->getBlock(x, y, z) = BLOCK::air;
+				}
+
+			}
+
 		}
 	}
 
-	//FastNoiseSIMD::FreeNoiseSet(noiseSet);
+	FastNoiseSIMD::FreeNoiseSet(caveNoiseSet);
 	//FastNoiseSIMD::FreeNoiseSet(biomeNoiseData);
 
 }

@@ -28,6 +28,12 @@ static int rbuttonPressed = 0;
 
 static bool isFocus = 0;
 
+extern "C"
+{
+	__declspec(dllexport) unsigned long NvOptimusEnablement = 1;
+	__declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
+}
+
 int MAIN
 {
 	input::loadXinput();
