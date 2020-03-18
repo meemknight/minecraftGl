@@ -48,7 +48,7 @@ namespace input
 	}
 
 	int bindings[Buttons::buttonsCount] = { 0, 'W', 'S', 'A', 'D', VK_SPACE, 0, 0 };
-	WORD bindingsController[Buttons::buttonsCount] = { 0, 0, 0, 0, 0, XINPUT_GAMEPAD_RIGHT_SHOULDER, 0, 0};
+	WORD bindingsController[Buttons::buttonsCount] = { 0, 0, 0, 0, 0, XINPUT_GAMEPAD_RIGHT_THUMB, 0, 0};
 	float deadZone = 0.15;
 
 	int buttonsHeld[Buttons::buttonsCount] = {};

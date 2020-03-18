@@ -69,6 +69,7 @@ namespace gl2d
 
 		Texture() {};
 		Texture(const char *file) { loadFromFile(file); }
+		explicit Texture(GLuint id):id(id) {}
 
 		glm::ivec2 GetSize();
 

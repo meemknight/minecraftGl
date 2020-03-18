@@ -227,9 +227,12 @@ int gameLogic(float deltaTime)
 	gl2d::enableNecessaryGLFeatures();
 	renderer2d.updateWindowMetrics(width, height);
 	//renderer2d.clearScreen();
-	renderer2d.renderRectangle({ width / 2 - 5, height / 2 - 5,5,5 }, Colors_Gray);
+	renderer2d.renderRectangle({ width / 2 - 25, height / 2 - 25,25,25 }, { 1,0,0,1 });
+	renderer2d.renderRectangle({ width / 2 - 10 , height / 2 - 25,25,25 }, { 0,1,0,0.2 });
 	renderer2d.flush();
 	glDisable(GL_BLEND);
+	glEnable(GL_DEPTH_TEST);
+
 
 #pragma endregion
 

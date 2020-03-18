@@ -12,6 +12,7 @@
 
 #include "tools.h"
 #include "input.h"
+#include "opengl2Dlib.h"
 
 LRESULT CALLBACK windProc(HWND, UINT, WPARAM, LPARAM);
 static bool quit = 0;
@@ -69,6 +70,8 @@ int MAIN
 		MessageBoxA(0, "glewInit", "Error from glew", MB_ICONERROR);
 		return 1;
 	}
+
+	gl2d::init();
 
 	if (!initGame())
 	{
