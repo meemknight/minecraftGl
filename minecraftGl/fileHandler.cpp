@@ -10,9 +10,9 @@ constexpr int headDist = 1 + (CHUNK_PACK * CHUNK_PACK * sizeof(glm::ivec2));
 
 //////////////////////Chunks//format/////////////////////////////////////////
 //
-//	(     char     ) (			glm::ivec2 8bytes		 ) ( unsigned char )
-//	/* 1 element  */ /* CHUNK_PACK*CHUNK_PACK elements	*/ /*chunkDataSize*/
-//	/*chunks count*/ /*			Chunk positions			*/ /* chunk data  */
+//	(     char     ) (			glm::ivec2 8bytes		 ) ( unsigned char ) ( unsigned char )
+//	/* 1 element  */ /* CHUNK_PACK*CHUNK_PACK elements	*/ /*  1 element  */ /*chunkDataSize*/
+//	/*chunks count*/ /*			Chunk positions			*/ /* fully loaded*/ /* chunk data  */
 //
 /////////////////////////////////////////////////////////////////////////////
 bool ChunkFileHandler::loadChunk(Chunk & c)
@@ -169,18 +169,21 @@ void ChunkFileHandler::saveChunk(Chunk & c)
 
 void ChunkFileHandler::saveChunkDataInFile(std::fstream & f, Chunk & c, int index)
 {	
-	f.seekp(headDist + (chunkDataSize * index), std::ios_base::beg);
+	f.seekp(headDist + ((chunkDataSize + 1) * index), std::ios_base::beg);
+	f.write((char*)&c.fullyLoaded, 1);
 	f.write((char*)c.blockData, chunkDataSize);
 }
 
 void ChunkFileHandler::appendChunkDataInFile(std::fstream & f, Chunk & c)
 {
 	f.seekp(0, std::ios_base::end);
+	f.write((char*)&c.fullyLoaded, 1);
 	f.write((char*)c.blockData, chunkDataSize);
 }
 
 void ChunkFileHandler::loadChunkAtIndex(std::fstream & f, Chunk & c, int index)
 {
-	f.seekg(headDist + (chunkDataSize * index), std::ios_base::beg);
+	f.seekg(headDist + ((chunkDataSize+1) * index), std::ios_base::beg);
+	f.read((char*)&c.fullyLoaded, 1);
 	f.read((char*)c.blockData, chunkDataSize);
 }

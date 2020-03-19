@@ -45,6 +45,7 @@
     <ClCompile Include="stb_image.cpp" />
     <ClCompile Include="stb_truetype.cpp" />
     <ClCompile Include="Texture.cpp" />
+    <ClCompile Include="Ui.cpp" />
     <ClCompile Include="winMain.cpp" />
     <ClCompile Include="WorldGenerator.cpp" />
   </ItemGroup>
@@ -73,6 +74,7 @@
     <ClInclude Include="stb_truetype.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="tools.h" />
+    <ClInclude Include="Ui.h" />
     <ClInclude Include="WorldGenerator.h" />
   </ItemGroup>
   <ItemGroup>

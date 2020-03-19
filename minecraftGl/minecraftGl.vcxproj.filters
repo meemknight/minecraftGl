@@ -99,6 +99,9 @@
     <ClCompile Include="stb_truetype.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Ui.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h">
@@ -174,6 +177,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="stb_truetype.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Ui.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

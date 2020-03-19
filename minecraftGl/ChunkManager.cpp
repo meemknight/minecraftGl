@@ -47,7 +47,7 @@ Chunk **ChunkManager::requestChunks(glm::ivec3 *requestedC, int size, bool gener
 		ilog("saving:", size);
 		for(int i=0; i< chunksCount; i++)
 		{
-			if (chunkData[i].chunk->shouldReSave && chunkData[i].chunk->fullyLoaded)
+			if (chunkData[i].chunk->shouldReSave)
 			{
 				fileHandler.saveChunk(*chunkData[i].chunk);
 			}
@@ -267,7 +267,7 @@ void ChunkManager::setBlock(glm::ivec3 pos, Block b)
 
 void ChunkManager::setupChunk(Chunk *chunk, glm::vec2 p)
 {
-	if(chunk->shouldReSave && chunk->fullyLoaded)
+	if(chunk->shouldReSave)
 	{
 		fileHandler.saveChunk(*chunk);
 	}
@@ -351,9 +351,6 @@ foundAll:
 	{
 		chunk->shouldReSave = true;//todo if this is true, chunks are always saved
 		worldGeneraor.setupChunk(chunk, p);
-	}else
-	{
-		chunk->fullyLoaded = true;
 	}
 
 }

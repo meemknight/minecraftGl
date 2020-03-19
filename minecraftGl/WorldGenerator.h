@@ -230,6 +230,7 @@ public:
 		treeNoise.reseed(treesSeed);
 		noiseForTrees->SetSeed(treesSeed);
 		noiseForTrees->SetNoiseType(FastNoiseSIMD::NoiseType::WhiteNoise);
+		noiseForTrees->SetFrequency(1);
 
 		setDefaultBiomes();
 	};

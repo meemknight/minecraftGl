@@ -15,6 +15,7 @@
 #include "WorldGenerator.h"
 #include <filesystem>
 #include "opengl2Dlib.h"
+#include "Ui.h"
 
 ShaderProgram sp;
 ShaderProgram spNoTexture;
@@ -124,10 +125,10 @@ int gameLogic(float deltaTime)
 
 	if (isKeyPressed('P'))
 	{
-		for(auto &i :chunkManager.loadedChunks)
+		for (auto &i : chunkManager.loadedChunks)
 		{
 			i.shouldRecreate = true;
-			for(int j=0;j<6;j++)
+			for (int j = 0; j < 6; j++)
 			{
 				i.positionData[j].size = 0;
 			}
@@ -135,13 +136,13 @@ int gameLogic(float deltaTime)
 	}
 
 	//compute mouse delta
-	if(isFocused())
+	if (isFocused())
 	{
 		glm::vec2 delta = glm::vec2(getRelMousePosition()) - oldMousePosition;
 		delta.x *= -1;
 		delta.y *= -1;
 
-		camera.updatePosition(input::getLookDirection() * glm::vec2{12,12} + delta);
+		camera.updatePosition(input::getLookDirection() * glm::vec2{ 12,12 } +delta);
 
 		setRelMousePosition(getWindowSizeX() / 2, getWindowSizeY() / 2);
 		oldMousePosition = getRelMousePosition();
@@ -151,7 +152,7 @@ int gameLogic(float deltaTime)
 #pragma endregion
 
 #pragma region player phisics
-	
+
 	playerEntity.applyGravity(deltaTime);
 
 	playerEntity.applyVelocity(deltaTime);
@@ -223,16 +224,25 @@ int gameLogic(float deltaTime)
 	//llog(camera.viewDirection.x, camera.viewDirection.y, camera.viewDirection.z);
 
 #pragma region 2d
-	
+
 	gl2d::enableNecessaryGLFeatures();
 	renderer2d.updateWindowMetrics(width, height);
+
+	{
+		Ui::Frame({ 0,0, width, height });
+		
+		renderer2d.renderRectangle(
+			Ui::Box().xDistancePixels(200).yTop()()
+			, Colors_Red);
+
+	}
+
 	//renderer2d.clearScreen();
 	//renderer2d.renderRectangle({ width / 2 - 25, height / 2 - 25,25,25 }, { 1,0,0,1 });
 	//renderer2d.renderRectangle({ width / 2 - 10 , height / 2 - 25,25,25 }, { 0,1,0,0.2 });
-	//renderer2d.flush();
+	renderer2d.flush();
 	glDisable(GL_BLEND);
 	glEnable(GL_DEPTH_TEST);
-
 
 #pragma endregion
 

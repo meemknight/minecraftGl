@@ -17,9 +17,7 @@ Block tree1[] =
 	0,0,0,12,0,
 	0,0,0,12,0,
 	0,0,0,12,0,
-
 };
-
 
 std::mt19937_64 randNumberGen;
 
@@ -157,7 +155,7 @@ void WorldGenerator::setupStructuresInChunk(Chunk * chunk, glm::vec2 p, ChunkMan
 
 	chunk->fullyLoaded = 1;
 
-	float *noiseVal = noiseForTrees->GetWhiteNoiseSet(p.x*CHUNK_SIZE, 0, p.y*CHUNK_SIZE, CHUNK_SIZE, 1, CHUNK_SIZE, 10);
+	float *noiseVal = noiseForTrees->GetWhiteNoiseSet(p.x*CHUNK_SIZE, 0, p.y*CHUNK_SIZE, CHUNK_SIZE, 1, CHUNK_SIZE, 1);
 
 	for(int x=0; x<CHUNK_SIZE; x++)
 	{
@@ -171,14 +169,14 @@ void WorldGenerator::setupStructuresInChunk(Chunk * chunk, glm::vec2 p, ChunkMan
 			//ilog(val);
 
 			//this determins the freqvency of forests
-			if(val > 0.6)
+			if(val > 0.62)
 			{
 
 				int xPos = x + p.x * CHUNK_SIZE;
 				int zPos = z + p.y * CHUNK_SIZE;
 				int yPos = 0;
 
-				if (noiseVal[x + CHUNK_SIZE * z] > 0.85f)
+				if (noiseVal[x + CHUNK_SIZE * z] > 0.80f)
 				{
 					for (int y = BUILD_LIMIT - 50; y > 100; y--)
 					{
@@ -196,9 +194,8 @@ void WorldGenerator::setupStructuresInChunk(Chunk * chunk, glm::vec2 p, ChunkMan
 						generateStructure(cm, tree1, { xPos - 1 , yPos, zPos - 1 }, { 3,5,3 }, 1, 0);
 					}
 
-					//if(x == 15)
+					x++;
 				}
-
 			}
 
 		}
