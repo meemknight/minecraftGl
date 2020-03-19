@@ -1,4 +1,5 @@
 #include "Ui.h"
+#include "tools.h"
 
 namespace Ui
 {
@@ -35,18 +36,43 @@ namespace Ui
 	glm::ivec4 Box::operator()()
 	{
 
+		if(dimensionsState == 1)
+		{
+			dimensions.w = dimensions.z * aspect;
+		}else
+		if(dimensionsState == 2)
+		{
+			dimensions.z = dimensions.w * aspect;
+		}
+
 		if(XcenterState == -1)
 		{
-			dimensions.x = xPadd;
+			dimensions.x += xPadd;
 		}
 		if (YcenterState == -1)
 		{
-			dimensions.y = yPadd;
+			dimensions.y += yPadd;
 		}
-		//todo handle other cases
 
-		dimensions.z = 100;
-		dimensions.w = 100;
+		if(XcenterState == 1)
+		{
+			dimensions.x += xPadd + (width / 2) - (dimensions.z / 2);
+		}
+		if (YcenterState == 1)
+		{
+			dimensions.y += yPadd + (height/ 2) - (dimensions.w / 2);
+		}
+		
+		if(XcenterState == 2)
+		{
+			dimensions.x += width - dimensions.z;
+		}
+
+		if (YcenterState == 2)
+		{
+			dimensions.y += height - dimensions.w;
+		}
+
 
 		return dimensions;
 	}
@@ -65,34 +91,77 @@ namespace Ui
 		return *this;
 	}
 
-	Box & Box::xCenter()
+	Box & Box::xCenter(int dist)
 	{
+		dimensions.x = dist;
 		XcenterState = 1;
 		return *this;
 	}
-	Box & Box::yCenter()
+	Box & Box::yCenter(int dist)
 	{
+		dimensions.y = dist;
 		YcenterState = 1;
 		return *this;
 	}
-	Box & Box::xLeft()
+	Box & Box::xLeft(int dist)
 	{
+		dimensions.x = dist;
 		XcenterState = -1;
 		return *this;
 	}
-	Box & Box::yTop()
+	Box & Box::yTop(int dist)
 	{
+		dimensions.y = dist;
 		YcenterState = -1;
 		return *this;
 	}
-	Box & Box::xRight()
+	Box & Box::xRight(int dist)
 	{
+		dimensions.x = dist;
 		XcenterState = 2;
 		return *this;
 	}
-	Box & Box::yBottom()
+	Box & Box::yBottom(int dist)
 	{
+		dimensions.y = dist;
 		YcenterState = 2;
+		return *this;
+	}
+	Box & Box::xDimensionPixels(int dim)
+	{
+		dimensionsState = 0;
+		dimensions.z = dim;
+		return *this;
+	}
+	Box & Box::yDimensionPixels(int dim)
+	{
+		dimensionsState = 0;
+		dimensions.w = dim;
+		return *this;
+	}
+	Box & Box::xDimensionPercentage(float p)
+	{
+		dimensionsState = 0;
+		dimensions.z = p * width;
+		return *this;
+
+	}
+	Box & Box::yDimensionPercentage(float p)
+	{
+		dimensionsState = 0;
+		dimensions.w = p * height;
+		return *this;
+	}
+	Box & Box::xAspectRatio(float r)
+	{
+		dimensionsState = 2;
+		aspect = r;
+		return *this;
+	}
+	Box & Box::yAspectRatio(float r)
+	{
+		dimensionsState = 1;
+		aspect = r;
 		return *this;
 	}
 }

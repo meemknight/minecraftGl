@@ -144,7 +144,7 @@ int gameLogic(float deltaTime)
 
 		camera.updatePosition(input::getLookDirection() * glm::vec2{ 12,12 } +delta);
 
-		setRelMousePosition(getWindowSizeX() / 2, getWindowSizeY() / 2);
+		//setRelMousePosition(getWindowSizeX() / 2, getWindowSizeY() / 2);
 		oldMousePosition = getRelMousePosition();
 	}
 
@@ -229,10 +229,11 @@ int gameLogic(float deltaTime)
 	renderer2d.updateWindowMetrics(width, height);
 
 	{
-		Ui::Frame({ 0,0, width, height });
-		
+		Ui::Frame f({ 0,0, width, height });
+
 		renderer2d.renderRectangle(
-			Ui::Box().xDistancePixels(200).yTop()()
+			Ui::Box().xLeft(20).yBottom(-20).
+			yDimensionPercentage(0.1).xAspectRatio(0.5)()
 			, Colors_Red);
 
 	}
