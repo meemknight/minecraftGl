@@ -103,3 +103,11 @@ void Texture::cleanup()
 		id = 0;
 	}
 }
+
+glm::vec4 computeTextureAtlas(int xCount, int yCount, int x, int y)
+{
+	float xSize = 1.f / xCount;
+	float ySize = 1.f / yCount;
+
+	return { x * xSize, y * ySize, (x + 1) * xSize, (y + 1) * ySize };
+}

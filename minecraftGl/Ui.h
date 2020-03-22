@@ -30,14 +30,15 @@ namespace Ui
 		// 0 none
 		// 1 center
 		// 2 right
-		unsigned char XcenterState = 0;
-		unsigned char YcenterState = 0;
+		char XcenterState = 0;
+		char YcenterState = 0;
 		
 		// 0 pixelSize
 		// 1 xDominant
 		// 2 yDominant
-		unsigned char dimensionsState;
+		char dimensionsState;
 
+		//todo left percent
 		Box &xDistancePixels(int dist);
 		Box &yDistancePixels(int dist);
 		Box &xCenter(int dist = 0);
@@ -57,6 +58,8 @@ namespace Ui
 		Box &yAspectRatio(float r);
 
 		glm::ivec4 operator()();
+
+		operator glm::vec4 () { return (*this)(); }
 	};
 
 

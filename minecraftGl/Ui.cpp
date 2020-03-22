@@ -33,6 +33,7 @@ namespace Ui
 		}
 	}
 
+	//todo fix frame
 	glm::ivec4 Box::operator()()
 	{
 
@@ -65,12 +66,12 @@ namespace Ui
 		
 		if(XcenterState == 2)
 		{
-			dimensions.x += width - dimensions.z;
+			dimensions.x += xPadd + width - dimensions.z;
 		}
 
 		if (YcenterState == 2)
 		{
-			dimensions.y += height - dimensions.w;
+			dimensions.y += yPadd + height - dimensions.w;
 		}
 
 
@@ -165,4 +166,3 @@ namespace Ui
 		return *this;
 	}
 }
-

@@ -6,6 +6,7 @@
 
 #pragma once
 #include<GL/glew.h>
+#include<glm/vec4.hpp>
 
 struct Texture
 {
@@ -23,4 +24,17 @@ struct Texture
 	void bind(unsigned int sample = 0);
 	void unBind();
 	void cleanup();
+};
+
+glm::vec4 computeTextureAtlas(int xCount, int yCount, int x, int y);
+
+struct TextureAtlas
+{
+	int xCount;
+	int yCount;
+
+	glm::vec4 get(int x, int y)
+	{
+		return computeTextureAtlas(xCount, yCount, x, y);
+	}
 };

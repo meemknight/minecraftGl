@@ -78,6 +78,7 @@ int MAIN
 	}
 
 	gl2d::init();
+	gl2d::setErrorFuncCallback([](const char* c) {elog(c); });
 
 	if (!initGame())
 	{

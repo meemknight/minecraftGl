@@ -78,7 +78,11 @@ namespace gl2d
 		void create1PxSquare();
 		void createFromFileData(const unsigned char* image_file_data, const size_t image_file_size);
 
+		void addMipmapFromFileData(const unsigned char* image_file_data, const size_t image_file_size, int lod);
+		void addMipmapFromBuffer(const char* image_data, const int width, const int height, int lod);
+
 		void loadFromFile(const char *fileName);
+		void loadMipmap(const char *fileName, int lod);
 
 		void bind(const unsigned int sample = 0);
 		void unbind();

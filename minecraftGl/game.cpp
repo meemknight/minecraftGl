@@ -21,6 +21,8 @@ ShaderProgram sp;
 ShaderProgram spNoTexture;
 
 Texture bloc;
+gl2d::Texture  uiTexture;
+TextureAtlas uiAtlas{6, 1};
 int width;
 int height;
 
@@ -52,7 +54,6 @@ int initGame()
 
 	}
 
-
 	std::filesystem::remove_all("saves");
 	std::filesystem::create_directory("saves");
 
@@ -78,6 +79,9 @@ int initGame()
 
 	bloc.create("textures/blocks.png");
 	bloc.subDivisions = 16;
+
+	uiTexture.loadFromFile("textures/ui0.png");
+	//uiTexture.loadMipmap("textures/ui1.png", 1);
 
 	cubeRenderer.camera = &camera;
 	cubeRenderer.texture = &bloc;
@@ -144,7 +148,7 @@ int gameLogic(float deltaTime)
 
 		camera.updatePosition(input::getLookDirection() * glm::vec2{ 12,12 } +delta);
 
-		//setRelMousePosition(getWindowSizeX() / 2, getWindowSizeY() / 2);
+		setRelMousePosition(getWindowSizeX() / 2, getWindowSizeY() / 2);
 		oldMousePosition = getRelMousePosition();
 	}
 
@@ -229,12 +233,21 @@ int gameLogic(float deltaTime)
 	renderer2d.updateWindowMetrics(width, height);
 
 	{
-		Ui::Frame f({ 0,0, width, height });
+		Ui::Frame f({ 100,100, 400, 400 });
+
+		renderer2d.renderRectangle(
+			{ 100, 100, 400, 400 }, {0,1,1,0.2}, {}, 0
+		);
+
+		renderer2d.renderRectangle(
+			Ui::Box().xCenter().yCenter().xDimensionPixels(30).yAspectRatio(1.f), {}, 0,
+			uiTexture, uiAtlas.get(2, 0)
+		);
 
 		renderer2d.renderRectangle(
 			Ui::Box().xLeft(20).yBottom(-20).
-			yDimensionPercentage(0.1).xAspectRatio(0.5)()
-			, Colors_Red);
+			yDimensionPercentage(0.1).xAspectRatio(1),
+			{}, 0, uiTexture, uiAtlas.get(1,0));
 
 	}
 

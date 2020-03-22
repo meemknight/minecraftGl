@@ -932,6 +932,7 @@ namespace gl2d
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image_data);
+		
 
 		this->id = id;
 	}
@@ -965,6 +966,32 @@ namespace gl2d
 		free((void*)decodedImage);
 	}
 
+	void Texture::addMipmapFromFileData(const unsigned char * image_file_data, const size_t image_file_size, int lod)
+	{
+		stbi_set_flip_vertically_on_load(true);
+
+		int width = 0;
+		int height = 0;
+		int channels = 0;
+
+		const unsigned char* decodedImage = stbi_load_from_memory(image_file_data, image_file_size, &width, &height, &channels, 4);
+
+		addMipmapFromBuffer((const char*)decodedImage, width, height, lod);
+
+		//Replace stbi allocators
+		free((void*)decodedImage);
+	}
+
+	void Texture::addMipmapFromBuffer(const char * image_data, const int width, const int height, int lod)
+	{
+
+		glActiveTexture(GL_TEXTURE0);
+
+		glBindTexture(GL_TEXTURE_2D, id);
+
+		glTexImage2D(GL_TEXTURE_2D, lod, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image_data);
+	}
+
 	void Texture::loadFromFile(const char * fileName)
 	{
 		std::ifstream file(fileName, std::ios::binary);
@@ -975,6 +1002,11 @@ namespace gl2d
 			strcat_s(c, "error openning: ");
 			strcat_s(c + strlen(c), 200, fileName);
 			errorFunc(c);
+
+			const unsigned char decodedImage[] = { 255,0,255,255, 0,0,0,255,
+				255,0,255,255, 0,0,0,255 };
+			createFromBuffer((const char*)decodedImage, 2, 2);
+
 			return;
 		}
 
@@ -990,6 +1022,33 @@ namespace gl2d
 
 		delete[] fileData;
 
+	}
+
+	void Texture::loadMipmap(const char * fileName, int lod)
+	{
+		std::ifstream file(fileName, std::ios::binary);
+
+		if (!file.is_open())
+		{
+			char c[256] = { 0 };
+			strcat_s(c, "error openning: ");
+			strcat_s(c + strlen(c), 200, fileName);
+			errorFunc(c);
+
+			return;
+		}
+
+		int fileSize = 0;
+		file.seekg(0, std::ios::end);
+		fileSize = file.tellg();
+		file.seekg(0, std::ios::beg);
+		unsigned char * fileData = new unsigned char[fileSize];
+		file.read((char*)fileData, fileSize);
+		file.close();
+
+		addMipmapFromFileData(fileData, fileSize, lod);
+
+		delete[] fileData;
 	}
 
 	void Texture::bind(const unsigned int sample)
