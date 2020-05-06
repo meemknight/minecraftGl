@@ -33,10 +33,20 @@ namespace BLOCK
 		herb,
 		sappling,
 		dead_bush,
+		gold_ore,
+		coar_ore,
+		shugarCane,
+		stoneBrick,
+		iron_ore,
+		diamond_ore,
+		bookShelf,
+		birch_wood,
+		gravel,
 		BLOCKS_SIZE,
 	};
 }
 
+//todo change ints
 struct BlockFace
 {
 	float x = 0;

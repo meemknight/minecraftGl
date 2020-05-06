@@ -71,6 +71,7 @@ int initGame()
 	glEnable(GL_CULL_FACE);
 	glEnable(GL_MULTISAMPLE);
 	//glEnable(GL_SAMPLE_SHADING);
+	glClearColor(35/256.f, 157/256.f, 194 / 256.f, 1);
 
 	glLineWidth(4);
 
@@ -139,6 +140,11 @@ int gameLogic(float deltaTime)
 		}
 	}
 
+	if(isKeyPressedOn('O'))
+	{
+		playerEntity.velocity.x = 100;
+	}
+
 	//compute mouse delta
 	if (isFocused())
 	{
@@ -176,6 +182,23 @@ int gameLogic(float deltaTime)
 	rayCastAdvanced(chunkManager, { camera.position.x + 0.5, camera.position.y + 0.5, camera.position.z + 0.5 }, camera.viewDirection, 25,
 		coll, edge);
 
+	static int  curentBlock = 1;
+	
+	if (input::isKeyPressedOn(input::Buttons::q))
+	{
+		curentBlock--;
+	}
+	if (input::isKeyPressedOn(input::Buttons::e))
+	{
+		curentBlock++;
+	}
+
+	if (curentBlock < 1) { curentBlock = BLOCK::BLOCKS_SIZE - 1; }
+	if (curentBlock >= BLOCK::BLOCKS_SIZE) { curentBlock = 1; }
+
+	ilog(curentBlock);
+
+
 	if (coll.has_value())
 	{
 		cubeWireRenderer.addCube({ coll.value() }, { 0.61,0.6,0.65,1 });
@@ -185,8 +208,9 @@ int gameLogic(float deltaTime)
 		{
 			if (edge.has_value())
 			{
+		
 				//generateStructure(chunkManager, 0, edge.value(), {}, true, false);
-				chunkManager.setBlock(edge.value(), BLOCK::wooden_plank);
+				chunkManager.setBlock(edge.value(), curentBlock);
 			}
 		}
 
@@ -233,21 +257,37 @@ int gameLogic(float deltaTime)
 	renderer2d.updateWindowMetrics(width, height);
 
 	{
-		Ui::Frame f({ 100,100, 400, 400 });
+		Ui::Frame f({ 0,0, width, height});
 
-		renderer2d.renderRectangle(
-			{ 100, 100, 400, 400 }, {0,1,1,0.2}, {}, 0
-		);
+		//renderer2d.renderRectangle(
+		//	{ 100, 100, 400, 400 }, {0,1,1,0.2}, {}, 0
+		//);
 
 		renderer2d.renderRectangle(
 			Ui::Box().xCenter().yCenter().xDimensionPixels(30).yAspectRatio(1.f), {}, 0,
 			uiTexture, uiAtlas.get(2, 0)
 		);
 
-		renderer2d.renderRectangle(
-			Ui::Box().xLeft(20).yBottom(-20).
-			yDimensionPercentage(0.1).xAspectRatio(1),
-			{}, 0, uiTexture, uiAtlas.get(1,0));
+
+		auto box = Ui::Box().xLeft(20).yBottom(-20).
+			yDimensionPercentage(0.1).xAspectRatio(1)();
+		renderer2d.renderRectangle(box
+			,
+			{}, 0, uiTexture, uiAtlas.get(1, 0));
+		{
+			Ui::Frame f2{box};
+			gl2d::Texture textures;
+			textures.id = bloc.id;
+			TextureAtlas TextureAtlas{ 16, 16 };
+
+			auto face = getBlockFace(curentBlock, FACE::front);
+
+			renderer2d.renderRectangle(Ui::Box().xCenter().yCenter().xDimensionPercentage(0.6f).yAspectRatio(1),
+				{}, 180, textures, TextureAtlas.get(face.x, face.y));
+
+		}
+
+
 
 	}
 

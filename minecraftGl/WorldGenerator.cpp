@@ -6,17 +6,32 @@ static FastNoiseSIMD* noiseForBiomes = FastNoiseSIMD::NewFastNoiseSIMD();
 
 Block tree1[] =
 {
-	0,0,0,12,0,
-	0,0,0,12,0,
-	0,0,0,12,0,
+	0,0,0,12,0,0,
+	0,0,0,12,0,0,
+	0,0,0,12,0,0,
 
-	0,0,0,12,0,
-	4,4,4,4,12,
-	0,0,0,12,0,
+	0,0,0,12,0,0,
+	4,4,4,4,12,0,
+	0,0,0,12,0,0,
 
-	0,0,0,12,0,
-	0,0,0,12,0,
-	0,0,0,12,0,
+	0,0,0,12,0,0,
+	0,0,0,12,0,0,
+	0,0,0,12,0,0,
+};
+
+Block tree2[] =
+{
+	0,0,0,0,12,0,
+	0,0,0,0,12,0,
+	0,0,0,0,12,0,
+
+	0,0,0,0,12,0,
+	4,4,4,4,4,12,
+	0,0,0,0,12,12,
+
+	0,0,0,0,12,0,
+	0,0,0,0,12,12,
+	0,0,0,0,12,0,
 };
 
 std::mt19937_64 randNumberGen;
@@ -55,6 +70,12 @@ void WorldGenerator::setupChunk(Chunk * chunk, glm::vec2 p)
 
 	//float* biomeNoiseData = noiseForBiomes->GetSimplexFractalSet(p.x*CHUNK_SIZE, 0, p.y*CHUNK_SIZE, 1, CHUNK_SIZE, CHUNK_SIZE, 1);
 
+	float *gravelNoiseVal = noiseForGravel->GetSimplexFractalSet(p.x*CHUNK_SIZE, 0, p.y*CHUNK_SIZE, CHUNK_SIZE, BUILD_LIMIT, CHUNK_SIZE, 1);
+	auto getGravelVal = [gravelNoiseVal](int x, int y, int z) 
+	{
+		return gravelNoiseVal[x*CHUNK_SIZE*(BUILD_LIMIT) + y * CHUNK_SIZE + z];
+	};
+
 	//stone pass
 	for (int x = 0; x < CHUNK_SIZE; x++)
 	{
@@ -87,7 +108,14 @@ void WorldGenerator::setupChunk(Chunk * chunk, glm::vec2 p)
 
 					if (noiseVal < newStoneCnance)
 					{
-						chunk->getBlock(x, y, z) = BLOCK::stone;
+						if(getGravelVal(x,y,z) > 0.50f)
+						{
+							chunk->getBlock(x, y, z) = BLOCK::gravel;
+						}else
+						{
+							chunk->getBlock(x, y, z) = BLOCK::stone;
+						}
+
 					}else
 					{
 						chunk->getBlock(x, y, z) = BLOCK::air;
@@ -108,7 +136,9 @@ void WorldGenerator::setupChunk(Chunk * chunk, glm::vec2 p)
 				int dirtDepth = biomeHeigthNoise.noise2D_0_1(rx, rz) * biomeData.bottomBlockDepth;
 				for (int y = biomeData.maxStonePos; y >= biomeData.minStonePos - 1; y--)
 				{
-					if (chunk->getBlock(x, y, z) == BLOCK::stone && chunk->getBlock(x, y + 1, z) == BLOCK::air)
+					if ((chunk->getBlock(x, y, z) == BLOCK::stone ||
+						chunk->getBlock(x, y, z) == BLOCK::gravel)
+						&& chunk->getBlock(x, y + 1, z) == BLOCK::air)
 					{
 						chunk->getBlock(x, y, z) = biomeData.topBlock;
 						for (int copy = y - 1; copy > y - dirtDepth; copy--)
@@ -141,6 +171,8 @@ void WorldGenerator::setupChunk(Chunk * chunk, glm::vec2 p)
 	}
 
 	FastNoiseSIMD::FreeNoiseSet(caveNoiseSet);
+	FastNoiseSIMD::FreeNoiseSet(gravelNoiseVal);
+	
 	//FastNoiseSIMD::FreeNoiseSet(biomeNoiseData);
 
 }
@@ -156,6 +188,8 @@ void WorldGenerator::setupStructuresInChunk(Chunk * chunk, glm::vec2 p, ChunkMan
 	chunk->fullyLoaded = 1;
 
 	float *noiseVal = noiseForTrees->GetWhiteNoiseSet(p.x*CHUNK_SIZE, 0, p.y*CHUNK_SIZE, CHUNK_SIZE, 1, CHUNK_SIZE, 1);
+
+	//float *oresNoiseVal1 = noiseForOres->GetWhiteNoiseSet(p.x*CHUNK_SIZE, 0, p.y*CHUNK_SIZE, CHUNK_SIZE, 1, CHUNK_SIZE, 1);
 
 	for(int x=0; x<CHUNK_SIZE; x++)
 	{
@@ -190,8 +224,9 @@ void WorldGenerator::setupStructuresInChunk(Chunk * chunk, glm::vec2 p, ChunkMan
 
 					if (yPos)
 					{
+
 						cm.setBlock({ xPos, yPos - 1, zPos }, BLOCK::dirt);
-						generateStructure(cm, tree1, { xPos - 1 , yPos, zPos - 1 }, { 3,5,3 }, 1, 0);
+						generateStructure(cm, tree2, { xPos - 1 , yPos, zPos - 1 }, { 3,6,3 }, 1, 0);
 					}
 
 					x++;

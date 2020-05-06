@@ -47,13 +47,17 @@ namespace input
 
 	}
 
-	int bindings[Buttons::buttonsCount] = { 0, 'W', 'S', 'A', 'D', VK_SPACE, 0, 0 };
-	WORD bindingsController[Buttons::buttonsCount] = { 0, 0, 0, 0, 0, XINPUT_GAMEPAD_RIGHT_THUMB, 0, 0};
+	int bindings[Buttons::buttonsCount] = { 0, 'W', 'S', 'A', 'D', VK_SPACE, 0, 0, 'Q', 'E' };
+	WORD bindingsController[Buttons::buttonsCount] = { 0, 0, 0, 0, 0, XINPUT_GAMEPAD_RIGHT_THUMB, 0, 0
+		, XINPUT_GAMEPAD_LEFT_SHOULDER, XINPUT_GAMEPAD_RIGHT_SHOULDER };
 	float deadZone = 0.15;
 
 	int buttonsHeld[Buttons::buttonsCount] = {};
 	int buttonsPressed[Buttons::buttonsCount] = {};
 
+	constexpr float lookSpeed = 2;
+
+	//todo delta time
 	glm::vec2 getLookDirection()
 	{
 		glm::vec2 dir = {};
@@ -86,7 +90,7 @@ namespace input
 					retValY = 0.f;
 				}
 
-				dir += glm::vec2{ -retValX, retValY };
+				dir += glm::vec2{ -retValX * lookSpeed, retValY * lookSpeed };
 
 				dir = glm::clamp(dir, { -1,-1 }, { 1,1 });
 			}
@@ -126,34 +130,49 @@ namespace input
 		{
 			XINPUT_STATE s;
 
-			if (xInputLoaded != 0 && DynamicXinputGetState(0, &s) == ERROR_SUCCESS)
+			if(xInputLoaded != 0)
 			{
-				XINPUT_GAMEPAD *pad = &s.Gamepad;
+				bool success = 0;
 
-				float retValX = pad->sThumbLX / (float)SHRT_MAX;
-
-				retValX = max(-1.f, retValX);
-				retValX = min(1.f, retValX);
-
-				if (abs(retValX) < deadZone)
+				for(int i=0; i<3; i++)
 				{
-					retValX = 0.f;
+					if(DynamicXinputGetState(i, &s) == ERROR_SUCCESS)
+					{
+						success = true;
+						break;
+					}
 				}
 
-				float retValY = pad->sThumbLY / (float)SHRT_MAX;
-
-				retValY = max(-1.f, retValY);
-				retValY = min(1.f, retValY);
-
-				if (abs(retValY) < deadZone)
+				if(success)
 				{
-					retValY = 0.f;
+					XINPUT_GAMEPAD *pad = &s.Gamepad;
+
+					float retValX = pad->sThumbLX / (float)SHRT_MAX;
+
+					retValX = max(-1.f, retValX);
+					retValX = min(1.f, retValX);
+
+					if (abs(retValX) < deadZone)
+					{
+						retValX = 0.f;
+					}
+
+					float retValY = pad->sThumbLY / (float)SHRT_MAX;
+
+					retValY = max(-1.f, retValY);
+					retValY = min(1.f, retValY);
+
+					if (abs(retValY) < deadZone)
+					{
+						retValY = 0.f;
+					}
+
+					dir += glm::vec2{ retValY, retValX };
+
+					dir = glm::clamp(dir, { -1,-1 }, { 1,1 });
 				}
-
-				dir += glm::vec2{ retValY, retValX };
-
-				dir = glm::clamp(dir, { -1,-1 }, { 1,1 });
 			}
+
 		
 		}
 

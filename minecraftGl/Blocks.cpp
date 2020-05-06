@@ -18,7 +18,15 @@ static BlockFace frontFaces[BLOCK::BLOCKS_SIZE] =
 	{7, 13},//herbs
 	{14, 14},//sappling
 	{7, 12},//dead_bush
-
+	{0, 13}, // gold ore
+	{2, 13}, // coal ore
+	{9, 11}, // shugar cane
+	{6, 12}, //stone brick
+	{1, 13}, // iron ore
+	{2, 12}, // diamond ore
+	{3, 13}, //block shelf
+	{5, 8}, //birch wood
+	{3, 14}, //gravel
 };
 
 static BlockFace backFaces[BLOCK::BLOCKS_SIZE] =
@@ -39,6 +47,15 @@ static BlockFace backFaces[BLOCK::BLOCKS_SIZE] =
 	{7, 13},//herbs
 	{14, 14},//sappling
 	{7, 12},//dead_bush
+	{0, 13}, // gold ore
+	{2, 13}, // coal ore
+	{9, 11}, // shugar cane
+	{6, 12}, //stone brick
+	{1, 13}, // iron ore
+	{2, 12}, // diamond ore
+	{3, 13}, //block shelf
+	{5, 8}, //birch wood
+	{3, 14}, //gravel
 
 };
 
@@ -60,6 +77,15 @@ static BlockFace topFaces[BLOCK::BLOCKS_SIZE] =
 	{7, 13},//herbs
 	{14, 14},//sappling
 	{7, 12},//dead_bush
+	{0, 13}, // gold ore
+	{2, 13}, // coal ore
+	{9, 11}, // shugar cane
+	{6, 12}, //stone brick
+	{1, 13}, // iron ore
+	{2, 12}, // diamond ore
+	{4, 15}, //block shelf
+	{5, 14}, //birch wood
+	{3, 14}, //gravel
 
 };
 
@@ -81,6 +107,15 @@ static BlockFace bottomFaces[BLOCK::BLOCKS_SIZE] =
 	{7, 13},//herbs
 	{14, 14},//sappling
 	{7, 12},//dead_bush
+	{0, 13}, // gold ore
+	{2, 13}, // coal ore
+	{9, 11}, // shugar cane
+	{6, 12}, //stone brick
+	{1, 13}, // iron ore
+	{2, 12}, // diamond ore
+	{4, 15}, //block shelf
+	{5, 14}, //birch wood
+	{3, 14}, //gravel
 
 };
 
@@ -102,6 +137,15 @@ static BlockFace LeftFaces[BLOCK::BLOCKS_SIZE] =
 	{7, 13},//herbs
 	{14, 14},//sappling
 	{7, 12},//dead_bush
+	{0, 13}, // gold ore
+	{2, 13}, // coal ore
+	{9, 11}, // shugar cane
+	{6, 12}, //stone brick
+	{1, 13}, // iron ore
+	{2, 12}, // diamond ore
+	{3, 13}, //block shelf
+	{5, 8}, //birch wood
+	{3, 14}, //gravel
 
 };
 
@@ -123,6 +167,15 @@ static BlockFace RightFaces[BLOCK::BLOCKS_SIZE] =
 	{7, 13},//herbs
 	{14, 14},//sappling
 	{7, 12},//dead_bush
+	{0, 13}, // gold ore
+	{2, 13}, // coal ore
+	{9, 11}, // shugar cane
+	{6, 12}, //stone brick
+	{1, 13}, // iron ore
+	{2, 12}, // diamond ore
+	{3, 13}, //block shelf
+	{5, 8}, //birch wood
+	{3, 14}, //gravel
 
 };
 
@@ -155,7 +208,9 @@ bool isOpaque(Block b)
 
 bool isHerb(Block b)
 {
-	if (b == BLOCK::herb || b == BLOCK::sappling || b == BLOCK::dead_bush)
+	if (b == BLOCK::herb || b == BLOCK::sappling || b == BLOCK::dead_bush 
+		|| b == BLOCK::shugarCane
+		)
 	{
 		return 1;
 	}

@@ -221,9 +221,15 @@ public:
 		return nr;
 	}
 
-	WorldGenerator(std::uint32_t  seed): stoneSeed(seed),
-		biomeSeed(Lehmer(stoneSeed)), heigthSeed(Lehmer(biomeSeed)), treesSeed(Lehmer(heigthSeed))
+	WorldGenerator(std::uint32_t  seed)
 	{
+		const std::uint32_t stoneSeed = seed;
+		const std::uint32_t biomeSeed = Lehmer(stoneSeed);
+		const std::uint32_t heigthSeed = Lehmer(biomeSeed);
+		const std::uint32_t treesSeed = Lehmer(heigthSeed);
+		const std::uint32_t oresSeed = Lehmer(treesSeed);
+		const std::uint32_t gravelSeed = Lehmer(oresSeed);
+
 		stoneNoise.reseed(stoneSeed);
 		biomeNoise.reseed(biomeSeed);
 		biomeHeigthNoise.reseed(heigthSeed);
@@ -232,6 +238,14 @@ public:
 		noiseForTrees->SetNoiseType(FastNoiseSIMD::NoiseType::WhiteNoise);
 		noiseForTrees->SetFrequency(1);
 
+		noiseForOres->SetSeed(oresSeed);
+		noiseForOres->SetNoiseType(FastNoiseSIMD::NoiseType::WhiteNoise);
+		noiseForOres->SetFrequency(1);
+
+		noiseForGravel->SetSeed(gravelSeed);
+		noiseForGravel->SetNoiseType(FastNoiseSIMD::NoiseType::Perlin);
+		noiseForGravel->SetFrequency(0.2);
+
 		setDefaultBiomes();
 	};
 	
@@ -239,16 +253,16 @@ public:
 
 	void setupStructuresInChunk(Chunk *chunk, glm::vec2 p, ChunkManager &cm);
 
-	const std::uint32_t stoneSeed;
-	const std::uint32_t biomeSeed;
-	const std::uint32_t heigthSeed;
-	const std::uint32_t treesSeed;
+	//todo remove
+	
 
 	siv::PerlinNoise stoneNoise;
 	siv::PerlinNoise biomeNoise;
 	siv::PerlinNoise biomeHeigthNoise;
 	siv::PerlinNoise treeNoise;
 	FastNoiseSIMD* noiseForTrees = FastNoiseSIMD::NewFastNoiseSIMD();
+	FastNoiseSIMD* noiseForOres = FastNoiseSIMD::NewFastNoiseSIMD();
+	FastNoiseSIMD* noiseForGravel = FastNoiseSIMD::NewFastNoiseSIMD();
 
 	///stone pass
 	float stoneNoiseCompression = 120;

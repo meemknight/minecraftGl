@@ -165,7 +165,6 @@ inline void elog(F &&f, T &&...args)
 }
 
 
-
 #else
 template<class F, class ...T>
 inline void elog(F f, T ...args)
