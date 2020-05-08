@@ -42,6 +42,7 @@ namespace BLOCK
 		bookShelf,
 		birch_wood,
 		gravel,
+		rose,
 		BLOCKS_SIZE,
 	};
 }

@@ -167,6 +167,38 @@ void ChunkFileHandler::saveChunk(Chunk & c)
 
 }
 
+void ChunkFileHandler::savePlayer(const glm::vec3 & pos)
+{
+	std::ofstream f("saves/player.txt");
+	if(!f.is_open())
+	{
+		return;
+	}
+
+	f << pos.x << " ";
+	f << pos.y << " ";
+	f << pos.z;
+
+	f.close();
+}
+
+bool ChunkFileHandler::loadPlayer(glm::vec3 & pos)
+{
+	std::ifstream f("saves/player.txt");
+	if (!f.is_open())
+	{
+		return false;
+	}
+
+	f >> pos.x;
+	f >> pos.y;
+	f >> pos.z;
+
+	f.close();
+
+	return true;
+}
+
 void ChunkFileHandler::saveChunkDataInFile(std::fstream & f, Chunk & c, int index)
 {	
 	f.seekp(headDist + ((chunkDataSize + 1) * index), std::ios_base::beg);

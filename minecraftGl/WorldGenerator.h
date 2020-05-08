@@ -68,6 +68,18 @@ public:
 		//biomes[biomes.size() - 1].realismExponent = 0.8;
 		//biomes[biomes.size() - 1].octaves = 7;
 
+		//stone
+		//biomes.push_back({});
+		//biomes[biomes.size() - 1].chanceFactor = 1;
+		//biomes[biomes.size() - 1].topBlock = BLOCK::stone;
+		//biomes[biomes.size() - 1].bottomBlock = BLOCK::stone;
+		//biomes[biomes.size() - 1].bottomBlockDepth = 1;
+		//biomes[biomes.size() - 1].minStonePos = 80;
+		//biomes[biomes.size() - 1].maxStonePos = 100;
+		//biomes[biomes.size() - 1].stoneChance = 0.8;
+		//biomes[biomes.size() - 1].realismExponent = 1;
+		//biomes[biomes.size() - 1].octaves = 4;
+
 		//desert
 		biomes.push_back({});
 		biomes[biomes.size()-1].chanceFactor = 1;
@@ -238,14 +250,27 @@ public:
 		noiseForTrees->SetNoiseType(FastNoiseSIMD::NoiseType::WhiteNoise);
 		noiseForTrees->SetFrequency(1);
 
-		noiseForOres->SetSeed(oresSeed);
-		noiseForOres->SetNoiseType(FastNoiseSIMD::NoiseType::WhiteNoise);
-		noiseForOres->SetFrequency(1);
+	
+		{
+			noiseForOres->SetSeed(oresSeed);
+			noiseForOres->SetNoiseType(FastNoiseSIMD::NoiseType::Perlin);
+			float scale = 6.0;
+			noiseForOres->SetAxisScales(scale, scale, scale);
+			//note: small frequency is good for ores and things like that
+			noiseForOres->SetFrequency(0.005);
+			noiseForOres->SetFractalOctaves(2);
 
-		noiseForGravel->SetSeed(gravelSeed);
-		noiseForGravel->SetNoiseType(FastNoiseSIMD::NoiseType::Perlin);
-		noiseForGravel->SetFrequency(0.2);
-
+		}
+		
+		{
+			noiseForGravel->SetSeed(gravelSeed);
+			noiseForGravel->SetNoiseType(FastNoiseSIMD::NoiseType::Perlin);
+			noiseForGravel->SetFrequency(0.2);
+			float scale = 2.0;
+			noiseForGravel->SetAxisScales(scale, scale, scale);
+			//note: small frequency is good for ores and things like that
+		
+		}
 		setDefaultBiomes();
 	};
 	

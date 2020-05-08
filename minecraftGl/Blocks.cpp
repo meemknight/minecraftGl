@@ -27,6 +27,7 @@ static BlockFace frontFaces[BLOCK::BLOCKS_SIZE] =
 	{3, 13}, //block shelf
 	{5, 8}, //birch wood
 	{3, 14}, //gravel
+	{12, 15}, //rose
 };
 
 static BlockFace backFaces[BLOCK::BLOCKS_SIZE] =
@@ -56,6 +57,7 @@ static BlockFace backFaces[BLOCK::BLOCKS_SIZE] =
 	{3, 13}, //block shelf
 	{5, 8}, //birch wood
 	{3, 14}, //gravel
+	{12, 15}, //rose
 
 };
 
@@ -86,6 +88,7 @@ static BlockFace topFaces[BLOCK::BLOCKS_SIZE] =
 	{4, 15}, //block shelf
 	{5, 14}, //birch wood
 	{3, 14}, //gravel
+	{12, 15}, //rose
 
 };
 
@@ -116,6 +119,7 @@ static BlockFace bottomFaces[BLOCK::BLOCKS_SIZE] =
 	{4, 15}, //block shelf
 	{5, 14}, //birch wood
 	{3, 14}, //gravel
+	{12, 15}, //rose
 
 };
 
@@ -146,6 +150,7 @@ static BlockFace LeftFaces[BLOCK::BLOCKS_SIZE] =
 	{3, 13}, //block shelf
 	{5, 8}, //birch wood
 	{3, 14}, //gravel
+	{12, 15}, //rose
 
 };
 
@@ -176,6 +181,7 @@ static BlockFace RightFaces[BLOCK::BLOCKS_SIZE] =
 	{3, 13}, //block shelf
 	{5, 8}, //birch wood
 	{3, 14}, //gravel
+	{12, 15}, //rose
 
 };
 
@@ -210,6 +216,7 @@ bool isHerb(Block b)
 {
 	if (b == BLOCK::herb || b == BLOCK::sappling || b == BLOCK::dead_bush 
 		|| b == BLOCK::shugarCane
+		|| b == BLOCK::rose
 		)
 	{
 		return 1;

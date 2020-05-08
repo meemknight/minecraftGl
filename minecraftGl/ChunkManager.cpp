@@ -10,7 +10,7 @@
 
 extern ChunkFileHandler fileHandler;
 
-WorldGenerator worldGeneraor(1234);
+WorldGenerator worldGeneraor(1206);
 
 void ChunkManager::reserveData(int size)
 {

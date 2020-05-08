@@ -16,12 +16,15 @@
 #include <filesystem>
 #include "opengl2Dlib.h"
 #include "Ui.h"
+#include "menu.h"
 
 ShaderProgram sp;
 ShaderProgram spNoTexture;
 
 Texture bloc;
 gl2d::Texture uiTexture;
+gl2d::Texture uiBackgroundTexture;
+gl2d::Font font;
 TextureAtlas uiAtlas{6, 1};
 int width;
 int height;
@@ -57,13 +60,6 @@ int initGame()
 	std::filesystem::remove_all("saves");
 	std::filesystem::create_directory("saves");
 
-	camera.position.y = 150;
-	camera.speed *= 1;
-	camera.position.x = 0;
-	camera.position.z = 0;
-
-	playerEntity.lastPos = camera.position;
-	playerEntity.position = camera.position;
 	
 	//playerEntity.flySpeed *= 10;
 
@@ -83,6 +79,8 @@ int initGame()
 	bloc.subDivisions = 16;
 
 	uiTexture.loadFromFile("textures/ui0.png");
+	uiBackgroundTexture.loadFromFile("textures/uiDialogFrame.png");
+	font.createFromFile("textures/font.ttf");
 	//uiTexture.loadMipmap("textures/ui1.png", 1);
 
 	cubeRenderer.camera = &camera;
@@ -103,19 +101,81 @@ int initGame()
 	//drawWireCube(&camera, nullptr, {0,0,0});
 
 	chunkManager.requestChunks(chunksToLoad.data(), chunksToLoad.size(), 1, { camera.position.x, camera.position.z });
+	
+	menu::resetMenuState();
+
+	int yPos = 0;
+
+	
+	if(!fileHandler.loadPlayer(camera.position))
+	{
+		for (int y = BUILD_LIMIT; y > 1; y--)
+		{
+			if (isCollideble(chunkManager.getBlock({ 0,y,0 })))
+			{
+				break;
+			}
+			yPos = y;
+		}
+
+		camera.position.y = yPos;
+		camera.speed *= 1;
+		camera.position.x = 0;
+		camera.position.z = 0;
+	}
+
+
+	playerEntity.lastPos = camera.position;
+	playerEntity.position = camera.position;
 
 	return 1;
 }
 
+static int mainMenu = 0;
 
 int gameLogic(float deltaTime)
 {
+
+
 #pragma region init
 	width = getWindowSizeX();
 	height = getWindowSizeY();
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glViewport(0, 0, getWindowSizeX(), getWindowSizeY());
+	renderer2d.updateWindowMetrics(width, height);
+
 #pragma endregion
+
+
+	if (mainMenu)
+	{
+
+		gl2d::enableNecessaryGLFeatures();
+
+		showMouse(true);
+
+		bool start = 0;
+		menu::startMenu();
+
+		menu::uninteractableCentreText("MinecraftGl");
+
+		menu::interactableText("Start", &start);
+		menu::interactableText("Start", &start);
+		menu::interactableText("Start", &start);
+		menu::interactableText("Start", &start);
+
+		menu::endMenu(renderer2d, uiBackgroundTexture, font, nullptr, deltaTime);
+
+		if (start)
+		{
+			mainMenu = false;
+		}
+
+		renderer2d.flush();
+		glDisable(GL_BLEND);
+		glEnable(GL_DEPTH_TEST);
+		return 1;
+	}
 
 
 #pragma region keys
@@ -238,7 +298,7 @@ int gameLogic(float deltaTime)
 
 	camera.getChunksInFrustrum(chunksToLoad);
 	Chunk **c = chunkManager.requestChunks(chunksToLoad.data(), chunksToLoad.size(), 1, { camera.position.x, camera.position.z });
-	chunkManager.bakeUnbakedChunks(4, { camera.position.x, camera.position.z });
+	chunkManager.bakeUnbakedChunks(3, { camera.position.x, camera.position.z });
 
 	//cubeRenderer.addSingleCube(0, 100, 0, BLOCK::gold_block);
 	cubeRenderer.draw(c, chunksToLoad.size());
@@ -313,6 +373,9 @@ int gameLogic(float deltaTime)
 void closeGame()
 {
 	FreeConsole();
+
+	fileHandler.savePlayer(camera.position);
+
 	for(auto &i : chunkManager.loadedChunks)
 	{
 		if(i.shouldReSave && i.fullyLoaded)
