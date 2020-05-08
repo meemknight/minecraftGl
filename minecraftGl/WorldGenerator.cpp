@@ -180,6 +180,8 @@ void WorldGenerator::setupChunk(Chunk * chunk, glm::vec2 p)
 		}
 	}
 
+	chunk->chunkBuilt = true;
+
 	FastNoiseSIMD::FreeNoiseSet(caveNoiseSet);
 	FastNoiseSIMD::FreeNoiseSet(gravelNoiseVal);
 	FastNoiseSIMD::FreeNoiseSet(oresNoiseSet);
@@ -192,13 +194,23 @@ void WorldGenerator::setupChunk(Chunk * chunk, glm::vec2 p)
 void WorldGenerator::setupStructuresInChunk(Chunk * chunk, glm::vec2 p, ChunkManager &cm)
 {
 
-
-	if(chunk->fullyLoaded)
+	if(chunk->structuresLoaded || !chunk->chunkBuilt)
 	{
 		return;
+	}else //check chunks loaded near
+	{
+		if (
+			chunk->neighbours[0] == nullptr
+			||chunk->neighbours[1] == nullptr
+			||chunk->neighbours[2] == nullptr
+			||chunk->neighbours[3] == nullptr
+			)
+		{
+			return;
+		}
 	}
 
-	chunk->fullyLoaded = 1;
+	chunk->structuresLoaded = 1;
 
 	float *noiseVal = noiseForTrees->GetWhiteNoiseSet(p.x*CHUNK_SIZE, 0, p.y*CHUNK_SIZE, CHUNK_SIZE, 1, CHUNK_SIZE, 1);
 

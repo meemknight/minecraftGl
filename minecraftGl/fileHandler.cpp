@@ -71,6 +71,8 @@ bool ChunkFileHandler::loadChunk(Chunk & c)
 
 	loadChunkAtIndex(f, c, loadIndex);
 	
+	c.chunkBuilt = true;
+
 	f.close();
 	return 1;
 }
@@ -202,20 +204,20 @@ bool ChunkFileHandler::loadPlayer(glm::vec3 & pos)
 void ChunkFileHandler::saveChunkDataInFile(std::fstream & f, Chunk & c, int index)
 {	
 	f.seekp(headDist + ((chunkDataSize + 1) * index), std::ios_base::beg);
-	f.write((char*)&c.fullyLoaded, 1);
+	f.write((char*)&c.structuresLoaded, 1);
 	f.write((char*)c.blockData, chunkDataSize);
 }
 
 void ChunkFileHandler::appendChunkDataInFile(std::fstream & f, Chunk & c)
 {
 	f.seekp(0, std::ios_base::end);
-	f.write((char*)&c.fullyLoaded, 1);
+	f.write((char*)&c.structuresLoaded, 1);
 	f.write((char*)c.blockData, chunkDataSize);
 }
 
 void ChunkFileHandler::loadChunkAtIndex(std::fstream & f, Chunk & c, int index)
 {
 	f.seekg(headDist + ((chunkDataSize+1) * index), std::ios_base::beg);
-	f.read((char*)&c.fullyLoaded, 1);
+	f.read((char*)&c.structuresLoaded, 1);
 	f.read((char*)c.blockData, chunkDataSize);
 }

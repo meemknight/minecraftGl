@@ -10,7 +10,7 @@
 
 extern ChunkFileHandler fileHandler;
 
-WorldGenerator worldGeneraor(1206);
+WorldGenerator worldGeneraor(2026);
 
 void ChunkManager::reserveData(int size)
 {
@@ -34,7 +34,6 @@ Chunk **ChunkManager::requestChunks(glm::ivec3 *requestedC, int size, bool gener
 	cachedChunk = {};
 	//reset data return data
 	returnVector.clear();
-
 
 	//load the other data in unused spaces
 	int pos = 0; //pos in requestedC
@@ -67,7 +66,7 @@ Chunk **ChunkManager::requestChunks(glm::ivec3 *requestedC, int size, bool gener
 				cd.position.y = requestedC[pos].z;
 				cd.chunk = &loadedChunks[pos];
 
-				setupChunk(&loadedChunks[pos], cd.position);
+				setupChunk(&loadedChunks[pos], cd.position, false);
 
 				chunkData[pos] = cd;
 
@@ -119,7 +118,7 @@ Chunk **ChunkManager::requestChunks(glm::ivec3 *requestedC, int size, bool gener
 				chunkData[i].position.x = requestedC[pos].x;
 				chunkData[i].position.y = requestedC[pos].z;
 
-				setupChunk(chunkData[i].chunk, chunkData[i].position);
+				setupChunk(chunkData[i].chunk, chunkData[i].position, false);
 				
 				returnVector.push_back(chunkData[i].chunk);
 
@@ -152,6 +151,7 @@ Chunk **ChunkManager::requestChunks(glm::ivec3 *requestedC, int size, bool gener
 		unsigned long distance =
 			(pos.x * CHUNK_SIZE - playerPos.x) * (pos.x* CHUNK_SIZE - playerPos.x) + (pos.z* CHUNK_SIZE - playerPos.y) * (pos.z* CHUNK_SIZE - playerPos.y);
 
+		//todo change here based on distance
 		if(distance < 6'400)
 		{
 			worldGeneraor.setupStructuresInChunk(c, {c->position.x, c->position.z}, *this);
@@ -265,7 +265,7 @@ void ChunkManager::setBlock(glm::ivec3 pos, Block b)
 
 }
 
-void ChunkManager::setupChunk(Chunk *chunk, glm::vec2 p)
+void ChunkManager::setupChunk(Chunk *chunk, glm::vec2 p, bool buildChunk)
 {
 	if(chunk->shouldReSave)
 	{
@@ -346,11 +346,16 @@ foundAll:
 		chunk->positionData[i].size = 0;
 	}
 
-	//let this be the last instruction for cache considerations
-	if(!fileHandler.loadChunk(*chunk))
+	chunk->chunkBuilt = 0;
+
+	if(buildChunk)
 	{
-		chunk->shouldReSave = true;//todo if this is true, chunks are always saved (comment out if not wanted)
-		worldGeneraor.setupChunk(chunk, p);
+		//let this be the last instruction for cache considerations
+		if (!fileHandler.loadChunk(*chunk))
+		{
+			chunk->shouldReSave = true;//todo if this is true, chunks are always saved (comment out if not wanted)
+			worldGeneraor.setupChunk(chunk, p);
+		}
 	}
 
 }
@@ -358,7 +363,7 @@ foundAll:
 //todo basic optimise
 //todo algoritmically optimise
 //todo fix it (request small numbers)
-void ChunkManager::bakeUnbakedChunks(int number, glm::vec2 pos)
+void ChunkManager::bakeUnbakedChunks(int numberToBake, int numberToBuild, glm::vec2 pos)
 {
 	pos /= 16;
 	chunksForSort.clear();
@@ -378,13 +383,46 @@ void ChunkManager::bakeUnbakedChunks(int number, glm::vec2 pos)
 			b.x * b.x + b.y * b.y;
 	});
 
-	int soFar = 0;
+	int nrTobaleSoFar = 0;
+	int nrToBuildSoFar = 0;
 	for (auto &i : chunksForSort)
 	{
-			i.chunk->shouldRecreate = false;
-			i.chunk->bakeMeshes();
-			soFar++;
-			if(soFar >= number)
+			//todo move this in a function 
+			if(nrToBuildSoFar < numberToBuild && !i.chunk->chunkBuilt)
+			{
+				if (!fileHandler.loadChunk(*i.chunk))
+				{
+					i.chunk->shouldReSave = true;//todo if this is true, chunks are always saved (comment out if not wanted)
+					worldGeneraor.setupChunk(i.chunk, { i.chunk->position.x, i.chunk->position.z});
+				}
+
+				nrToBuildSoFar++;
+			}
+
+			if(nrTobaleSoFar< numberToBake)
+			{
+				if(
+					  (i.chunk->neighbours[0] != nullptr && i.chunk->neighbours[0]->chunkBuilt == false)
+					||(i.chunk->neighbours[1] != nullptr && i.chunk->neighbours[1]->chunkBuilt == false)
+					||(i.chunk->neighbours[2] != nullptr && i.chunk->neighbours[2]->chunkBuilt == false)
+					||(i.chunk->neighbours[3] != nullptr && i.chunk->neighbours[3]->chunkBuilt == false)
+					)
+				{
+				
+					//not bake chunks if the chunks near are not made
+
+				}else
+				{
+
+					i.chunk->shouldRecreate = false;
+					i.chunk->bakeMeshes();
+					nrTobaleSoFar++;
+				}
+
+			}
+	
+
+			if(nrTobaleSoFar >= numberToBake && nrToBuildSoFar >= numberToBuild)
 			{
 				break;
 			}	

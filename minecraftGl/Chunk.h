@@ -33,7 +33,8 @@ struct Chunk
 
 	unsigned char shouldRecreate = 0;
 	unsigned char shouldReSave = 0;
-	unsigned char fullyLoaded = 0;
+	unsigned char structuresLoaded = 0;
+	unsigned char chunkBuilt = 0;
 
 	Chunk *neighbours[4] = { 0 };
 

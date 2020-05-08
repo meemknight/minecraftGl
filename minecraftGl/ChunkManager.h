@@ -47,7 +47,7 @@ public:
 	//unsafe because it doesn't update chunks 
 	Block &getBlockRefUnsafe(glm::ivec3 pos, Chunk **outC = nullptr);
 
-	void setupChunk(Chunk *chunk, glm::vec2 p);
-	void bakeUnbakedChunks(int number, glm::vec2 pos= {});
+	void setupChunk(Chunk *chunk, glm::vec2 p, bool buildChunk);
+	void bakeUnbakedChunks(int numberToBake, int numberToBuild, glm::vec2 pos= {});
 	void bakeAllChunks();
 };

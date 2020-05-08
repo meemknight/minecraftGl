@@ -57,10 +57,9 @@ int initGame()
 
 	}
 
-	std::filesystem::remove_all("saves");
 	std::filesystem::create_directory("saves");
+	std::filesystem::remove_all("saves");
 
-	
 	//playerEntity.flySpeed *= 10;
 
 	glEnable(GL_DEPTH_TEST);
@@ -117,6 +116,8 @@ int initGame()
 			}
 			yPos = y;
 		}
+
+		yPos = 250;
 
 		camera.position.y = yPos;
 		camera.speed *= 1;
@@ -298,7 +299,7 @@ int gameLogic(float deltaTime)
 
 	camera.getChunksInFrustrum(chunksToLoad);
 	Chunk **c = chunkManager.requestChunks(chunksToLoad.data(), chunksToLoad.size(), 1, { camera.position.x, camera.position.z });
-	chunkManager.bakeUnbakedChunks(3, { camera.position.x, camera.position.z });
+	chunkManager.bakeUnbakedChunks(3, 3, { camera.position.x, camera.position.z });
 
 	//cubeRenderer.addSingleCube(0, 100, 0, BLOCK::gold_block);
 	cubeRenderer.draw(c, chunksToLoad.size());
@@ -378,7 +379,8 @@ void closeGame()
 
 	for(auto &i : chunkManager.loadedChunks)
 	{
-		if(i.shouldReSave && i.fullyLoaded)
+		//if (i.shouldReSave && i.structuresLoaded)
+		if(i.shouldReSave)
 		{
 			fileHandler.saveChunk(i);
 		}
