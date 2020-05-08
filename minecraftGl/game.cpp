@@ -21,7 +21,7 @@ ShaderProgram sp;
 ShaderProgram spNoTexture;
 
 Texture bloc;
-gl2d::Texture  uiTexture;
+gl2d::Texture uiTexture;
 TextureAtlas uiAtlas{6, 1};
 int width;
 int height;
@@ -70,6 +70,7 @@ int initGame()
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
 	glEnable(GL_MULTISAMPLE);
+	glEnable(GL_LINE_SMOOTH);
 	//glEnable(GL_SAMPLE_SHADING);
 	glClearColor(35/256.f, 157/256.f, 194 / 256.f, 1);
 
@@ -156,6 +157,11 @@ int gameLogic(float deltaTime)
 
 		setRelMousePosition(getWindowSizeX() / 2, getWindowSizeY() / 2);
 		oldMousePosition = getRelMousePosition();
+
+		showMouse(false);
+	}else
+	{
+		showMouse(false);
 	}
 
 
@@ -196,7 +202,7 @@ int gameLogic(float deltaTime)
 	if (curentBlock < 1) { curentBlock = BLOCK::BLOCKS_SIZE - 1; }
 	if (curentBlock >= BLOCK::BLOCKS_SIZE) { curentBlock = 1; }
 
-	ilog(curentBlock);
+	//ilog(curentBlock);
 
 
 	if (coll.has_value())
@@ -234,7 +240,7 @@ int gameLogic(float deltaTime)
 	Chunk **c = chunkManager.requestChunks(chunksToLoad.data(), chunksToLoad.size(), 1, { camera.position.x, camera.position.z });
 	chunkManager.bakeUnbakedChunks(4, { camera.position.x, camera.position.z });
 
-	cubeRenderer.addSingleCube(0, 100, 0, BLOCK::gold_block);
+	//cubeRenderer.addSingleCube(0, 100, 0, BLOCK::gold_block);
 	cubeRenderer.draw(c, chunksToLoad.size());
 
 	//glUseProgram(0);

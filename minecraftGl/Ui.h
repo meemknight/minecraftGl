@@ -1,5 +1,6 @@
 #pragma once
 #include "glm/vec4.hpp"
+#include "glm/vec2.hpp"
 
 namespace Ui
 {
@@ -62,6 +63,8 @@ namespace Ui
 		operator glm::vec4 () { return (*this)(); }
 	};
 
+	bool isInButton(const glm::vec2 &p, const glm::vec4 &box);
 
+	bool isButtonReleased(const glm::vec2 &p, const glm::vec4 &box);
 };
 

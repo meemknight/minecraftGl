@@ -349,7 +349,7 @@ foundAll:
 	//let this be the last instruction for cache considerations
 	if(!fileHandler.loadChunk(*chunk))
 	{
-		chunk->shouldReSave = true;//todo if this is true, chunks are always saved
+		chunk->shouldReSave = true;//todo if this is true, chunks are always saved (comment out if not wanted)
 		worldGeneraor.setupChunk(chunk, p);
 	}
 

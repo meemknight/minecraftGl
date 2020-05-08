@@ -38,6 +38,7 @@
     <ClCompile Include="game.cpp" />
     <ClCompile Include="input.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="menu.cpp" />
     <ClCompile Include="opengl2Dlib.cpp" />
     <ClCompile Include="phisics.cpp" />
     <ClCompile Include="Entity.cpp" />
@@ -63,6 +64,7 @@
     <ClInclude Include="Frustum.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="input.h" />
+    <ClInclude Include="menu.h" />
     <ClInclude Include="opengl2Dlib.h" />
     <ClInclude Include="PerlinNoise.hpp" />
     <ClInclude Include="phisics.h" />
@@ -82,6 +84,9 @@
     <None Include="noTexture.frag" />
     <None Include="noTexture.vert" />
     <None Include="vertex.vert" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="textures\blocks.png" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>

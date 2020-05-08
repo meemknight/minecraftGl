@@ -102,6 +102,9 @@
     <ClCompile Include="Ui.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="menu.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h">
@@ -182,11 +185,19 @@
     <ClInclude Include="Ui.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="menu.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="vertex.vert" />
     <None Include="fragment.frag" />
     <None Include="noTexture.vert" />
     <None Include="noTexture.frag" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="textures\blocks.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>

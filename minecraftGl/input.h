@@ -20,6 +20,7 @@ namespace input
 			placeBlock,
 			q,
 			e,
+			esc,
 			buttonsCount
 		};
 	};
@@ -28,6 +29,8 @@ namespace input
 	glm::vec2 getMoveDirection();
 	glm::vec2 getLookDirection();
 	bool isKeyPressedOn(int b);
+	bool isKeyReleased(int b);
+	bool isControllerInput();
 	bool isKeyHeld(int b);
 
 	//used internally

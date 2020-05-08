@@ -27,5 +27,7 @@ int isRMouseButtonPressed();
 int isLMouseHeld();
 int isRMouseHeld();
 
+bool mouseMoved();
+
 void showMouse(bool show);
 bool isFocused();

@@ -165,4 +165,22 @@ namespace Ui
 		aspect = r;
 		return *this;
 	}
+
+
+	bool isInButton(const glm::vec2 & p, const glm::vec4 & box)
+	{
+		return(p.x >= box.x && p.x <= box.x + box.z
+			&&
+			p.y >= box.y && p.y <= box.y + box.w
+			);
+	}
+
+	bool isButtonReleased(const glm::vec2 & p, const glm::vec4 & box)
+	{
+		return(p.x >= box.x && p.x <= box.x + box.z
+			&&
+			p.y >= box.y && p.y <= box.y + box.w
+			) && isLMouseButtonPressed();
+	}
+
 }

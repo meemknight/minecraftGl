@@ -25,6 +25,7 @@ static int lbutton = 0;
 static int rbutton = 0;
 static int lbuttonPressed = 0;
 static int rbuttonPressed = 0;
+static int bMouseMoved = 0;
 
 static bool isFocus = 0;
 
@@ -85,7 +86,7 @@ int MAIN
 		return 0;
 	}
 
-	ShowCursor(0);
+	showMouse(false);
 
 	int time1 = clock();
 	int time2 = clock();
@@ -118,6 +119,7 @@ int MAIN
 		
 			lbuttonPressed = false;
 			rbuttonPressed = false;
+			bMouseMoved = false;
 		}
 	
 	}
@@ -146,6 +148,9 @@ LRESULT CALLBACK windProc(HWND wind, UINT m, WPARAM wp, LPARAM lp)
 		break;
 	case WM_LBUTTONUP:
 		lbutton = false;
+		break;
+	case WM_MOUSEMOVE:
+		bMouseMoved = 1;
 		break;
 
 	case WM_CLOSE:
@@ -281,11 +286,28 @@ int isRMouseHeld()
 	return rbutton;
 }
 
-void showMouse(bool show)
+bool mouseMoved()
 {
-	ShowCursor(show);
+	return bMouseMoved;
 }
 
+static bool lastShow = 1;
+void showMouse(bool show)
+{
+	if (lastShow != show)
+	{
+		ShowCursor(show);
+
+		if (show)
+		{
+			SetCursor(LoadCursor(NULL, IDC_ARROW));
+			SendMessage(wind, WM_SETCURSOR, (WPARAM)wind, MAKELPARAM(HTCLIENT, WM_MOUSEMOVE));
+			//SetCursor(LoadCursor(GetModuleHandle(0), IDC_HAND));
+		}
+	}
+
+	lastShow = show;
+}
 bool isFocused()
 {
 	return GetActiveWindow() == wind;

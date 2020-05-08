@@ -69,20 +69,18 @@ namespace gl2d
 
 		Texture() {};
 		Texture(const char *file) { loadFromFile(file); }
-		explicit Texture(GLuint id):id(id) {}
 
 		glm::ivec2 GetSize();
 
 		//Note: This function expects a buffer of bytes in GL_RGBA format
 		void createFromBuffer(const char* image_data, const int width, const int height);
-		void create1PxSquare();
+		void create1PxSquare(const char *b = 0);
 		void createFromFileData(const unsigned char* image_file_data, const size_t image_file_size);
-
-		void addMipmapFromFileData(const unsigned char* image_file_data, const size_t image_file_size, int lod);
-		void addMipmapFromBuffer(const char* image_data, const int width, const int height, int lod);
+		void createFromFileDataWithPixelPadding(const unsigned char* image_file_data,
+			const size_t image_file_size, int blockSize);
 
 		void loadFromFile(const char *fileName);
-		void loadMipmap(const char *fileName, int lod);
+		void loadFromFileWithPixelPadding(const char *fileName, int blockSize);
 
 		void bind(const unsigned int sample = 0);
 		void unbind();
@@ -133,13 +131,15 @@ namespace gl2d
 	struct Camera
 	{
 		glm::vec2  position;
-		glm::vec2  offset;   // Camera offset (displacement from target)
+		//glm::vec2  offset;   // Camera offset (displacement from target)
 		glm::vec2  target;   // Camera target (rotation and zoom origin)
 		float rotation; // Camera rotation in degrees
 		float zoom;     // Camera zoom (scaling), should be 1.0f by default
 
 		void setDefault() { *this = cameraCreateDefault(); }
 		glm::mat3 getMatrix();
+
+		void follow(glm::vec2 pos, float speed, float max, float w, float h);
 	};
 
 
@@ -155,8 +155,6 @@ namespace gl2d
 	{
 		unsigned int fbo;
 		Texture texture;
-		//todo remove
-		unsigned int depthtTexture;
 
 		void create(unsigned int w, unsigned int h);
 		void resize(unsigned int w, unsigned int h);
@@ -169,7 +167,7 @@ namespace gl2d
 	};
 
 
-#define Renderer2D_Max_Buffer_Capacity 1000
+#define Renderer2D_Max_Buffer_Capacity 6000
 #define DefaultTextureCoords (glm::vec4{ 0, 1, 1, 0 })
 
 	enum Renderer2DBufferType
@@ -213,9 +211,25 @@ namespace gl2d
 		int windowH = 0;
 		void updateWindowMetrics(int w, int h) { windowW = w; windowH = h; }
 
+		//converts pixels to screen (top left) (bottom right)
+		glm::vec4 toScreen(const glm::vec4 &transform);
+
+		inline void clearDrawData()
+		{
+			spritePositionsCount = 0;
+			spriteColorsCount = 0;
+			spriteTexturesCount = 0;
+			texturePositionsCount = 0;
+		}
+
+		glm::vec2 getTextSize(const char* text, const Font font, const float size = 1.5f,
+			const float spacing = 4, const float line_space = 3);
+
 		// The origin will be the bottom left corner since it represents the line for the text to be drawn
 		//Pacing and lineSpace are influenced by size
-		void renderText(const glm::vec2 position, const char* text, const Font font, const Color4f color, const float size = 1.5f, const float spacing = 4, const float line_space = 3);
+		void renderText(glm::vec2 position, const char* text, const Font font, const Color4f color, const float size = 1.5f,
+			const float spacing = 4, const float line_space = 3, bool showInCenter = 1, const Color4f ShadowColor = { 0.1,0.1,0.1,1 }
+		, const Color4f LightColor = {});
 
 		//todo color overloads
 		void renderRectangle(const Rect transforms, const Color4f colors[4], const glm::vec2 origin, const float rotation, const Texture texture, const glm::vec4 textureCoords = DefaultTextureCoords);
@@ -268,6 +282,43 @@ namespace gl2d
 	void enableNecessaryGLFeatures();
 
 #pragma endregion
+
+	glm::vec4 computeTextureAtlas(int xCount, int yCount, int x, int y, bool flip = 0);
+
+	glm::vec4 computeTextureAtlasWithPadding(int mapXsize, int mapYsize, int xCount, int yCount, int x, int y, bool flip = 0);
+
+	struct TextureAtlas
+	{
+		TextureAtlas() {};
+		TextureAtlas(int x, int y) :xCount(x), yCount(y) {};
+
+		int xCount;
+		int yCount;
+
+		glm::vec4 get(int x, int y, bool flip = 0)
+		{
+			return computeTextureAtlas(xCount, yCount, x, y, flip);
+		}
+	};
+
+	struct TextureAtlasPadding
+	{
+		TextureAtlasPadding() {};
+		//count count size size
+		TextureAtlasPadding(int x, int y, int xSize, int ySize) :xCount(x), yCount(y)
+			, xSize(xSize), ySize(ySize) {};
+
+		int xCount;
+		int yCount;
+		int xSize;
+		int ySize;
+
+		glm::vec4 get(int x, int y, bool flip = 0)
+		{
+			return computeTextureAtlasWithPadding(xSize, ySize, xCount, yCount, x, y, flip);
+		}
+	};
+	// Get default internal texture (white texture)
 
 
 };

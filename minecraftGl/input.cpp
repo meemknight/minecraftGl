@@ -24,6 +24,7 @@ namespace input
 	XInputGetKeystroke_t *DynamicXInputGetKeystroke;
  
 	static bool xInputLoaded = 0;
+	static bool usedController = 0;
 
 	void loadXinput()
 	{
@@ -47,13 +48,14 @@ namespace input
 
 	}
 
-	int bindings[Buttons::buttonsCount] = { 0, 'W', 'S', 'A', 'D', VK_SPACE, 0, 0, 'Q', 'E' };
+	int bindings[Buttons::buttonsCount] = { 0, 'W', 'S', 'A', 'D', VK_SPACE, 0, 0, 'Q', 'E', VK_ESCAPE };
 	WORD bindingsController[Buttons::buttonsCount] = { 0, 0, 0, 0, 0, XINPUT_GAMEPAD_RIGHT_THUMB, 0, 0
-		, XINPUT_GAMEPAD_LEFT_SHOULDER, XINPUT_GAMEPAD_RIGHT_SHOULDER };
+		, XINPUT_GAMEPAD_LEFT_SHOULDER, XINPUT_GAMEPAD_RIGHT_SHOULDER, XINPUT_GAMEPAD_START };
 	float deadZone = 0.15;
 
 	int buttonsHeld[Buttons::buttonsCount] = {};
 	int buttonsPressed[Buttons::buttonsCount] = {};
+	int buttonsReleased[Buttons::buttonsCount] = {};
 
 	constexpr float lookSpeed = 2;
 
@@ -103,6 +105,16 @@ namespace input
 	bool isKeyPressedOn(int b)
 	{
 		return buttonsPressed[b];
+	}
+
+	bool isKeyReleased(int b)
+	{
+		return buttonsReleased[b];
+	}
+
+	bool isControllerInput()
+	{
+		return usedController;
 	}
 
 	glm::vec2 getMoveDirection()
@@ -179,24 +191,6 @@ namespace input
 		return dir;
 	}
 
-	//bool isKeyPressedOn(int b)
-	//{
-	//	bool val = 0;
-	//
-	//	XINPUT_KEYSTROKE info;
-	//
-	//	if(xInputLoaded != 0 && DynamicXInputGetKeystroke(0, 0, &info) == ERROR_SUCCESS)
-	//	{
-	//		if ((info.VirtualKey & VK_PAD_B) && (info.Flags & XINPUT_KEYSTROKE_KEYDOWN))
-	//		{
-	//			val = 1;
-	//		}
-	//	}
-	//
-	//	val |= ::isKeyPressedOn(bindings[b]);
-	//	return val;
-	//}
-
 	bool isKeyHeld(int b)
 	{
 		return buttonsHeld[b];
@@ -261,6 +255,60 @@ namespace input
 			read = 0;
 		}
 
+
+#pragma region determin whether controller or not
+		if (read)
+		{
+
+
+			XINPUT_KEYSTROKE ks = {};
+			if (DynamicXInputGetKeystroke && DynamicXInputGetKeystroke(0, 0, &ks) == ERROR_SUCCESS)
+			{
+				if (ks.Flags & (XINPUT_KEYSTROKE_REPEAT | XINPUT_KEYSTROKE_KEYDOWN | XINPUT_KEYSTROKE_KEYUP))
+				{
+					usedController = true;
+				}
+			}
+
+			for (int i = '0'; i <= 'z'; i++)
+			{
+				if (GetAsyncKeyState(i))
+				{
+					usedController = false;
+					break;
+				}
+			}
+			if (GetAsyncKeyState(VK_SPACE) ||
+				GetAsyncKeyState(VK_BACK) ||
+				GetAsyncKeyState(VK_CONTROL) ||
+				GetAsyncKeyState(VK_DOWN) ||
+				GetAsyncKeyState(VK_UP) ||
+				GetAsyncKeyState(VK_LEFT) ||
+				GetAsyncKeyState(VK_RIGHT) ||
+				GetAsyncKeyState(VK_LSHIFT) ||
+				GetAsyncKeyState(VK_SHIFT) ||
+				GetAsyncKeyState(VK_ACCEPT)
+				)
+			{
+				usedController = false;
+			}
+
+			if (isLMouseHeld()
+				|| isRMouseHeld()
+				|| mouseMoved()
+				)
+			{
+				usedController = false;
+			}
+
+		}
+		else
+		{
+			usedController = false;
+		}
+#pragma endregion
+
+
 		for(int i=0; i<Buttons::buttonsCount; i++)
 		{
 			bool state;
@@ -270,6 +318,15 @@ namespace input
 			}else
 			{
 				state = internal::getisKeyHeldDirect(i, nullptr);
+			}
+
+			if (!state && buttonsHeld[i])
+			{
+				buttonsReleased[i] = 1;
+			}
+			else
+			{
+				buttonsReleased[i] = 0;
 			}
 
 			buttonsPressed[i] = 0;
