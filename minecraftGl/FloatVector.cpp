@@ -52,6 +52,23 @@ void FloatVector::push(float x, float y, float z)
 	data[size - 1] = z;
 }
 
+
+void FloatVector::push(float x, float y, float z, float w)
+{
+	if (size + 3 >= capacity)
+	{
+		reserve(capacity * 2 + 4);
+	}
+
+	size += 4;
+
+	data[size - 4] = x;
+	data[size - 3] = y;
+	data[size - 2] = z;
+	data[size - 1] = w;
+}
+
+
 void FloatVector::cleanup()
 {
 	if(data)

@@ -32,7 +32,7 @@ int height;
 static glm::vec2 oldMousePosition;
 
 //Camera camera(60.f, &width, &height, 0.1, 200);
-FirstPersonCamera camera(80.f, 0.1, 200, &width, &height);
+FirstPersonCamera camera(80.f, 0.1, 170, &width, &height);
 
 CubeMeshRenderer cubeRenderer;
 
@@ -54,18 +54,23 @@ int initGame()
 	{
 		renderer2d.create();
 
-
 	}
 
 	std::filesystem::create_directory("saves");
 	std::filesystem::remove_all("saves");
 
 	//playerEntity.flySpeed *= 10;
-
+	//glEnable(GL_LINE_SMOOTH);
+	//glEnable(GL_POLYGON_SMOOTH);
+	//glEnable(GL_POINT_SMOOTH);
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
 	glEnable(GL_MULTISAMPLE);
-	glEnable(GL_LINE_SMOOTH);
+
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glBlendEquation(GL_FUNC_ADD);
+
 	//glEnable(GL_SAMPLE_SHADING);
 	glClearColor(35/256.f, 157/256.f, 194 / 256.f, 1);
 
@@ -108,6 +113,10 @@ int initGame()
 	
 	if(!fileHandler.loadPlayer(camera.position))
 	{
+		
+		chunkManager.bakeUnbakedChunks(3, 9, { camera.position.x, camera.position.z });
+
+
 		for (int y = BUILD_LIMIT; y > 1; y--)
 		{
 			if (isCollideble(chunkManager.getBlock({ 0,y,0 })))
@@ -117,7 +126,6 @@ int initGame()
 			yPos = y;
 		}
 
-		yPos = 250;
 
 		camera.position.y = yPos;
 		camera.speed *= 1;
@@ -128,6 +136,8 @@ int initGame()
 
 	playerEntity.lastPos = camera.position;
 	playerEntity.position = camera.position;
+	//playerEntity.flySpeed *= 10;
+	//playerEntity.jumpSpeed *= 10;
 
 	return 1;
 }
@@ -141,6 +151,10 @@ int gameLogic(float deltaTime)
 #pragma region init
 	width = getWindowSizeX();
 	height = getWindowSizeY();
+
+	width = std::max(1, width);
+	height = std::max(1, height);
+
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glViewport(0, 0, getWindowSizeX(), getWindowSizeY());
 	renderer2d.updateWindowMetrics(width, height);
@@ -173,7 +187,7 @@ int gameLogic(float deltaTime)
 		}
 
 		renderer2d.flush();
-		glDisable(GL_BLEND);
+		//glDisable(GL_BLEND);
 		glEnable(GL_DEPTH_TEST);
 		return 1;
 	}
@@ -195,10 +209,8 @@ int gameLogic(float deltaTime)
 		for (auto &i : chunkManager.loadedChunks)
 		{
 			i.shouldRecreate = true;
-			for (int j = 0; j < 6; j++)
-			{
-				i.positionData[j].size = 0;
-			}
+			i.resetMeshes();
+			
 		}
 	}
 
@@ -222,7 +234,7 @@ int gameLogic(float deltaTime)
 		showMouse(false);
 	}else
 	{
-		showMouse(false);
+		showMouse(true);
 	}
 
 
@@ -362,7 +374,7 @@ int gameLogic(float deltaTime)
 	//renderer2d.renderRectangle({ width / 2 - 25, height / 2 - 25,25,25 }, { 1,0,0,1 });
 	//renderer2d.renderRectangle({ width / 2 - 10 , height / 2 - 25,25,25 }, { 0,1,0,0.2 });
 	renderer2d.flush();
-	glDisable(GL_BLEND);
+	//glDisable(GL_BLEND);
 	glEnable(GL_DEPTH_TEST);
 
 #pragma endregion

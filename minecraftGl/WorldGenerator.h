@@ -56,9 +56,22 @@ public:
 	void setDefaultBiomes()
 	{
 
-		//crazy desert
+		
+		//stone
 		//biomes.push_back({});
 		//biomes[biomes.size() - 1].chanceFactor = 1;
+		//biomes[biomes.size() - 1].topBlock = BLOCK::stone;
+		//biomes[biomes.size() - 1].bottomBlock = BLOCK::stone;
+		//biomes[biomes.size() - 1].bottomBlockDepth = 1;
+		//biomes[biomes.size() - 1].minStonePos = 90;
+		//biomes[biomes.size() - 1].maxStonePos = 130;
+		//biomes[biomes.size() - 1].stoneChance = 0.6;
+		//biomes[biomes.size() - 1].realismExponent = 0.7;
+		//biomes[biomes.size() - 1].octaves = 4;
+
+		//crazy desert
+		//biomes.push_back({});
+		//biomes[biomes.size() - 1].chanceFactor = 4;
 		//biomes[biomes.size() - 1].topBlock = BLOCK::sand;
 		//biomes[biomes.size() - 1].bottomBlock = BLOCK::sand_stone;
 		//biomes[biomes.size() - 1].bottomBlockDepth = 5;
@@ -67,18 +80,6 @@ public:
 		//biomes[biomes.size() - 1].stoneChance = 0.5;
 		//biomes[biomes.size() - 1].realismExponent = 0.8;
 		//biomes[biomes.size() - 1].octaves = 7;
-
-		//stone
-		//biomes.push_back({});
-		//biomes[biomes.size() - 1].chanceFactor = 1;
-		//biomes[biomes.size() - 1].topBlock = BLOCK::stone;
-		//biomes[biomes.size() - 1].bottomBlock = BLOCK::stone;
-		//biomes[biomes.size() - 1].bottomBlockDepth = 1;
-		//biomes[biomes.size() - 1].minStonePos = 80;
-		//biomes[biomes.size() - 1].maxStonePos = 100;
-		//biomes[biomes.size() - 1].stoneChance = 0.8;
-		//biomes[biomes.size() - 1].realismExponent = 1;
-		//biomes[biomes.size() - 1].octaves = 4;
 
 		//desert
 		biomes.push_back({});
@@ -115,8 +116,8 @@ public:
 		biomes[biomes.size() - 1].stoneChance = 0.4;
 		biomes[biomes.size() - 1].realismExponent = 2;
 		biomes[biomes.size() - 1].octaves = 6;
-
-		//ice plains
+		//
+		////ice plains
 		//biomes.push_back({});
 		//biomes[biomes.size() - 1].chanceFactor = 2;
 		//biomes[biomes.size() - 1].topBlock = BLOCK::snow_dirt;
@@ -126,6 +127,18 @@ public:
 		//biomes[biomes.size() - 1].maxStonePos = 180;
 		//biomes[biomes.size() - 1].stoneChance = 0.2;
 		//biomes[biomes.size() - 1].realismExponent = 3;
+		//
+		////ice spikes
+		//biomes.push_back({});
+		//biomes[biomes.size() - 1].chanceFactor = 2;
+		//biomes[biomes.size() - 1].topBlock = BLOCK::ice;
+		//biomes[biomes.size() - 1].bottomBlock = BLOCK::ice;
+		//biomes[biomes.size() - 1].bottomBlockDepth = 2;
+		//biomes[biomes.size() - 1].minStonePos = 140;
+		//biomes[biomes.size() - 1].maxStonePos = 180;
+		//biomes[biomes.size() - 1].stoneChance = 0.4;
+		//biomes[biomes.size() - 1].octaves = 5;
+		//biomes[biomes.size() - 1].realismExponent = 1;
 
 		for(const auto &i: biomes)
 		{
@@ -277,8 +290,6 @@ public:
 	void setupChunk(Chunk *chunk, glm::vec2 p);
 
 	void setupStructuresInChunk(Chunk *chunk, glm::vec2 p, ChunkManager &cm);
-
-	//todo remove
 	
 
 	siv::PerlinNoise stoneNoise;

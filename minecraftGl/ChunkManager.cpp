@@ -10,7 +10,9 @@
 
 extern ChunkFileHandler fileHandler;
 
-WorldGenerator worldGeneraor(2026);
+WorldGenerator worldGeneraor(1259);
+
+bool lazySave = false;
 
 void ChunkManager::reserveData(int size)
 {
@@ -341,21 +343,26 @@ foundAll:
 
 	//chunk->bakeMeshes();
 	chunk->shouldRecreate = true;
-	for (int i = 0; i < FACE::FACES_SIZE; i++)
-	{
-		chunk->positionData[i].size = 0;
-	}
+	chunk->resetMeshes();
+	//for (int i = 0; i < FACE::FACES_SIZE; i++)
+	//{
+	//	chunk->positionData[i].size = 0;
+	//}
 
-	chunk->chunkBuilt = 0;
+	
 
 	if(buildChunk)
 	{
+		chunk->chunkBuilt = 1;
 		//let this be the last instruction for cache considerations
 		if (!fileHandler.loadChunk(*chunk))
 		{
-			chunk->shouldReSave = true;//todo if this is true, chunks are always saved (comment out if not wanted)
+			chunk->shouldReSave = !lazySave;//if this is true, chunks are always saved
 			worldGeneraor.setupChunk(chunk, p);
 		}
+	}else
+	{
+		chunk->chunkBuilt = 0;
 	}
 
 }
@@ -369,7 +376,7 @@ void ChunkManager::bakeUnbakedChunks(int numberToBake, int numberToBuild, glm::v
 	chunksForSort.clear();
 	for(int i=0; i< loadedChunks.size(); i++)
 	{
-		if(loadedChunks[i].shouldRecreate)
+		if(loadedChunks[i].shouldRecreate || !loadedChunks[i].chunkBuilt)
 		{
 			chunksForSort.push_back({ &loadedChunks[i], {loadedChunks[i].position.x, loadedChunks[i].position.z} });
 		}	
@@ -392,7 +399,7 @@ void ChunkManager::bakeUnbakedChunks(int numberToBake, int numberToBuild, glm::v
 			{
 				if (!fileHandler.loadChunk(*i.chunk))
 				{
-					i.chunk->shouldReSave = true;//todo if this is true, chunks are always saved (comment out if not wanted)
+					i.chunk->shouldReSave = !lazySave;//if this is true, chunks are always saved
 					worldGeneraor.setupChunk(i.chunk, { i.chunk->position.x, i.chunk->position.z});
 				}
 
@@ -406,6 +413,7 @@ void ChunkManager::bakeUnbakedChunks(int numberToBake, int numberToBuild, glm::v
 					||(i.chunk->neighbours[1] != nullptr && i.chunk->neighbours[1]->chunkBuilt == false)
 					||(i.chunk->neighbours[2] != nullptr && i.chunk->neighbours[2]->chunkBuilt == false)
 					||(i.chunk->neighbours[3] != nullptr && i.chunk->neighbours[3]->chunkBuilt == false)
+					||(i.chunk->chunkBuilt == false)
 					)
 				{
 				

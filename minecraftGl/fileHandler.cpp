@@ -72,6 +72,7 @@ bool ChunkFileHandler::loadChunk(Chunk & c)
 	loadChunkAtIndex(f, c, loadIndex);
 	
 	c.chunkBuilt = true;
+	c.shouldReSave = false;
 
 	f.close();
 	return 1;

@@ -42,6 +42,7 @@ void Chunk::removeNeighboursLinkage()
 	}
 }
 
+//note this does not check if chunk is built !!!
 void Chunk::bakeMeshes()
 {
 	shouldRecreate = false;

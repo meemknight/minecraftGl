@@ -227,6 +227,12 @@ void CubeMeshRenderer::draw(Chunk **chunk, int size)
 	for (int index = 0; index < size; index++)
 	{
 			Chunk &c = *chunk[index];
+
+			//if(c.shouldRecreate || !c.chunkBuilt)
+			//{
+			//	continue;
+			//}
+
 			for (int i = 0; i < FACE::FACES_SIZE; i++)
 			{
 				if (mask[i])
@@ -235,7 +241,7 @@ void CubeMeshRenderer::draw(Chunk **chunk, int size)
 				}
 			}
 
-			herbsSize += c.positionData[FACE::FACES_SIZE].size;
+			herbsSize += c.positionData[6].size;
 	}
 	
 	for(int i=0; i< FACE::FACES_SIZE; i++)
@@ -273,6 +279,11 @@ void CubeMeshRenderer::draw(Chunk **chunk, int size)
 			{
 				Chunk &c = *chunk[index];
 
+				//if (c.shouldRecreate || !c.chunkBuilt)
+				//{
+				//	continue;
+				//}
+
 				glBufferSubData(GL_ARRAY_BUFFER, pos * sizeof(float), c.positionData[i].size * sizeof(float), c.positionData[i].data);
 				pos += c.positionData[i].size;
 			}
@@ -294,8 +305,13 @@ void CubeMeshRenderer::draw(Chunk **chunk, int size)
 		{
 			Chunk &c = *chunk[index];
 
-			glBufferSubData(GL_ARRAY_BUFFER, pos * sizeof(float), c.positionData[FACE::FACES_SIZE].size * sizeof(float), c.positionData[FACE::FACES_SIZE].data);
-			pos += c.positionData[FACE::FACES_SIZE].size;
+			//if (c.shouldRecreate || !c.chunkBuilt)
+			//{
+			//	continue;
+			//}
+
+			glBufferSubData(GL_ARRAY_BUFFER, pos * sizeof(float), c.positionData[6].size * sizeof(float), c.positionData[6].data);
+			pos += c.positionData[6].size;
 		}
 
 		glDisable(GL_CULL_FACE);
@@ -306,7 +322,7 @@ void CubeMeshRenderer::draw(Chunk **chunk, int size)
 	}
 
 	additionalBlocks.clear();
-
+	
 	glBindVertexArray(0);
 }
 
@@ -364,7 +380,7 @@ void CubeMeshRenderer::create()
 		positionData[i].reserve(5 * 1000);
 	}
 
-	positionData[FACE::FACES_SIZE].reserve(5 * 10);
+	positionData[6].reserve(5 * 10);
 
 	//herbs
 	{

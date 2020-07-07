@@ -28,6 +28,7 @@ static BlockFace frontFaces[BLOCK::BLOCKS_SIZE] =
 	{5, 8}, //birch wood
 	{3, 14}, //gravel
 	{12, 15}, //rose
+	{3, 11}, //ice
 };
 
 static BlockFace backFaces[BLOCK::BLOCKS_SIZE] =
@@ -58,6 +59,7 @@ static BlockFace backFaces[BLOCK::BLOCKS_SIZE] =
 	{5, 8}, //birch wood
 	{3, 14}, //gravel
 	{12, 15}, //rose
+	{3, 11}, //ice
 
 };
 
@@ -89,6 +91,7 @@ static BlockFace topFaces[BLOCK::BLOCKS_SIZE] =
 	{5, 14}, //birch wood
 	{3, 14}, //gravel
 	{12, 15}, //rose
+	{3, 11}, //ice
 
 };
 
@@ -120,6 +123,7 @@ static BlockFace bottomFaces[BLOCK::BLOCKS_SIZE] =
 	{5, 14}, //birch wood
 	{3, 14}, //gravel
 	{12, 15}, //rose
+	{3, 11}, //ice
 
 };
 
@@ -151,6 +155,7 @@ static BlockFace LeftFaces[BLOCK::BLOCKS_SIZE] =
 	{5, 8}, //birch wood
 	{3, 14}, //gravel
 	{12, 15}, //rose
+	{3, 11}, //ice
 
 };
 
@@ -182,6 +187,7 @@ static BlockFace RightFaces[BLOCK::BLOCKS_SIZE] =
 	{5, 8}, //birch wood
 	{3, 14}, //gravel
 	{12, 15}, //rose
+	{3, 11}, //ice
 
 };
 

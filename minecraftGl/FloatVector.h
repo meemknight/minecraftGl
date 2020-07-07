@@ -12,8 +12,9 @@ struct FloatVector
 	void push(float x);
 	void push(float x, float y);
 	void push(float x, float y, float z);
+	void push(float x, float y, float z, float w);
 	void push(glm::vec3 v) { push(v.x, v.y, v.z); }
-	void push(glm::vec4 v) { push(v.x, v.y, v.z); push(v.w); }//todo
+	void push(glm::vec4 v) { push(v.x, v.y, v.z, v.w); }
 	void cleanup();
 };
 

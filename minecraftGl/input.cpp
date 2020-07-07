@@ -57,7 +57,7 @@ namespace input
 	int buttonsPressed[Buttons::buttonsCount] = {};
 	int buttonsReleased[Buttons::buttonsCount] = {};
 
-	constexpr float lookSpeed = 2;
+	constexpr float lookSpeed = 3;
 
 	//todo delta time
 	glm::vec2 getLookDirection()
@@ -94,7 +94,7 @@ namespace input
 
 				dir += glm::vec2{ -retValX * lookSpeed, retValY * lookSpeed };
 
-				dir = glm::clamp(dir, { -1,-1 }, { 1,1 });
+				dir = glm::clamp(dir, { -1 * lookSpeed,-1 * lookSpeed }, { 1 * lookSpeed,1 * lookSpeed });
 			}
 
 		}

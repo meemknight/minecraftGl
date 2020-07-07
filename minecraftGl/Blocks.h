@@ -43,6 +43,7 @@ namespace BLOCK
 		birch_wood,
 		gravel,
 		rose,
+		ice,
 		BLOCKS_SIZE,
 	};
 }
