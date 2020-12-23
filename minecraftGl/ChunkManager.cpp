@@ -37,11 +37,11 @@ Chunk **ChunkManager::requestChunks(glm::ivec3 *requestedC, int size, bool gener
 	//reset data return data
 	returnVector.clear();
 
-	//load the other data in unused spaces
 	int pos = 0; //pos in requestedC
 	bool unallocatedData = 0;
 
-	if(size > chunksCount)
+
+	if(size > chunksCount) //this is if you request more chunks than reserved initially
 	{
 
 		//first save old data:
@@ -59,7 +59,7 @@ Chunk **ChunkManager::requestChunks(glm::ivec3 *requestedC, int size, bool gener
 		//alocate new data
 		for (int pos=0; pos < size; pos++)
 		{
-			if (requestedC[pos].y == 0)
+			//if (requestedC[pos].y == 0)
 			{
 				//loadedChunks.push_back(Chunk());
 				ChunkData cd;
@@ -79,6 +79,8 @@ Chunk **ChunkManager::requestChunks(glm::ivec3 *requestedC, int size, bool gener
 		goto endOfFunction;
 	}
 
+
+	/// normal routine
 	for (int i = 0; i < chunkData.size(); i++)
 	{
 		chunkData[i].used = 0;
@@ -100,7 +102,7 @@ Chunk **ChunkManager::requestChunks(glm::ivec3 *requestedC, int size, bool gener
 		}
 	}
 
-
+	//load the other data in unused spaces
 	for(pos=0; pos<size;pos++)
 	{
 		if(requestedC[pos].y == 0)
@@ -110,20 +112,74 @@ Chunk **ChunkManager::requestChunks(glm::ivec3 *requestedC, int size, bool gener
 		}
 	}
 
+
 	if(unallocatedData)
 	{
+		auto newPlayerPos = playerPos / 16;
+		chunksForSort.clear();
 		for (int i = 0; i < chunkData.size(); i++)
 		{
-			if (chunkData[i].chunk && chunkData[i].used == 0)
+			if (chunkData[i].used == 0)
 			{
-				chunkData[i].used = 1;
-				chunkData[i].position.x = requestedC[pos].x;
-				chunkData[i].position.y = requestedC[pos].z;
+				ChunkDataSimple data;
+				data.chunkDataUnion = &chunkData[i];
+				data.position = { chunkData[i].position.x, chunkData[i].position.y };
+				chunksForSort.push_back(data);
+			}
+		}
 
-				setupChunk(chunkData[i].chunk, chunkData[i].position, false);
+		std::sort(chunksForSort.begin(), chunksForSort.end(), [newPlayerPos](const ChunkDataSimple &first, const ChunkDataSimple &second)
+		{
+				auto a = first.position - glm::ivec2(newPlayerPos.x, newPlayerPos.y);
+				auto b = second.position - glm::ivec2(newPlayerPos.x, newPlayerPos.y);
+				return a.x * a.x + a.y * a.y >
+					b.x *b.x + b.y * b.y;
+		});
+
+		//replce random chunks version
+		//for (int i = 0; i < chunkData.size(); i++)
+		//{
+		//	if (chunkData[i].chunk && chunkData[i].used == 0)
+		//	{
+		//		chunkData[i].used = 1;
+		//		chunkData[i].position.x = requestedC[pos].x;
+		//		chunkData[i].position.y = requestedC[pos].z;
+		//
+		//		setupChunk(chunkData[i].chunk, chunkData[i].position, false);
+		//		
+		//		returnVector.push_back(chunkData[i].chunk);
+		//
+		//		unallocatedData = 0;
+		//		for (pos++; pos < size; pos++)
+		//		{
+		//			if (requestedC[pos].y == 0)
+		//			{
+		//				unallocatedData = 1;
+		//				break;
+		//			}
+		//		}
+		//
+		//		if(unallocatedData == 0)
+		//		{
+		//			break;
+		//		}
+		//	}
+		//}
+
+		//replace far chunks version
+		for (int i = 0; i < chunksForSort.size(); i++)
+		{
+			auto &chunkDataElement = *chunksForSort[i].chunkDataUnion;
+			if (chunkDataElement.chunk && chunkDataElement.used == 0)
+			{
+				chunkDataElement.used = 1;
+				chunkDataElement.position.x = requestedC[pos].x;
+				chunkDataElement.position.y = requestedC[pos].z;
+		
+				setupChunk(chunkDataElement.chunk, chunkDataElement.position, false);
 				
-				returnVector.push_back(chunkData[i].chunk);
-
+				returnVector.push_back(chunkDataElement.chunk);
+		
 				unallocatedData = 0;
 				for (pos++; pos < size; pos++)
 				{
@@ -133,14 +189,13 @@ Chunk **ChunkManager::requestChunks(glm::ivec3 *requestedC, int size, bool gener
 						break;
 					}
 				}
-
+		
 				if(unallocatedData == 0)
 				{
 					break;
 				}
 			}
 		}
-
 	}
 	
 	endOfFunction:
@@ -370,6 +425,7 @@ foundAll:
 //todo basic optimise
 //todo algoritmically optimise
 //todo fix it (request small numbers)
+//bake means compute for gpu
 void ChunkManager::bakeUnbakedChunks(int numberToBake, int numberToBuild, glm::vec2 pos)
 {
 	pos /= 16;

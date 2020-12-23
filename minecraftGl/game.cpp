@@ -32,7 +32,7 @@ int height;
 static glm::vec2 oldMousePosition;
 
 //Camera camera(60.f, &width, &height, 0.1, 200);
-FirstPersonCamera camera(80.f, 0.1, 170, &width, &height);
+FirstPersonCamera camera(80.f, 0.1, 270, &width, &height);
 
 CubeMeshRenderer cubeRenderer;
 
@@ -57,7 +57,7 @@ int initGame()
 	}
 
 	std::filesystem::create_directory("saves");
-	std::filesystem::remove_all("saves");
+	//std::filesystem::remove_all("saves");
 
 	//playerEntity.flySpeed *= 10;
 	//glEnable(GL_LINE_SMOOTH);
@@ -136,7 +136,7 @@ int initGame()
 
 	playerEntity.lastPos = camera.position;
 	playerEntity.position = camera.position;
-	//playerEntity.flySpeed *= 10;
+	playerEntity.flySpeed *= 10;
 	//playerEntity.jumpSpeed *= 10;
 
 	return 1;
@@ -366,7 +366,23 @@ int gameLogic(float deltaTime)
 
 		}
 
+		
+		{
+			auto box2 = Ui::Box().xLeft(20).yTop(0).
+				yDimensionPercentage(0.5).xAspectRatio(1)();
 
+			Ui::Frame f2{ box2 };
+			
+			char buf[100] = {};
+			sprintf(buf, "x:%+.3f y:%+.3f z:%+.3f", 
+				playerEntity.position.x,
+				playerEntity.position.y,
+				playerEntity.position.z);
+
+			renderer2d.renderText(Ui::Box().xLeft().yDistancePixels(50)(), buf, font,
+				Colors_White, 0.35, 4, 3, false);
+
+		}
 
 	}
 

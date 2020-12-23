@@ -80,6 +80,8 @@ bool ChunkFileHandler::loadChunk(Chunk & c)
 
 void ChunkFileHandler::saveChunk(Chunk & c)
 {
+	c.shouldReSave = 0; //note vlod newly added
+
 	const glm::ivec2 pos = { c.position.x, c.position.z };
 	
 	glm::vec2 floatPos = pos;

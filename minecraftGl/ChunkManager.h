@@ -13,7 +13,11 @@ struct ChunkData
 
 struct ChunkDataSimple
 {
-	Chunk *chunk = nullptr;
+	union
+	{
+		Chunk *chunk = nullptr;
+		ChunkData *chunkDataUnion;
+	};
 	glm::ivec2 position = {};
 };
 

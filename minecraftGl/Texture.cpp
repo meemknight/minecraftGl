@@ -58,9 +58,8 @@ void Texture::create(const char * name)
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 4);
 
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, x, y, 0, GL_RGBA, GL_UNSIGNED_BYTE, buff);
-		//glHint(GL_GENERATE_MIPMAP_HINT, GL_NICEST);
+		glHint(GL_GENERATE_MIPMAP_HINT, GL_NICEST);
 		glGenerateMipmap(GL_TEXTURE_2D);
-
 
 
 		//int NumberOfExtensions;
@@ -77,7 +76,9 @@ void Texture::create(const char * name)
 		//		break;
 		//	}
 		//}
-		//glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, 1);
+		
+		//glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, 2);
+
 
 		stbi_image_free(buff);
 	}
