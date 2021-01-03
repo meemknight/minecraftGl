@@ -50,3 +50,4 @@ There is still room for improvement.
 
 -I have added a skybox and fog.
 ![](https://github.com/meemknight/photos/blob/master/mc10.png)
+---
