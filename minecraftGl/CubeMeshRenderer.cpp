@@ -169,7 +169,7 @@ const float *cubeData[FACE::FACES_SIZE]{ frontCubeData, backCubeData, topCubeDat
 const unsigned int *cubeIndexData[FACE::FACES_SIZE]{ frontIndexBufferData, backIndexBufferData, frontIndexBufferData, backIndexBufferData, frontIndexBufferData, backIndexBufferData };
 
 
-void CubeMeshRenderer::draw(Chunk **chunk, int size)
+void CubeMeshRenderer::draw(Chunk **chunk, int size, SkyBox &skyBox)
 {
 	assert(sp, "Error, no shader");
 	sp->bind();
@@ -177,13 +177,27 @@ void CubeMeshRenderer::draw(Chunk **chunk, int size)
 	assert(texture, "Error, no texture");
 	texture->bind();
 
+	skyBox.bindCubeMap();
+
 	glm::mat4 m = camera->getProjectionViewMatrix();
 	float mag = 1.f / (float)texture->subDivisions;
 
+	{
+		auto projMat = camera->getProjectionMatrix();
+		auto viewMat = camera->getObjectToWorldMatrix();
+		viewMat = glm::mat4(glm::mat3(viewMat));
+
+		auto viewProjMat = projMat * viewMat;
+
+		glUniformMatrix4fv(skyBoxMatUniformLocation, 1, GL_FALSE, &viewProjMat[0][0]);
+	}
+
 	glUniformMatrix4fv(matUniformLocation, 1, GL_FALSE, &m[0][0]);
 	glUniform1i(textureUniformLocation, 0);
+	glUniform1i(skyBoxUniformLocation, 1);
 	glUniform1f(magnifierUniformLocation, mag);
 	glUniform1f(distanceUniformLocation, camera->farPlane);
+	glUniform3fv(cameraPositionUniformLocation, 1, &camera->position[0]);
 
 #pragma region cull unseen faces
 
@@ -337,9 +351,13 @@ void CubeMeshRenderer::create()
 
 	textureUniformLocation = sp->getUniformLocation("u_texture");
 	matUniformLocation = sp->getUniformLocation("u_mat");
+	skyBoxMatUniformLocation = sp->getUniformLocation("u_skyBoxMat");
+	cameraPositionUniformLocation = sp->getUniformLocation("u_cameraPosition");
 	magnifierUniformLocation = sp->getUniformLocation("u_magnifier");
 	ambienceUniformLocation = sp->getUniformLocation("u_ambience");
 	distanceUniformLocation = sp->getUniformLocation("u_distance");
+	skyBoxUniformLocation = sp->getUniformLocation("u_skybox");
+	
 
 	glGenBuffers(FACE::FACES_SIZE, facesBuffer);
 	glGenBuffers(FACE::FACES_SIZE, facesIndexBuffer);
@@ -373,9 +391,7 @@ void CubeMeshRenderer::create()
 		glVertexAttribPointer(3, 2, GL_FLOAT, 0, sizeof(float) * 5, (void*)(sizeof(float) * 3));
 		glVertexAttribDivisor(3, 1);
 
-		texture->bind(0);
 		sp->bind();
-		//glUniform1i(textureUniformLocation, 0);
 
 		positionData[i].reserve(5 * 1000);
 	}

@@ -14,7 +14,7 @@ WorldGenerator worldGeneraor(1259);
 
 bool lazySave = false;
 
-void ChunkManager::reserveData(int size)
+void ChunkManager::reserveDataAndClear(int size)
 {
 	chunksCount = size;
 	loadedChunks.clear();
@@ -31,6 +31,17 @@ void ChunkManager::reserveData(int size)
 	cachedChunk = {};
 }
 
+void ChunkManager::reserveDataAndNoCleanup(int size)
+{
+	chunksCount = size;
+
+	returnVector.reserve(chunksCount);
+
+	loadedChunks.resize(chunksCount);
+	chunkData.resize(chunksCount);
+
+}
+
 Chunk **ChunkManager::requestChunks(glm::ivec3 *requestedC, int size, bool generateStructures, const glm::ivec2 playerPos)
 {
 	cachedChunk = {};
@@ -40,12 +51,12 @@ Chunk **ChunkManager::requestChunks(glm::ivec3 *requestedC, int size, bool gener
 	int pos = 0; //pos in requestedC
 	bool unallocatedData = 0;
 
-
 	if(size > chunksCount) //this is if you request more chunks than reserved initially
 	{
+		ilog("Making the chunk buffer bigger:", size);
 
+		//old version, recreate data
 		//first save old data:
-		ilog("saving:", size);
 		for(int i=0; i< chunksCount; i++)
 		{
 			if (chunkData[i].chunk->shouldReSave)
@@ -53,9 +64,9 @@ Chunk **ChunkManager::requestChunks(glm::ivec3 *requestedC, int size, bool gener
 				fileHandler.saveChunk(*chunkData[i].chunk);
 			}
 		}
-
-		reserveData(size);
-
+		
+		reserveDataAndClear(size);
+		
 		//alocate new data
 		for (int pos=0; pos < size; pos++)
 		{
@@ -67,16 +78,20 @@ Chunk **ChunkManager::requestChunks(glm::ivec3 *requestedC, int size, bool gener
 				cd.position.x = requestedC[pos].x;
 				cd.position.y = requestedC[pos].z;
 				cd.chunk = &loadedChunks[pos];
-
+		
 				setupChunk(&loadedChunks[pos], cd.position, false);
-
+		
 				chunkData[pos] = cd;
-
+		
 				returnVector.push_back(chunkData[pos].chunk);
 			}
 		}
-
 		goto endOfFunction;
+
+		//new version, make the buffer bigger todo (all chunks should be valid)
+		//reserveDataAndNoCleanup(size);
+
+
 	}
 
 

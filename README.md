@@ -35,9 +35,18 @@ have actually been modified by the player.
 ![](https://github.com/meemknight/photos/blob/master/mc7.png)
 ---
 
--I have improved the world generation and added customizeble biomes that can be seen here
+-I have improved the world generation and added customizeble biomes that can be seen here.
 ![](https://github.com/meemknight/photos/blob/master/mc8.jpg)
 ---
 
--Now I'll take a small break from the world generator to fix bugs and add things like physics and controller input
+-Now I'll take a small break from the world generator to fix bugs and add things like physics and controller input.
 ---
+
+
+-I have made some small optimizations in the chunk code so that I can controll how many chunks are created and updated
+per frame and also made sure to update first chunks that are near the player and clear chunks that are far away.
+There is still room for improvement.
+---
+
+-I have added a skybox and fog.
+![](https://github.com/meemknight/photos/blob/master/mc10.png)

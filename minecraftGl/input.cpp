@@ -338,6 +338,7 @@ namespace input
 					buttonsPressed[i] = 1;
 				}
 			}
+
 			buttonsHeld[i] = state;
 
 		}

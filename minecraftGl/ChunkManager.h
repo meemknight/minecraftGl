@@ -36,9 +36,9 @@ public:
 	PinnedVector<Chunk> loadedChunks;
 	PinnedVector<ChunkData> chunkData;
 
-	void reserveData(int size);
+	void reserveDataAndClear(int size);
 
-	void smartReserveData(int size);
+	void reserveDataAndNoCleanup(int size);
 
 	//y reserved, should be 0
 	Chunk **requestChunks(glm::ivec3 *chunks, int size, bool generateStructures, const glm::ivec2 playerPos);

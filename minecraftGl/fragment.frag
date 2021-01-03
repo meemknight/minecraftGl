@@ -6,8 +6,10 @@ uniform sampler2D u_texture;
 in vec2 v_texCoord;
 
 uniform float u_ambience;
+uniform samplerCube u_skybox;
 
-uniform int u_distance;
+in float v_fogFactor;
+in vec3 v_skyBoxpoisition;
 
 void main()
 {
@@ -16,5 +18,9 @@ void main()
 	if(color.a < 0.9)
 	discard;
 
+
 	color.rgb *= u_ambience;
+
+	color.rgb = mix(color.rgb, texture(u_skybox, v_skyBoxpoisition).rgb, v_fogFactor); 
+
 }

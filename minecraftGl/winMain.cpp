@@ -32,11 +32,15 @@ static int bMouseMoved = 0;
 
 static bool isFocus = 0;
 
+#define GPU_ENGINE 1
 extern "C"
 {
-	__declspec(dllexport) unsigned long NvOptimusEnablement = 1;
-	__declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
+	__declspec(dllexport) unsigned long NvOptimusEnablement = GPU_ENGINE;
+	__declspec(dllexport) int AmdPowerXpressRequestHighPerformance = GPU_ENGINE;
 }
+
+
+GameData gameData = {};
 
 int MAIN
 {
@@ -90,6 +94,13 @@ int MAIN
 	int time1 = clock();
 	int time2 = clock();
 
+	float timeCounter = 0;
+	int frameCounter = 0;
+	int lastfps = 0;
+
+	gameData.vendor = glGetString(GL_VENDOR);
+	gameData.renderer = glGetString(GL_RENDERER);
+
 	while(!quit)
 	{
 		MSG msg;
@@ -105,11 +116,24 @@ int MAIN
 			
 			float fDeltaTime = (float)deltaTime / CLOCKS_PER_SEC;
 
+			timeCounter += fDeltaTime;
+			frameCounter ++;
+
+			if(timeCounter>1)
+			{
+				timeCounter -= 1;
+				lastfps = frameCounter;
+				frameCounter = 0;
+			}
+
+
 			fDeltaTime = min(fDeltaTime, 1.f / 20.f);
 
 			input::updateInput();
 
-			if (!gameLogic(fDeltaTime))
+			gameData.fps = lastfps;
+
+			if (!gameLogic(fDeltaTime, gameData))
 			{
 				quit = true;
 			}

@@ -105,6 +105,9 @@
     <ClCompile Include="menu.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="SkyBox.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h">
@@ -188,12 +191,17 @@
     <ClInclude Include="menu.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="SkyBox.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="vertex.vert" />
     <None Include="fragment.frag" />
     <None Include="noTexture.vert" />
     <None Include="noTexture.frag" />
+    <None Include="skyBox.vert" />
+    <None Include="skyBox.frag" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="textures\blocks.png">

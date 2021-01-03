@@ -17,6 +17,7 @@
 #include "opengl2Dlib.h"
 #include "Ui.h"
 #include "menu.h"
+#include "SkyBox.h"
 
 ShaderProgram sp;
 ShaderProgram spNoTexture;
@@ -32,6 +33,7 @@ int height;
 static glm::vec2 oldMousePosition;
 
 //Camera camera(60.f, &width, &height, 0.1, 200);
+
 FirstPersonCamera camera(80.f, 0.1, 270, &width, &height);
 
 CubeMeshRenderer cubeRenderer;
@@ -47,6 +49,8 @@ std::vector<glm::ivec3> chunksToLoad;
 Entity playerEntity;
 
 gl2d::Renderer2D renderer2d;
+
+SkyBox skyBox;
 
 int initGame()
 {
@@ -136,15 +140,19 @@ int initGame()
 
 	playerEntity.lastPos = camera.position;
 	playerEntity.position = camera.position;
-	playerEntity.flySpeed *= 10;
+	//playerEntity.flySpeed *= 10;
 	//playerEntity.jumpSpeed *= 10;
+
+	skyBox.createGpuData();
+	skyBox.loadTexture("textures/sky.png");
+
 
 	return 1;
 }
 
-static int mainMenu = 0;
+static bool mainMenu = 0;
 
-int gameLogic(float deltaTime)
+int gameLogic(float deltaTime, GameData &gameData)
 {
 
 
@@ -213,6 +221,16 @@ int gameLogic(float deltaTime)
 			
 		}
 	}
+
+	for (int i = 0; i < 9; i++)
+	{
+		if(isKeyPressed('1'+i))
+		{
+			camera.farPlane = (i + 1)* 5 * CHUNK_SIZE;
+		}
+
+	}
+
 
 	if(isKeyPressedOn('O'))
 	{
@@ -311,10 +329,10 @@ int gameLogic(float deltaTime)
 
 	camera.getChunksInFrustrum(chunksToLoad);
 	Chunk **c = chunkManager.requestChunks(chunksToLoad.data(), chunksToLoad.size(), 1, { camera.position.x, camera.position.z });
-	chunkManager.bakeUnbakedChunks(3, 3, { camera.position.x, camera.position.z });
+	chunkManager.bakeUnbakedChunks(1, 1, { camera.position.x, camera.position.z });
 
 	//cubeRenderer.addSingleCube(0, 100, 0, BLOCK::gold_block);
-	cubeRenderer.draw(c, chunksToLoad.size());
+	cubeRenderer.draw(c, chunksToLoad.size(), skyBox);
 
 	//glUseProgram(0);
 	//glDisable(GL_DEPTH_TEST);
@@ -329,6 +347,19 @@ int gameLogic(float deltaTime)
 
 	//llog((camera.position.x), (camera.position.y), (camera.position.z));
 	//llog(camera.viewDirection.x, camera.viewDirection.y, camera.viewDirection.z);
+	
+#pragma region skyBox
+	{
+		auto projMat = camera.getProjectionMatrix();
+		auto viewMat = camera.getObjectToWorldMatrix();
+		viewMat = glm::mat4(glm::mat3(viewMat));
+
+		auto viewProjMat = projMat * viewMat;
+
+		skyBox.draw(viewProjMat);
+	}
+#pragma endregion
+
 
 #pragma region 2d
 
@@ -365,8 +396,8 @@ int gameLogic(float deltaTime)
 				{}, 180, textures, TextureAtlas.get(face.x, face.y));
 
 		}
-
 		
+		//ui 
 		{
 			auto box2 = Ui::Box().xLeft(20).yTop(0).
 				yDimensionPercentage(0.5).xAspectRatio(1)();
@@ -379,7 +410,22 @@ int gameLogic(float deltaTime)
 				playerEntity.position.y,
 				playerEntity.position.z);
 
-			renderer2d.renderText(Ui::Box().xLeft().yDistancePixels(50)(), buf, font,
+			renderer2d.renderText(Ui::Box().xLeft().yDistancePixels(30)(), buf, font,
+				Colors_White, 0.35, 4, 3, false);
+
+			sprintf(buf, "View distance: %.3f chunks.",
+				camera.farPlane/16.0);
+			renderer2d.renderText(Ui::Box().xLeft().yDistancePixels(60)(), buf, font,
+				Colors_White, 0.35, 4, 3, false);
+
+			sprintf(buf, "fps: %d",
+				gameData.fps);
+			renderer2d.renderText(Ui::Box().xLeft().yDistancePixels(90)(), buf, font,
+				Colors_White, 0.35, 4, 3, false);
+
+			sprintf(buf, "Renderer: %s",
+				gameData.renderer);
+			renderer2d.renderText(Ui::Box().xLeft().yDistancePixels(120)(), buf, font,
 				Colors_White, 0.35, 4, 3, false);
 
 		}
