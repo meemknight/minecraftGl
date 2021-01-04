@@ -31,7 +31,7 @@ void main()
 	
 	v_fogFactor = 1 - v_fogFactor;
 	v_fogFactor = exp(-pow(v_fogFactor*density, gradient));
-	v_fogFactor = clamp(v_fogFactor, 0, 1);
+	//v_fogFactor = clamp(v_fogFactor, 0, 1);
 
 	v_skyBoxpoisition = vec3
 	(

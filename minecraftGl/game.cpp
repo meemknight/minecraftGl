@@ -144,7 +144,7 @@ int initGame()
 	//playerEntity.jumpSpeed *= 10;
 
 	skyBox.createGpuData();
-	skyBox.loadTexture("textures/sky.png");
+	skyBox.loadTexture("textures/sky2.png");
 
 
 	return 1;
