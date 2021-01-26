@@ -324,6 +324,7 @@ void resolveConstrains(glm::vec3 &pos, glm::vec3 lastPos, ChunkManager &cm, glm:
 void resolveConstrainsBrute(glm::vec3 &pos, glm::vec3 lastPos, ChunkManager &cm, glm::vec3 dimensions, CubeWireRenderer *cw, bool *grounded) 
 {
 	constexpr float r = 0.95;
+	bool touchGround = 0;
 
 	glm::vec3 position = lastPos;
 	glm::vec3 vect = pos - lastPos;
@@ -331,33 +332,38 @@ void resolveConstrainsBrute(glm::vec3 &pos, glm::vec3 lastPos, ChunkManager &cm,
 
 	newLastPos = position;
 	position.x += vect.x;
-	performCollision(position, newLastPos, cm, { dimensions.x, dimensions.y * r, dimensions.z * r }, cw);
+	performCollision(position, newLastPos, cm, 
+		{ dimensions.x, dimensions.y * r, dimensions.z * r }, cw, touchGround);
 
 	newLastPos = position;
 	position.y += vect.y;
 	float testY = position.y;
-	performCollision(position, newLastPos, cm, { dimensions.x * r, dimensions.y, dimensions.z * r }, cw);
+	performCollision(position, newLastPos, cm, 
+		{ dimensions.x * r, dimensions.y, dimensions.z * r }, cw, touchGround);
+	
 	if(grounded)
 	{
-		if (testY == position.y)
-		{
-			*grounded = 0;
-		}else
+		if (touchGround)
 		{
 			*grounded = 1;
+		}else
+		{
+			*grounded = 0;
 		}
 	}
 	
 
 	newLastPos = position;
 	position.z += vect.z;
-	performCollision(position, newLastPos, cm, { dimensions.x * r, dimensions.y * r, dimensions.z }, cw);
+	performCollision(position, newLastPos, cm, 
+		{ dimensions.x * r, dimensions.y * r, dimensions.z }, cw, touchGround);
 
 	pos = position;
 }
 
-
-void performCollision(glm::vec3 &pos, glm::vec3 lastPos, ChunkManager &cm, glm::vec3 dimensions, CubeWireRenderer *cw)
+//refactor probably
+void performCollision(glm::vec3 &pos, glm::vec3 lastPos, ChunkManager &cm,
+	glm::vec3 dimensions, CubeWireRenderer *cw, bool &touchGround)
 {
 	constexpr float topMarj = 0.1;
 
@@ -430,7 +436,7 @@ void performCollision(glm::vec3 &pos, glm::vec3 lastPos, ChunkManager &cm, glm::
 				}
 			}
 	
-	}else if(delta.y < 0)
+	}else if(delta.y < 0) //jos
 	{
 		int y = yBeg;
 		for (int x = xBeg; x <= xEnd; x++)
@@ -444,6 +450,7 @@ void performCollision(glm::vec3 &pos, glm::vec3 lastPos, ChunkManager &cm, glm::
 				if (isCollideble(cm.getBlock(block)))
 				{
 					pos.y = block.y + dimensions.y;
+					touchGround = true;
 				}
 			}
 	

@@ -29,6 +29,7 @@ static BlockFace frontFaces[BLOCK::BLOCKS_SIZE] =
 	{3, 14}, //gravel
 	{12, 15}, //rose
 	{3, 11}, //ice
+	{5, 4}, //blockBorder
 };
 
 static BlockFace backFaces[BLOCK::BLOCKS_SIZE] =
@@ -60,6 +61,7 @@ static BlockFace backFaces[BLOCK::BLOCKS_SIZE] =
 	{3, 14}, //gravel
 	{12, 15}, //rose
 	{3, 11}, //ice
+	{5, 4}, //blockBorder
 
 };
 
@@ -92,6 +94,7 @@ static BlockFace topFaces[BLOCK::BLOCKS_SIZE] =
 	{3, 14}, //gravel
 	{12, 15}, //rose
 	{3, 11}, //ice
+	{5, 4}, //blockBorder
 
 };
 
@@ -124,6 +127,7 @@ static BlockFace bottomFaces[BLOCK::BLOCKS_SIZE] =
 	{3, 14}, //gravel
 	{12, 15}, //rose
 	{3, 11}, //ice
+	{5, 4}, //blockBorder
 
 };
 
@@ -156,6 +160,7 @@ static BlockFace LeftFaces[BLOCK::BLOCKS_SIZE] =
 	{3, 14}, //gravel
 	{12, 15}, //rose
 	{3, 11}, //ice
+	{5, 4}, //blockBorder
 
 };
 
@@ -188,6 +193,7 @@ static BlockFace RightFaces[BLOCK::BLOCKS_SIZE] =
 	{3, 14}, //gravel
 	{12, 15}, //rose
 	{3, 11}, //ice
+	{5, 4}, //blockBorder
 
 };
 

@@ -44,6 +44,7 @@ namespace BLOCK
 		gravel,
 		rose,
 		ice,
+		borderBlock,
 		BLOCKS_SIZE,
 	};
 }

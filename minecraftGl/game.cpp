@@ -34,7 +34,7 @@ static glm::vec2 oldMousePosition;
 
 //Camera camera(60.f, &width, &height, 0.1, 200);
 
-FirstPersonCamera camera(80.f, 0.1, 270, &width, &height);
+FirstPersonCamera camera(80.f, 0.1, 16 * 2, &width, &height);
 
 CubeMeshRenderer cubeRenderer;
 
@@ -144,7 +144,7 @@ int initGame()
 	//playerEntity.jumpSpeed *= 10;
 
 	skyBox.createGpuData();
-	skyBox.loadTexture("textures/sky2.png");
+	skyBox.loadTexture("textures/sky.png");
 
 
 	return 1;
@@ -265,6 +265,7 @@ int gameLogic(float deltaTime, GameData &gameData)
 	playerEntity.applyVelocity(deltaTime);
 
 	playerEntity.resolveConstrains(chunkManager, { 1, 1.9, 1 }, nullptr);
+
 	playerEntity.updatePositions();
 
 	camera.position = playerEntity.position;
@@ -298,7 +299,10 @@ int gameLogic(float deltaTime, GameData &gameData)
 
 	if (coll.has_value())
 	{
-		cubeWireRenderer.addCube({ coll.value() }, { 0.61,0.6,0.65,1 });
+		//cubeWireRenderer.addCube({ coll.value() }, { 0.61,0.6,0.65,1 });
+		cubeRenderer.addSingleCube(coll.value().x, coll.value().y, coll.value().z
+			, BLOCK::borderBlock);
+
 		//ilog(coll.value().x, coll.value().y, coll.value().z);
 
 		if (coll && input::isKeyPressedOn(input::Buttons::placeBlock))

@@ -218,7 +218,7 @@ public:
 	}
 
 	//https://en.wikipedia.org/wiki/Lehmer_random_number_generator
-	constexpr unsigned long long Lehmer(std::uint32_t state)
+	constexpr unsigned long long Lehmer(std::uint32_t state) //todo fix state has to be static
 	{
 		state = (state * 48271) % 2147483647;
 		return state % 100 + 1;

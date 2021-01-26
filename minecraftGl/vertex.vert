@@ -27,7 +27,7 @@ void main()
 	v_fogFactor = clamp(v_fogFactor, 0, 1);
 
 	const float density = 2;
-	const float gradient = 32;
+	const float gradient = 64;
 	
 	v_fogFactor = 1 - v_fogFactor;
 	v_fogFactor = exp(-pow(v_fogFactor*density, gradient));

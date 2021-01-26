@@ -1,0 +1,9 @@
+todo: 
+
+make the fog better (things should dissapear quicker)
+
+fix collision (fall into things)
+
+improve collision (smooth things)
+
+

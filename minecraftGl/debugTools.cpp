@@ -36,6 +36,8 @@ void CubeWireRenderer::setShader(ShaderProgram * sp)
 
 void CubeWireRenderer::draw()
 {
+	//glDisable(GL_DEPTH_TEST);
+
 	if (dataToDraw.size == 0)
 	{
 		return;
@@ -53,6 +55,9 @@ void CubeWireRenderer::draw()
 	glDrawElementsInstanced(GL_LINES, 4 * 3 * 2, GL_UNSIGNED_INT, nullptr, dataToDraw.size / 7);
 	dataToDraw.size = 0;
 	glBindVertexArray(0);
+
+	//glEnable(GL_DEPTH_TEST);
+
 }
 
 void CubeWireRenderer::init(ShaderProgram * sp, FirstPersonCamera * c)

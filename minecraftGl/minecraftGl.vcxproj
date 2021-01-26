@@ -92,6 +92,9 @@
   <ItemGroup>
     <Image Include="textures\blocks.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="todo.txt" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{414cc53d-ef97-4985-ba6f-5acbb56241f5}</ProjectGuid>
