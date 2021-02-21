@@ -383,10 +383,13 @@ void CubeMeshRenderer::create()
 		glVertexAttribPointer(1, 2, GL_FLOAT, 0, sizeof(float) * 5, (void*)(sizeof(float) * 3));
 		glEnableVertexAttribArray(1);
 
+		//translate
 		glBindBuffer(GL_ARRAY_BUFFER, positionsBuffer[i]);
 		glEnableVertexAttribArray(2);
 		glVertexAttribPointer(2, 3, GL_FLOAT, 0, sizeof(float) * 5, 0);
 		glVertexAttribDivisor(2, 1);
+
+		//tex index
 		glEnableVertexAttribArray(3);
 		glVertexAttribPointer(3, 2, GL_FLOAT, 0, sizeof(float) * 5, (void*)(sizeof(float) * 3));
 		glVertexAttribDivisor(3, 1);

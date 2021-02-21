@@ -1,6 +1,6 @@
 #version 330
 
-layout (location = 0) in vec4 model;
+layout (location = 0) in vec4 model;			//actually vec3
 layout (location = 1) in vec2 texCoord;
 layout (location = 2) in vec3 translation;
 layout (location = 3) in vec2 texIndex;
@@ -19,12 +19,20 @@ uniform float u_magnifier;
 uniform float u_distance;
 
 
-void main()
+void calculateFogFactor()
 {
+
 	float distanceFromCamera = length(u_cameraPosition - (vec3(model) + translation));
 
 	v_fogFactor = distanceFromCamera / u_distance;
 	v_fogFactor = clamp(v_fogFactor, 0, 1);
+
+}
+
+void main()
+{
+	
+	calculateFogFactor();
 
 	const float density = 2;
 	const float gradient = 64;

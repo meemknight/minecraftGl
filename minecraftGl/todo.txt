@@ -1,9 +1,9 @@
 todo: 
 
-make the fog better (things should dissapear quicker)
+make the fog better (things should dissapear quicker) (look into glsl vertex qualifiers)
 
 fix collision (fall into things)
 
-improve collision (smooth things)
+improve collision (smooth things mabe)
 
-
+remake platform layer (proper imput)

@@ -213,7 +213,7 @@ namespace input
 					{
 						val = pad->bRightTrigger > 10;
 					}
-					else
+					else if (b == input::Buttons::breakBlock)
 					{
 						val = pad->bLeftTrigger > 10;
 					}
@@ -231,7 +231,7 @@ namespace input
 				{
 					val |= ::isRMouseButtonPressed();
 				}
-				else
+				else if (b == input::Buttons::breakBlock)
 				{
 					val |= ::isLMouseButtonPressed();
 				}
@@ -287,7 +287,8 @@ namespace input
 				GetAsyncKeyState(VK_RIGHT) ||
 				GetAsyncKeyState(VK_LSHIFT) ||
 				GetAsyncKeyState(VK_SHIFT) ||
-				GetAsyncKeyState(VK_ACCEPT)
+				GetAsyncKeyState(VK_ACCEPT) ||
+				GetAsyncKeyState(VK_RETURN)
 				)
 			{
 				usedController = false;
