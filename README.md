@@ -10,7 +10,7 @@
 ![](https://github.com/meemknight/photos/blob/master/mc2.png)
 ---
 
--After that it was time to add more chunks and a chumk manager that can load chunks near the player.
+-After that it was time to add more chunks and a chunk manager that can load chunks near the player.
 
 ![](https://github.com/meemknight/photos/blob/master/mc3.png)
 ---
