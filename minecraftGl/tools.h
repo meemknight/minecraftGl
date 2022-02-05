@@ -14,7 +14,7 @@
 
 //todo define an assert
 
-#define FORCE_LOG
+//#define FORCE_LOG
 
 #include <iostream>
 #include <Windows.h>
