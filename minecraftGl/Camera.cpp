@@ -20,6 +20,87 @@ static bool isPositive(float n)
 void FirstPersonCamera::getChunksInFrustrum(std::vector<glm::ivec3>& chunksToLoad)
 {
 
+	/*
+	glm::vec2 nearDimensions{};
+	glm::vec2 farDimensions{};
+	glm::vec3 centerNear{};
+	glm::vec3 centerFar{};
+
+	computeFrustumDimensions(position, viewDirection, glm::radians(fov), (float)*width / (float)*height,
+		closePlane, farPlane, nearDimensions, farDimensions, centerNear, centerFar);
+
+	glm::vec3 nearTopLeft{};
+	glm::vec3 nearTopRight{};
+	glm::vec3 nearBottomLeft{};
+	glm::vec3 nearBottomRight{};
+	glm::vec3 farTopLeft{};
+	glm::vec3 farTopRight{};
+	glm::vec3 farBottomLeft{};
+	glm::vec3 farBottomRight{};
+
+	computeFrustumSplitCorners(viewDirection, nearDimensions, farDimensions, centerNear, centerFar,
+		nearTopLeft,
+		nearTopRight,
+		nearBottomLeft,
+		nearBottomRight,
+		farTopLeft,
+		farTopRight,
+		farBottomLeft,
+		farBottomRight
+	);
+
+
+	glm::vec3 corners[] =
+	{
+		nearTopLeft,
+		nearTopRight,
+		nearBottomLeft,
+		nearBottomRight,
+		farTopLeft,
+		farTopRight,
+		farBottomLeft,
+		farBottomRight,
+	};
+
+	//float longestDiagonal = glm::distance(nearTopLeft, farBottomRight);
+
+	glm::vec3 minVal{};
+	glm::vec3 maxVal{};
+
+	for (int i = 0; i < 8; i++)
+	{
+		glm::vec4 corner(corners[i], 1);
+
+
+		if (i == 0)
+		{
+			minVal = corner;
+			maxVal = corner;
+		}
+		else
+		{
+			if (corner.x < minVal.x) { minVal.x = corner.x; }
+			if (corner.y < minVal.y) { minVal.y = corner.y; }
+			if (corner.z < minVal.z) { minVal.z = corner.z; }
+
+			if (corner.x > maxVal.x) { maxVal.x = corner.x; }
+			if (corner.y > maxVal.y) { maxVal.y = corner.y; }
+			if (corner.z > maxVal.z) { maxVal.z = corner.z; }
+
+		}
+
+	}
+
+
+	for (int z = minVal.z / CHUNK_SIZE; z < maxVal.z / CHUNK_SIZE; z++)
+	{
+		for (int x = minVal.x / CHUNK_SIZE; x < maxVal.x / CHUNK_SIZE; x++)
+		{
+			chunksToLoad.emplace_back(x, 0, z);
+		}
+	}
+	*/
+
 	
 	float halfA = glm::radians(fov) / 1.5f;
 	float angle = getTopDownAngle();
@@ -64,40 +145,6 @@ void FirstPersonCamera::getChunksInFrustrum(std::vector<glm::ivec3>& chunksToLoa
 		}
 	}
 	
-	/*
-	glm::vec2 min = {}, max = {};
-	
-	ExtractPlanesGL(getProjectionViewMatrix(),min, max);
-
-	min /= CHUNK_SIZE;
-	max /= CHUNK_SIZE;
-
-	if(min.x > max.x)
-	{
-		std::swap(min.x, max.x);
-	}
-
-	if (min.y > max.y)
-	{
-		std::swap(min.y, max.y);
-	}
-
-	min.x = floorf(min.x);
-	min.y = floorf(min.y);
-	max.x = floorf(max.x);
-	max.y = floorf(max.y);
-
-	min--;
-	max++;
-		
-	for (int y = min.y; y <= max.y; y++)
-	{
-		for (int x = min.x; x <= max.x; x++)
-		{
-			chunksToLoad.emplace_back(x, 0, y);
-		}
-	}
-	*/
 
 }
 

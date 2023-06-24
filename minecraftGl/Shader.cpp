@@ -13,7 +13,7 @@ ShaderProgram::ShaderProgram()
 
 }
 
-ShaderProgram::ShaderProgram(const VertexShader & vs, const FragmentShader & fs) :
+ShaderProgram::ShaderProgram(const VertexShader &vs, const FragmentShader &fs):
 	vs(vs), fs(fs)
 {
 	compileProgram();
@@ -64,7 +64,7 @@ void ShaderProgram::deleteProgram()
 }
 
 //todo remove this 
-int ShaderProgram::getUniformLocation(const char* name)
+int ShaderProgram::getUniformLocation(const char *name)
 {
 	if (locations.find(name) == locations.end())
 	{
@@ -86,7 +86,7 @@ int ShaderProgram::getUniformLocation(const char* name)
 
 }
 
-unsigned int ShaderProgram::getSoubRutineLocation(const char * name, GLenum type)
+unsigned int ShaderProgram::getSoubRutineLocation(const char *name, GLenum type)
 {
 	if (subRoutines.find(name) == subRoutines.end())
 	{
@@ -106,32 +106,32 @@ unsigned int ShaderProgram::getSoubRutineLocation(const char * name, GLenum type
 	}
 }
 
-void ShaderProgram::uniform(const char * name, float a)
+void ShaderProgram::uniform(const char *name, float a)
 {
 	bind(); // ? usefull
 	glUniform1f(getUniformLocation(name), a);
 }
 
-void ShaderProgram::uniformi(const char * name, int a)
+void ShaderProgram::uniformi(const char *name, int a)
 {
 	bind(); // ? usefull
 	glUniform1i(getUniformLocation(name), a);
 }
 
-void ShaderProgram::uniform(const char * name, float a, float b, float c, float d)
+void ShaderProgram::uniform(const char *name, float a, float b, float c, float d)
 {
 	bind(); // ? usefull
 	glUniform4f(getUniformLocation(name), a, b, c, d);
 }
 
 
-void ShaderProgram::uniform(const char * name, float a, float b, float c)
+void ShaderProgram::uniform(const char *name, float a, float b, float c)
 {
 	bind(); // ? usefull
 	glUniform3f(getUniformLocation(name), a, b, c);
 }
 
-void ShaderProgram::uniform(const char * name, int count, float * a)
+void ShaderProgram::uniform(const char *name, int count, float *a)
 {
 	bind(); // ? usefull
 	glUniform1fv(getUniformLocation(name), count, a);

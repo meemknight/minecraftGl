@@ -5,7 +5,7 @@ static BlockFace frontFaces[BLOCK::BLOCKS_SIZE] =
 	{0},
 	{2, 15}, // dirt
 	{3, 15}, // grass
-	{1, 15},//stone
+	{1, 15}, //stone
 	{4, 14},//log
 	{4, 15},//wooden_plank
 	{0, 14},//cobblestone
@@ -131,7 +131,7 @@ static BlockFace bottomFaces[BLOCK::BLOCKS_SIZE] =
 
 };
 
-static BlockFace LeftFaces[BLOCK::BLOCKS_SIZE] =
+static BlockFace leftFaces[BLOCK::BLOCKS_SIZE] =
 {
 	{0},
 	{2, 15}, // dirt
@@ -164,7 +164,7 @@ static BlockFace LeftFaces[BLOCK::BLOCKS_SIZE] =
 
 };
 
-static BlockFace RightFaces[BLOCK::BLOCKS_SIZE] =
+static BlockFace rightFaces[BLOCK::BLOCKS_SIZE] =
 {
 	{0},
 	{2, 15}, // dirt
@@ -199,7 +199,7 @@ static BlockFace RightFaces[BLOCK::BLOCKS_SIZE] =
 
 static BlockFace *faces[FACE::FACES_SIZE] =
 {
-	frontFaces, backFaces, topFaces, bottomFaces, LeftFaces, RightFaces,
+	frontFaces, backFaces, topFaces, bottomFaces, leftFaces, rightFaces,
 };
 
 BlockFace getBlockFace(Block b, Face f)

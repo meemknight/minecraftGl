@@ -57,7 +57,7 @@ void FlyMoveStruct::moveLeft(float speed)
 	moveRight(-speed);
 }
 
-void FlyMoveStruct::moveRight(float speed)
+void FlyMoveStruct::moveRight(float speed)//todo problem here y component ?
 {
 	e->position += glm::normalize(glm::cross(fp.viewDirection, glm::vec3{ 0,1,0 })) * speed * e->flySpeed;
 }

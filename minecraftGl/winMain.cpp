@@ -500,6 +500,9 @@ bool mouseMoved()
 }
 
 static bool lastShow = 1;
+
+int mouseVizibility = 1;
+
 void showMouse(bool show)
 {
 	if (lastShow != show)
