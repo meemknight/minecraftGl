@@ -1,0 +1,1 @@
+-nan(ind) -nan(ind) -nan(ind)
